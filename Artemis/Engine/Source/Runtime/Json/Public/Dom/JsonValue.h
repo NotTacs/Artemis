@@ -1,5 +1,5 @@
 #pragma once
-#include "framework.h"
+#include "CoreMinimal.h"
 #include "../Serialization/JsonTypes.h"
 
 class FJsonObject;

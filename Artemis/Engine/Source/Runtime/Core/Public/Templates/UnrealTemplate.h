@@ -1,5 +1,5 @@
 #pragma once
-#include "framework.h"
+#include "CoreMinimal.h"
 #include "Identity.h"
 #include "RemoveReference.h"
 #include "UnrealTypeTraits.h"

@@ -161,7 +161,7 @@
     <ClInclude Include="Engine\Source\Runtime\Json\Public\Dom\JsonValue.h" />
     <ClInclude Include="Engine\Source\Runtime\Json\Public\Serialization\JsonTypes.h" />
     <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Athena\FortGameModeAthena.h" />
-    <ClInclude Include="framework.h" />
+    <ClInclude Include="CoreMinimal.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="SDK\SDK\Basic.hpp" />
     <ClInclude Include="SDK\UnrealContainers.hpp" />

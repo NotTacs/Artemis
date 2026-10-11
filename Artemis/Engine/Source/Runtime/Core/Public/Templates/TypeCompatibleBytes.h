@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "framework.h"
+#include "CoreMinimal.h"
 
 /**
  * Used to declare an untyped array of data with compile-time alignment.

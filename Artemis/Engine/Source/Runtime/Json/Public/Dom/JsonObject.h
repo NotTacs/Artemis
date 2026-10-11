@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "framework.h"
+#include "CoreMinimal.h"
 #include "JsonValue.h"
 #include "../../../Core/Public/Templates/SharedPointer.h"
 

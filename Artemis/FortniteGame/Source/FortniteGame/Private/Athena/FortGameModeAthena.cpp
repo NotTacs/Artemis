@@ -37,17 +37,17 @@ void FortGameModeAthena::OnGivenMatchAssignment(AFortGameModeAthena* __this, boo
 	}
 }
 
-bool FortGameModeAthena::ReadyToStartMatch(AFortGameModeAthena* __this)
+bool FortGameModeAthena::ReadyToStartMatch_Implementation(AFortGameModeAthena* __this)
 {
-	static bool (*FortGameMode__ReadyToStartMatch)(AFortGamePvPBase * __this) = decltype(FortGameMode__ReadyToStartMatch)(AFortGamePvPBase::GetDefaultObj()->VTable[0x113]);
+	static bool (*FortGameMode__ReadyToStartMatch_Implementation)(AFortGamePvPBase * __this) = decltype(FortGameMode__ReadyToStartMatch_Implementation)(AFortGamePvPBase::GetDefaultObj()->VTable[0x113]);
 
 	if (__this->bWorldIsReady && __this->MatchState == *reinterpret_cast<FName*>(InSDKUtils::GetImageBase() + 0xB418188) 
-		&& __this->CountReadyPlayers(false) > 0 && FortGameMode__ReadyToStartMatch(__this))
+		&& __this->CountReadyPlayers(false) > 0 && FortGameMode__ReadyToStartMatch_Implementation(__this))
 		return true;
 	return false;
 }
 
-APawn* FortGameModeAthena::SpawnDefaultPawnFor(AFortGameModeAthena* __this, AFortPlayerControllerAthena* NewPlayer, AActor* StartSpot)
+APawn* FortGameModeAthena::SpawnDefaultPawnFor_Implementation(AFortGameModeAthena* __this, AFortPlayerControllerAthena* NewPlayer, AActor* StartSpot)
 {
 	static APawn* (*FortGameMode__SpawnDefaultPawnFor)(AFortGameMode * __this, AFortPlayerControllerAthena * NewPlayer, AActor * StartSpot) = decltype(FortGameMode__SpawnDefaultPawnFor)(AFortGameMode::GetDefaultObj()->VTable[0xD8]);
 	return FortGameMode__SpawnDefaultPawnFor(__this, NewPlayer, StartSpot);
@@ -57,6 +57,6 @@ void FortGameModeAthena::LoadModule()
 {
 	FMemoryLibrary::DetourHook(0x5f90568, FinishWorldInitialization, Originals::FinishWorldInitialization);
 	FMemoryLibrary::VFTHook(AFortGameModeAthena::GetDefaultObj()->VTable, 0x184, OnGivenMatchAssignment);
-	FMemoryLibrary::VFTHook(AFortGameModeAthena::GetDefaultObj()->VTable, 0x113, ReadyToStartMatch);
-	FMemoryLibrary::VFTHook(AFortGameModeAthena::GetDefaultObj()->VTable, 0xD8, SpawnDefaultPawnFor);
+	FMemoryLibrary::VFTHook(AFortGameModeAthena::GetDefaultObj()->VTable, 0x113, ReadyToStartMatch_Implementation);
+	FMemoryLibrary::VFTHook(AFortGameModeAthena::GetDefaultObj()->VTable, 0xD8, SpawnDefaultPawnFor_Implementation);
 }

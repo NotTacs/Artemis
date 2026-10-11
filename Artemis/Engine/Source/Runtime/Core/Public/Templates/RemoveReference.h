@@ -1,6 +1,6 @@
 #pragma once
 
-#include "framework.h"
+#include "CoreMinimal.h"
 
 /**
  * TRemoveReference<type> will remove any references from a type.

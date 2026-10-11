@@ -1,5 +1,5 @@
 #pragma once
-#include "framework.h"
+#include "CoreMinimal.h"
 #include "RemoveReference.h"
 #include "TypeCompatibleBytes.h"
 #include <atomic>

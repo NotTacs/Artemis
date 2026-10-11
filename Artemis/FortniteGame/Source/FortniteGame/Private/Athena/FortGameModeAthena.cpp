@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "../../Public/Athena/FortGameModeAthena.h"
 #include "Engine/Source/Runtime/Engine/Classes/Kismet/MemoryLibrary.h"
 
@@ -41,7 +41,7 @@ bool FortGameModeAthena::ReadyToStartMatch_Implementation(AFortGameModeAthena* _
 {
 	static bool (*FortGameMode__ReadyToStartMatch_Implementation)(AFortGamePvPBase * __this) = decltype(FortGameMode__ReadyToStartMatch_Implementation)(AFortGamePvPBase::GetDefaultObj()->VTable[0x113]);
 
-	if (__this->bWorldIsReady && __this->MatchState == *reinterpret_cast<FName*>(InSDKUtils::GetImageBase() + 0xB418188) 
+	if (__this->bWorldIsReady && __this->MatchState == *reinterpret_cast<FName*>(InSDKUtils::GetImageBase() + 0xB418188)
 		&& __this->CountReadyPlayers(false) > 0 && FortGameMode__ReadyToStartMatch_Implementation(__this))
 		return true;
 	return false;
@@ -49,8 +49,41 @@ bool FortGameModeAthena::ReadyToStartMatch_Implementation(AFortGameModeAthena* _
 
 APawn* FortGameModeAthena::SpawnDefaultPawnFor_Implementation(AFortGameModeAthena* __this, AFortPlayerControllerAthena* NewPlayer, AActor* StartSpot)
 {
-	static APawn* (*FortGameMode__SpawnDefaultPawnFor)(AFortGameMode * __this, AFortPlayerControllerAthena * NewPlayer, AActor * StartSpot) = decltype(FortGameMode__SpawnDefaultPawnFor)(AFortGameMode::GetDefaultObj()->VTable[0xD8]);
-	return FortGameMode__SpawnDefaultPawnFor(__this, NewPlayer, StartSpot);
+	printf(__FUNCTION__"\n");
+
+	if (!NewPlayer)
+	{
+		printf("NewPlayer is null!\n");
+		return nullptr;
+	}
+
+	if (!StartSpot)
+	{
+		TArray<AActor*> PlayerStarts;
+		UGameplayStatics::GetAllActorsOfClass(UWorld::GetWorld(), AFortPlayerStartWarmup::StaticClass(), &PlayerStarts);
+
+		if (PlayerStarts.Num() > 0)
+			StartSpot = PlayerStarts[rand() % PlayerStarts.Num()];
+		else
+		{
+			printf("No player starts found!\n");
+			return nullptr;
+		}
+	}
+
+	FTransform SpawnTransform = StartSpot->GetTransform();
+
+	APawn* Pawn = __this->SpawnDefaultPawnAtTransform(NewPlayer, SpawnTransform);
+	if (Pawn)
+	{
+		NewPlayer->Possess(Pawn);
+		printf("Spawned and possessed pawn\n");
+	}
+	else
+	{
+		printf("Failed to spawn pawn!\n");
+	}
+	return Pawn;
 }
 
 void FortGameModeAthena::LoadModule()

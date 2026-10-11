@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37614.0 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Artemis", "Artemis\Artemis.vcxproj", "{8DE8AB8A-BF5F-4F27-95A6-3AC226E2FCD8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8DE8AB8A-BF5F-4F27-95A6-3AC226E2FCD8}.Debug|x64.ActiveCfg = Debug|x64
+		{8DE8AB8A-BF5F-4F27-95A6-3AC226E2FCD8}.Debug|x64.Build.0 = Debug|x64
+		{8DE8AB8A-BF5F-4F27-95A6-3AC226E2FCD8}.Debug|x86.ActiveCfg = Debug|Win32
+		{8DE8AB8A-BF5F-4F27-95A6-3AC226E2FCD8}.Debug|x86.Build.0 = Debug|Win32
+		{8DE8AB8A-BF5F-4F27-95A6-3AC226E2FCD8}.Release|x64.ActiveCfg = Release|x64
+		{8DE8AB8A-BF5F-4F27-95A6-3AC226E2FCD8}.Release|x64.Build.0 = Release|x64
+		{8DE8AB8A-BF5F-4F27-95A6-3AC226E2FCD8}.Release|x86.ActiveCfg = Release|Win32
+		{8DE8AB8A-BF5F-4F27-95A6-3AC226E2FCD8}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {24E950B9-14BC-48A1-8F29-D9CBA81E4C22}
+	EndGlobalSection
+EndGlobal

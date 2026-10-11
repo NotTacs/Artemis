@@ -34,6 +34,8 @@ void FortGameModeAthena::OnGivenMatchAssignment(AFortGameModeAthena* __this, boo
 		GameState->OnRep_CurrentPlaylistInfo();
 		GameState->CurrentPlaylistId = __this->CurrentPlaylistId;
 		GameState->OnRep_CurrentPlaylistId();
+
+		__this->WarmupRequiredPlayerCount = 1;
 	}
 }
 
@@ -42,7 +44,7 @@ bool FortGameModeAthena::ReadyToStartMatch_Implementation(AFortGameModeAthena* _
 	static bool (*FortGameMode__ReadyToStartMatch_Implementation)(AFortGamePvPBase * __this) = decltype(FortGameMode__ReadyToStartMatch_Implementation)(AFortGamePvPBase::GetDefaultObj()->VTable[0x113]);
 
 	if (__this->bWorldIsReady && __this->MatchState == *reinterpret_cast<FName*>(InSDKUtils::GetImageBase() + 0xB418188) 
-		&& __this->CountReadyPlayers(false) > 0 && FortGameMode__ReadyToStartMatch_Implementation(__this))
+		&& __this->CountReadyPlayers(false) >= __this->WarmupRequiredPlayerCount && FortGameMode__ReadyToStartMatch_Implementation(__this))
 		return true;
 	return false;
 }

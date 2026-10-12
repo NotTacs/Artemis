@@ -7,14 +7,17 @@ void FortGameModeAthena::FinishWorldInitialization(AFortGameModeAthena* __this, 
 	printf(__FUNCTION__"\n");
 	static void (*FortGameMode__FinishWorldInitialization)(AFortGameMode * __this, AFortWorldManager * WorldManager) = decltype(FortGameMode__FinishWorldInitialization)(AFortGameMode::GetDefaultObj()->VTable[0x15A]);
 	FortGameMode__FinishWorldInitialization(__this, WorldManager);
-	FName DefaultPlaylistSolo = UKismetStringLibrary::Conv_StringToName(L"playlist_defaultsolo");
-	if (!__this->CurrentPlaylistName.IsValid())
-	{
-		static void (*FortGameMode__SetCurrentPlaylistName)(AFortGameMode * __this, FName) = decltype(FortGameMode__SetCurrentPlaylistName)(__this->VTable[0x12E]);
-		FortGameMode__SetCurrentPlaylistName(__this, DefaultPlaylistSolo);
-	}
-	TSharedPtr<FJsonObject> JsonObject = MakeShared<FJsonObject>();
-	OnGivenMatchAssignment(__this, true, JsonObject);
+	//FName DefaultPlaylistSolo = UKismetStringLibrary::Conv_StringToName(L"playlist_defaultsolo");
+	//if (!__this->CurrentPlaylistName.IsValid())
+	//{
+	//	static void (*FortGameMode__SetCurrentPlaylistName)(AFortGameMode * __this, FName) = decltype(FortGameMode__SetCurrentPlaylistName)(__this->VTable[0x12E]);
+	//	FortGameMode__SetCurrentPlaylistName(__this, DefaultPlaylistSolo);
+	//}
+	//TSharedPtr<FJsonObject> JsonObject = MakeShared<FJsonObject>();
+	//OnGivenMatchAssignment(__this, true, JsonObject);
+
+	printf("GameSession: %s\n", __this->GameSession->GetFullName().c_str());
+
 	Originals::FinishWorldInitialization(__this, WorldManager);
 }
 
@@ -55,10 +58,17 @@ APawn* FortGameModeAthena::SpawnDefaultPawnFor_Implementation(AFortGameModeAthen
 	return FortGameMode__SpawnDefaultPawnFor(__this, NewPlayer, StartSpot);
 }
 
+TSubclassOf<AGameSession>* FortGameModeAthena::GetGameSessionClass(AFortGameModeAthena* __this, TSubclassOf<AGameSession>* OutClass)
+{
+	*OutClass = AFortGameSessionDedicatedAthena::StaticClass();
+	return OutClass;
+}
+
 void FortGameModeAthena::LoadModule()
 {
 	FMemoryLibrary::DetourHook(0x5f90568, FinishWorldInitialization, Originals::FinishWorldInitialization);
 	FMemoryLibrary::VFTHook(AFortGameModeAthena::GetDefaultObj()->VTable, 0x184, OnGivenMatchAssignment);
 	FMemoryLibrary::VFTHook(AFortGameModeAthena::GetDefaultObj()->VTable, 0x113, ReadyToStartMatch_Implementation);
 	FMemoryLibrary::VFTHook(AFortGameModeAthena::GetDefaultObj()->VTable, 0xD8, SpawnDefaultPawnFor_Implementation);
+	FMemoryLibrary::VFTHook(AFortGameModeAthena::GetDefaultObj()->VTable, 0xE3, GetGameSessionClass);
 }

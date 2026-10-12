@@ -58,6 +58,14 @@ public:
 struct alignas(0x10) FBaseUrlContext
 {
 public:
+	enum EContextCredentials : __int32
+	{
+		CXC_Client = 0x0,
+		CXC_DedicatedServer = 0x1,
+		CXC_Cheater = 0x2,
+		CXC_Public = 0x3,
+	};
+
 	uint8                                         Pad_0[0x80];                                       // 0x0000(0x0080)(Fixing Struct Size After Last Property [ Dumper-8 ])
 };
 

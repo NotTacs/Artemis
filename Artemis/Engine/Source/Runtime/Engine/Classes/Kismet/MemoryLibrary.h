@@ -15,6 +15,20 @@ private:
         return;
     }
 public:
+
+    static void Setup()
+    {
+        while (true)
+        {
+            MH_STATUS Status = MH_Initialize();
+            if (Status == MH_STATUS::MH_OK || Status == MH_STATUS::MH_ERROR_ALREADY_INITIALIZED)
+                break;
+
+            std::this_thread::sleep_for(
+                std::chrono::milliseconds(200));
+        }
+    }
+
     template<typename T = void*>
     static void VFTHook(void** VTable, int Index, void* Detour, T& og = nullptrForHook)
     {
@@ -38,9 +52,29 @@ public:
     template<typename T = void*>
     static void DetourHook(uintptr_t Address, void* Detour, T& OriginalPtr = nullptrForHook)
     {
-        Address += InSDKUtils::GetImageBase();
-        MH_CreateHook(LPVOID(Address), Detour, std::is_same_v<T, void*> ? nullptr : (void**)&OriginalPtr);
-        MH_EnableHook(LPVOID(Address));
+        while (true)
+        {
+            if (Address == 0 || InSDKUtils::GetImageBase() == 0)
+                continue;
+            Address += InSDKUtils::GetImageBase();
+            MH_STATUS Status = MH_CreateHook(LPVOID(Address), Detour, std::is_same_v<T, void*> ? nullptr : (void**)&OriginalPtr);
+            if (Status != MH_OK && Status != MH_STATUS::MH_ERROR_ALREADY_CREATED)
+            {
+                std::this_thread::sleep_for(
+                    std::chrono::milliseconds(100));
+                continue;
+            }
+            Status = MH_EnableHook(LPVOID(Address));
+            if (Status != MH_OK)
+            {
+                std::this_thread::sleep_for(
+                    std::chrono::milliseconds(100));
+                continue;
+            }
+
+            printf("Successfully Hooked: %p\n", Address);
+            break;
+        }
     }
 
     static void Rel32Swap(uintptr_t Target, void* Detour);

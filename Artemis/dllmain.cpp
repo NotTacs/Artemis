@@ -10,23 +10,13 @@ DWORD WINAPI Main(LPVOID lpThread)
     AllocConsole();
     FILE* File = nullptr;
     freopen_s(&File, "CONOUT$", "w+", stdout);
-    MH_Initialize();
-    Sleep(5000);
-
-    Engine::LoadModule();
-    World::LoadModule();
-    /*TODO: MOVE TO OWN FILE*/
-    FMemoryLibrary::Set<bool>(0xB30CF9F, false); //GIsClient
-    FMemoryLibrary::Set<bool>(0xB30CF9F + 1, true); //GISServer
-    FortGameModeAthena::LoadModule();
-    NetDriver::LoadModule();
-    FMemoryLibrary::SetTrue(0x78857F4); //AGameSession::KickPlayer
-    FMemoryLibrary::SetNull(0x258D0DC); //AFortGameSession::StoreSessionID undo this later
-    FMemoryLibrary::SetTrue(0x17dd630); //UGameInstance::IsDedicatedServerInstance
+    FMemoryLibrary::Setup();
+    printf("Initialized Minhook.\n");
+    Engine::InitEngine();
 
     /* THIS IS SKUNKY WE NEED TO DO PROPER */
-    UWorld::GetWorld()->OwningGameInstance->LocalPlayers[0]->PlayerController->SwitchLevel(L"Artemis_Terrain");
-    UWorld::GetWorld()->OwningGameInstance->LocalPlayers.Remove(0);
+    //UWorld::GetWorld()->OwningGameInstance->LocalPlayers[0]->PlayerController->SwitchLevel(L"Artemis_Terrain");
+    
 
     return 0;
 }

@@ -12,6 +12,8 @@
 #include <cstdint>
 #include <intrin.h>
 #include <type_traits>
+#include <thread>
+#include <chrono>
 #include "SDK/SDK.hpp"
 #include "MinHook.h"
 

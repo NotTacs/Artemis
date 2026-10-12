@@ -4769,6 +4769,12 @@ public:
 	}
 };
 
+struct FNetworkNotify
+{
+public:
+
+};
+
 // Class Engine.NetDriver
 // 0x0740 (0x0768 - 0x0028)
 class UNetDriver : public UObject
@@ -4816,6 +4822,7 @@ public:
 public:
 	void SetWorld(class UWorld* InWorld);
 	bool InitListen(void* InNotify, FURL& ListenURL, bool bReuseAddressAndPort, FString& Error);
+	bool InitConnect(FNetworkNotify* InNotify, const FURL& ConnectURL, FString& Error);
 public:
 	static class UClass* StaticClass()
 	{

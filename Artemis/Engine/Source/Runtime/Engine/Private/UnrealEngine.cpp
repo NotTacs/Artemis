@@ -2,6 +2,9 @@
 #include "../Classes/Engine/Engine.h"
 #include "../Classes/Kismet/MemoryLibrary.h"
 #include "../Classes/Engine/World.h"
+#include "../../Core/Public/Modules/ModuleManager.h"
+#include "FortniteGame/Source/FortniteGame/Public/FortGameInstance.h"
+#include "Engine\Source\Runtime\Core\Public\Misc\CommandLine.h"
 
 #ifdef _MSC_VER
 struct int128test{
@@ -317,23 +320,25 @@ bool __fastcall Engine::LoadMap(__int64 a1, unsigned __int8* a2, __int64 a3, wch
     __int64 v222; // [rsp+B8h] [rbp-50h] BYREF
     LARGE_INTEGER v223; // [rsp+C0h] [rbp-48h] BYREF
     __int64 v224; // [rsp+C8h] [rbp-40h] BYREF
-    wchar_t* v225; // [rsp+D0h] [rbp-38h] BYREF
-    __int64 v226; // [rsp+D8h] [rbp-30h]
+    __int64 v225_v226[2] = {}; // [rsp+D0h] [rbp-38h] BYREF
+    wchar_t*& v225 = reinterpret_cast<wchar_t*&>(v225_v226[0]);
+    __int64& v226 = v225_v226[1];
     LARGE_INTEGER PerformanceCount; // [rsp+E0h] [rbp-28h] BYREF
     _QWORD v228[2]; // [rsp+E8h] [rbp-20h] BYREF
     _QWORD v229[2]; // [rsp+F8h] [rbp-10h] BYREF
-    wchar_t* v230; // [rsp+108h] [rbp+0h] BYREF
-    int v231 = 0; // [rsp+110h] [rbp+8h]
+    __int64 v230_v231[2] = {}; // [rsp+108h] [rbp+0h] BYREF
+    wchar_t*& v230 = reinterpret_cast<wchar_t*&>(v230_v231[0]);
+    int& v231 = reinterpret_cast<int&>(v230_v231[1]);
     _QWORD v232[2]; // [rsp+118h] [rbp+10h] BYREF
     __int64 v233_struct[3] = {0};
     __int64* v236; // [rsp+140h] [rbp+38h] BYREF
     int128test v237; // [rsp+148h] [rbp+40h] BYREF
     char v238[8]; // [rsp+158h] [rbp+50h] BYREF
-    __int64 v239; // [rsp+160h] [rbp+58h] BYREF
-    __int64 v240; // [rsp+170h] [rbp+68h] BYREF
-    __int64 v241; // [rsp+180h] [rbp+78h] BYREF
-    __int64 v242; // [rsp+190h] [rbp+88h] BYREF
-    __int64 v243; // [rsp+1A0h] [rbp+98h] BYREF
+    __int64 v239_str[2] = {}; __int64& v239 = v239_str[0]; // [rsp+160h] [rbp+58h] BYREF
+    __int64 v240_str[2] = {}; __int64& v240 = v240_str[0]; // [rsp+170h] [rbp+68h] BYREF
+    __int64 v241_str[2] = {}; __int64& v241 = v241_str[0]; // [rsp+180h] [rbp+78h] BYREF
+    __int64 v242_str[2] = {}; __int64& v242 = v242_str[0]; // [rsp+190h] [rbp+88h] BYREF
+    __int64 v243_str[2] = {}; __int64& v243 = v243_str[0]; // [rsp+1A0h] [rbp+98h] BYREF
     char v244[104]; // [rsp+1B0h] [rbp+A8h] BYREF
     alignas(16) _BYTE v245_struct[64] = { 0 };
     __int64 d19_result_2 = 0;
@@ -935,7 +940,7 @@ LABEL_67:
     v84 = ((decltype(&sub_10DAA34))(GET_BASE() + 0x10DAA34))(*((_QWORD*)a2 + 78));
     if (v84)
     {
-        v86 = ((decltype(&sub_D39B38))(GET_BASE() + 0xD39B38))(v85, 0);
+        v86 = ((decltype(&sub_D39B38))(GET_BASE() + 0xD39B38))(*reinterpret_cast<void**>(__int64(a2) + 0x270), 0);
         if (v86)
         {
             ((decltype(&sub_F11B38))(GET_BASE() + 0xF11B38))(v84, *(_QWORD*)(v86 + 808));
@@ -1395,7 +1400,18 @@ LABEL_176:
     return v6;
 }
 
-void Engine::LoadModule()
+void Engine::Init(UEngine* __this, void* InEngineLoop)
 {
+    Originals::Init(__this, InEngineLoop);
+    //UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"Preload.Playlist Playlist_DefaultSolo", nullptr);
+    //FortGameInstance::LoadServerGameFeatures();
+    printf("Initialized Engine.\n Loading all Modules.\n");
+    FModuleManager::LoadAllModules();
+}
+
+void Engine::InitEngine()
+{
+    FortGameInstance::LoadModule();
     FMemoryLibrary::DetourHook(0x13f9ec8, LoadMap);
+    FMemoryLibrary::DetourHook(0x1ac8cb4, Init, Originals::Init);
 }

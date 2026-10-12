@@ -39115,13 +39115,13 @@ class UWorld* UWorld::GetWorld()
 {
 	if (UEngine* Engine = UEngine::GetEngine())
 	{
-		if (!Engine->GameViewport)
-			return nullptr;
-
-		return Engine->GameViewport->World;
+		if (Engine->GameViewport && Engine->GameViewport->World)
+			return Engine->GameViewport->World;
 	}
 
-	return nullptr;
+	// A dedicated server has no GameViewport (no viewport client is created when !GIsClient),
+	// so use GWorld, which LoadMap points at the loaded world.
+	return *reinterpret_cast<UWorld**>(InSDKUtils::GetImageBase() + Offsets::GWorld);
 }
 
 void UNetDriver::SetWorld(class UWorld* InWorld)
@@ -39135,6 +39135,12 @@ bool UNetDriver::InitListen(void* InNotify, FURL& ListenURL, bool bReuseAddressA
 	return InitListenInternal(this, InNotify, ListenURL, bReuseAddressAndPort, Error);
 }
 
+
+bool UNetDriver::InitConnect(FNetworkNotify* InNotify, const FURL& ConnectURL, FString& Error)
+{
+	bool (*InitListenInternal)(UNetDriver*, FNetworkNotify * InNotify, const FURL & ConnectURL, FString & Error) = decltype(InitListenInternal)(VTable[0x59]);
+	return InitListenInternal(this, InNotify, ConnectURL, Error);
+}
 
 // Function Engine.World.HandleTimelineScrubbed
 // (Final, Native, Public)

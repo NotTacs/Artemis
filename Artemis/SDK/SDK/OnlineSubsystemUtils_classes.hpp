@@ -45,10 +45,9 @@ public:
 
 // Class OnlineSubsystemUtils.OnlineBeacon
 // 0x0030 (0x0250 - 0x0220)
-class AOnlineBeacon : public AActor
+class AOnlineBeacon : public AActor, public FNetworkNotify
 {
 public:
-	uint8                                         Pad_220[0x8];                                      // 0x0220(0x0008)(Fixing Size After Last Property [ Dumper-8 ])
 	float                                         BeaconConnectionInitialTimeout;                    // 0x0228(0x0004)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	float                                         BeaconConnectionTimeout;                           // 0x022C(0x0004)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class UNetDriver*                             NetDriver;                                         // 0x0230(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected)
@@ -125,6 +124,12 @@ public:
 public:
 	void ClientOnConnected();
 
+public:
+    bool InitBase()
+	{
+		bool (*InitBaseOriginal)(AOnlineBeaconClient*) = decltype(InitBaseOriginal)(this->VTable[0xD7]);
+		return InitBaseOriginal(this);
+	}
 public:
 	static class UClass* StaticClass()
 	{

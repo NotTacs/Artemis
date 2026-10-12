@@ -316,7 +316,11 @@ public:
 
 public:
 	class UFunction* GetFunction(const std::string& ClassName, const std::string& FuncName) const;
-
+	UObject* CreateDefaultObject()
+	{
+		UObject* (*CreateDefaultObjectInternal)(UClass*) = decltype(CreateDefaultObjectInternal)(VTable[0x7C]);
+		return CreateDefaultObjectInternal(this);
+	}
 public:
 	static class UClass* StaticClass()
 	{

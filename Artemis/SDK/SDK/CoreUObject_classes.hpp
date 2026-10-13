@@ -65,11 +65,12 @@ public:
 		InSDKUtils::CallGameFunction(InSDKUtils::GetVirtualFunction<void(*)(const UObject*, class UFunction*, void*)>(this, Offsets::ProcessEventIdx), this, Function, Parms);
 	}
 
-	template<typename T>
-	T* GetInterfaceAddress()
+	void* GetInterfaceAddress(UClass* InterfaceClass) // fuck you
 	{
-		static T* (*GetInterfaceAddressInternal)(void*, void*) = decltype(GetInterfaceAddressInternal)(InSDKUtils::GetImageBase() + 0xB1B28C);
-		return GetInterfaceAddressInternal(this, T::StaticClass());
+		static void* (*GetInterfaceAddress)(UObject*, UClass * InterfaceClass) =
+			decltype(GetInterfaceAddress)(InSDKUtils::GetImageBase() + 0xB1B28C);
+
+		return GetInterfaceAddress(this, InterfaceClass);
 	}
 };
 

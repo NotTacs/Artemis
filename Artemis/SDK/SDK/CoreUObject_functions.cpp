@@ -28,7 +28,7 @@ class UObject* UObject::FindObjectFastImpl(const std::string& Name, EClassCastFl
 		if (!Object)
 			continue;
 		
-		if (Object->HasTypeFlag(RequiredType) && Object->GetName() == Name)
+		if (Object->HasTypeFlag(RequiredType) && Object->GetName().ToString() == Name)
 			return Object;
 	}
 
@@ -67,13 +67,13 @@ std::string UObject::GetFullName() const
 
 		for (UObject* NextOuter = Outer; NextOuter; NextOuter = NextOuter->Outer)
 		{
-			Temp = NextOuter->GetName() + "." + Temp;
+			Temp = NextOuter->GetName().ToString() + "." + Temp;
 		}
 
-		std::string Name = Class->GetName();
+		std::string Name = Class->GetName().ToString();
 		Name += " ";
 		Name += Temp;
-		Name += GetName();
+		Name += GetName().ToString();
 
 		return Name;
 	}
@@ -85,9 +85,9 @@ std::string UObject::GetFullName() const
 // Predefined Function
 // Retuns the name of this object
 
-std::string UObject::GetName() const
+FAllocatedString UObject::GetName() const
 {
-	return this ? Name.ToString() : "None";
+	return this ? Name.ToFString() : FAllocatedString(L"None");
 }
 
 
@@ -172,12 +172,12 @@ class UFunction* UClass::GetFunction(const std::string& ClassName, const std::st
 {
 	for(const UStruct* Clss = this; Clss; Clss = Clss->Super)
 	{
-		if (Clss->GetName() != ClassName)
+		if (Clss->GetName().ToString() != ClassName)
 			continue;
 			
 		for (UField* Field = Clss->Children; Field; Field = Field->Next)
 		{
-			if(Field->HasTypeFlag(EClassCastFlags::Function) && Field->GetName() == FuncName)
+			if(Field->HasTypeFlag(EClassCastFlags::Function) && Field->GetName().ToString() == FuncName)
 				return static_cast<class UFunction*>(Field);
 		}
 	}

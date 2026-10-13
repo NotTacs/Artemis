@@ -3721,6 +3721,12 @@ public:
 	bool IsTryToFireRestrictedByTypeCooldowns() const;
 
 public:
+	struct FRotator& AircraftJumpRotation()
+	{
+		return *reinterpret_cast<FRotator*>(__int64(this) + 0x890);
+	}
+public:
+
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"FortPlayerControllerAthena">();
@@ -66965,6 +66971,11 @@ public:
 
 	bool IsInAircraft() const;
 
+public:
+	bool& bIsAttemptingAircraftJump()
+	{
+		return *reinterpret_cast<bool*>(__int64(this) + 0x14A);
+	}
 public:
 	static class UClass* StaticClass()
 	{

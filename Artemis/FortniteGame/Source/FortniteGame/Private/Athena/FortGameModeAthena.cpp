@@ -4,11 +4,10 @@
 
 void FortGameModeAthena::FinishWorldInitialization(AFortGameModeAthena* __this, AFortWorldManager* WorldManager)
 {
-	printf(__FUNCTION__"\n");
 	static void (*FortGameMode__FinishWorldInitialization)(AFortGameMode * __this, AFortWorldManager * WorldManager) = decltype(FortGameMode__FinishWorldInitialization)(AFortGameMode::GetDefaultObj()->VTable[0x15A]);
 	FortGameMode__FinishWorldInitialization(__this, WorldManager);
 	FName DefaultPlaylistSolo = UKismetStringLibrary::Conv_StringToName(L"playlist_defaultsolo");
-	if (!__this->CurrentPlaylistName.IsValid())
+	if (__this->CurrentPlaylistName.IsNone())
 	{
 		static void (*FortGameMode__SetCurrentPlaylistName)(AFortGameMode * __this, FName) = decltype(FortGameMode__SetCurrentPlaylistName)(__this->VTable[0x12E]);
 		FortGameMode__SetCurrentPlaylistName(__this, DefaultPlaylistSolo);
@@ -20,7 +19,6 @@ void FortGameModeAthena::FinishWorldInitialization(AFortGameModeAthena* __this, 
 
 void FortGameModeAthena::OnGivenMatchAssignment(AFortGameModeAthena* __this, bool bSuccess, TSharedPtr<FJsonObject>& MatchOptions)
 {
-	printf(__FUNCTION__"\n");
 	static void (*FortGameMode__OnGivenMatchAssignment)(AFortGameModeAthena * __this, bool bSuccess, TSharedPtr<FJsonObject>& MatchOptions) = decltype(FortGameMode__OnGivenMatchAssignment)(AFortGameMode::GetDefaultObj()->VTable[0x184]);
 	FortGameMode__OnGivenMatchAssignment(__this, bSuccess, MatchOptions);
 	AFortGameStateAthena* GameState = Cast<AFortGameStateAthena>(__this->GameState);
@@ -36,6 +34,8 @@ void FortGameModeAthena::OnGivenMatchAssignment(AFortGameModeAthena* __this, boo
 		GameState->OnRep_CurrentPlaylistId();
 
 		__this->WarmupRequiredPlayerCount = 1;
+
+		UE_LOG(LogArtemis, Log, TEXT("AFortGameModeAthena::OnGivenMatchAssignment Initialied Playlist to %s"), *Playlist->GetName());
 	}
 }
 

@@ -32,7 +32,9 @@ namespace Offsets
 {
 	constexpr int32 GObjects          = 0x0B3C9A78;
 	constexpr int32 AppendString      = 0x00EC0900;
+	constexpr int32 FNameConstructor  = 0x00B1ECB0;
 	constexpr int32 GNames            = 0x0B5DA400;
+	constexpr int32 bNamePoolInitialized = 0x0B44351C;
 	constexpr int32 GWorld            = 0x0B59BD30;
 	constexpr int32 ProcessEvent      = 0x00CCA65C;
 	constexpr int32 ProcessEventIdx   = 0x0000004B;
@@ -776,6 +778,15 @@ public:
 		return CurrentBlock + 1;
 	}
 
+	bool IsWithinBounds(FNameEntryHandle Handle) const
+	{
+		Lock.ReadLock();
+		const bool bWithinBounds = Handle.Block < CurrentBlock
+			|| (Handle.Block == CurrentBlock && Stride * Handle.Offset < CurrentByteCursor);
+		Lock.ReadUnlock();
+		return bWithinBounds;
+	}
+
 	uint8** GetBlocksForDebugVisualizer() { return Blocks; }
 
 private:
@@ -1146,13 +1157,41 @@ private:
 
 inline bool FNamePool::IsValid(FNameEntryHandle Handle) const
 {
-	return Handle.Block < Entries.NumBlocks();
+	return Entries.IsWithinBounds(Handle);
 }
+
+/** Enumeration for finding name. */
+enum EFindName
+{
+	/** Find a name; return 0 if it doesn't exist. */
+	FNAME_Find,
+
+	/** Find a name or add it if it doesn't exist. */
+	FNAME_Add,
+
+	/** Finds a name and replaces it. Adds it if missing. This is only used by UHT and is generally not safe for threading.
+	 * All this really is used for is correcting the case of names. In MT conditions you might get a half-changed name.
+	 */
+	FNAME_Replace_Not_Safe_For_Threading,
+};
 
 // Predefined struct FName
 // 0x0008 (0x0008 - 0x0000)
 class FName final
 {
+public:
+	FName() = default;
+
+	FName(const FNameEntryId& ComparisonIndex, const uint32& Number)
+		: ComparisonIndex(ComparisonIndex), Number(Number)
+	{
+	}
+
+	FName(const TCHAR* Name, EFindName FindType)
+	{
+		static FName* (*FNameConstructor)(FName * This, const TCHAR * Name, EFindName FindType) = decltype(FNameConstructor)(InSDKUtils::GetImageBase() + Offsets::FNameConstructor);
+		FNameConstructor(this, Name, FindType);
+	}
 public:
 	static inline void*                           AppendString = nullptr;                            // 0x0000(0x0004)(NOT AUTO-GENERATED PROPERTY)
 
@@ -1192,13 +1231,28 @@ public:
 	std::string ToString() const
 	{
 		std::string OutputString = GetRawString();
-	
+
 		size_t pos = OutputString.rfind('/');
-	
+
 		if (pos == std::string::npos)
 			return OutputString;
-	
+
 		return OutputString.substr(pos + 1);
+	}
+
+	/* Same as ToString() but as a wide, owning FString, so *Name.ToFString() can go straight into UE_LOG */
+	FAllocatedString ToFString() const
+	{
+		if (!AppendString)
+			InitInternal();
+
+		FAllocatedString RawString(1024);
+		InSDKUtils::CallGameFunction(reinterpret_cast<void(*)(const FName*, FString&)>(AppendString), this, RawString);
+
+		if (const wchar_t* Slash = wcsrchr(*RawString, L'/'))
+			return FAllocatedString(Slash + 1);
+
+		return RawString;
 	}
 
 	FORCEINLINE int32 GetNumber() const
@@ -1244,10 +1298,13 @@ public:
 	}
 	static bool IsWithinBounds(FNameEntryId Id);
 
-	bool IsValid() const { return (Number > 0 || ComparisonIndex.Value > 0); }
+	bool IsValid() const { return IsWithinBounds(ComparisonIndex); }
 };
 
-static bool bNamePoolInitialized;
+static bool IsNamePoolInitialized()
+{
+	return *reinterpret_cast<bool*>(InSDKUtils::GetImageBase() + Offsets::bNamePoolInitialized);
+}
 
 static FNamePool& GetNamePoolPostInit()
 {
@@ -1256,7 +1313,7 @@ static FNamePool& GetNamePoolPostInit()
 
 inline bool FName::IsWithinBounds(FNameEntryId Id)
 {
-	return GetNamePoolPostInit().IsValid(Id);
+	return IsNamePoolInitialized() && GetNamePoolPostInit().IsValid(Id);
 }
 
 

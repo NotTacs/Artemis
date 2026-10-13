@@ -4,6 +4,9 @@
 #include "Engine/Source/Runtime/Engine/Classes/Engine/World.h"
 #include "FortniteGame\Source\FortniteGame\Public\Athena\FortGameModeAthena.h"
 #include "Engine\Source\Runtime\Engine\Classes\Engine\NetDriver.h"
+#include "Engine\Source\Runtime\Core\Public\CoreGlobals.h"
+#include "Engine\Plugins\Runtime\GameplayAbilities\Source\GameplayAbilities\Public\AbilitySystemComponent.h"
+#include "FortniteGame\Source\FortniteGame\Public\Components\FortControllerComponent_Aircraft.h"
 
 DWORD WINAPI Main(LPVOID lpThread)
 {
@@ -15,15 +18,14 @@ DWORD WINAPI Main(LPVOID lpThread)
 
     Engine::LoadModule();
     World::LoadModule();
-    /*TODO: MOVE TO OWN FILE*/
-    FMemoryLibrary::Set<bool>(0xB30CF9F, false); //GIsClient
-    FMemoryLibrary::Set<bool>(0xB30CF9F + 1, true); //GISServer
+    CoreGlobals::LoadModule();
     FortGameModeAthena::LoadModule();
     NetDriver::LoadModule();
+    AbilitySystemComponent::LoadModule();
+    FortControllerComponent_Aircraft::LoadModule();
     FMemoryLibrary::SetTrue(0x78857F4); //AGameSession::KickPlayer
-    FMemoryLibrary::SetNull(0x258D0DC); //AFortGameSession::StoreSessionID undo this later
+    FMemoryLibrary::SetNull(0x258D0DC); //AFortGameState::StoreGameSessionID undo this later
     FMemoryLibrary::SetTrue(0x17dd630); //UGameInstance::IsDedicatedServerInstance
-
     /* THIS IS SKUNKY WE NEED TO DO PROPER */
     UWorld::GetWorld()->OwningGameInstance->LocalPlayers[0]->PlayerController->SwitchLevel(L"Artemis_Terrain");
     UWorld::GetWorld()->OwningGameInstance->LocalPlayers.Remove(0);

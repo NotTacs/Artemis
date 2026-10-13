@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Plugins\Runtime\GameplayAbilities\Source\GameplayAbilities\Public\AbilitySystemComponent.h" />
     <ClInclude Include="Engine\Source\Runtime\Core\Public\Templates\AreTypesEqual.h" />
     <ClInclude Include="Engine\Source\Runtime\Core\Public\Templates\Identity.h" />
     <ClInclude Include="Engine\Source\Runtime\Core\Public\Templates\IsTrivallyDestructible.h" />
@@ -161,17 +162,30 @@
     <ClInclude Include="Engine\Source\Runtime\Json\Public\Dom\JsonValue.h" />
     <ClInclude Include="Engine\Source\Runtime\Json\Public\Serialization\JsonTypes.h" />
     <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Athena\FortGameModeAthena.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\CoreGlobals.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Logging\LogCategory.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Logging\LogMacros.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Logging\LogVerbosity.h" />
     <ClInclude Include="CoreMinimal.h" />
+    <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Athena\FortPlayerControllerAthena.h" />
+    <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Components\FortControllerComponent_Aircraft.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="SDK\SDK\Basic.hpp" />
     <ClInclude Include="SDK\UnrealContainers.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Plugins\Runtime\GameplayAbilities\Source\GameplayAbilities\Private\AbilitySystemComponent_Abilities.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Core\Private\Logging\LogMacros.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Core\Private\Logging\LogSuppressionInterface.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Core\Private\Logging\LogVerbosity.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Core\Private\Misc\CoreGlobals.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Private\NetDriver.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Private\UnrealEngine.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Private\World.cpp" />
     <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Athena\FortGameModeAthena.cpp" />
+    <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Athena\FortPlayerControllerAthena.cpp" />
+    <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Components\FortControllerComponent_Aircraft.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

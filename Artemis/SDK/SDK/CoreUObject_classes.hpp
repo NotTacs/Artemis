@@ -31,7 +31,7 @@ public:
 	static class UObject* FindObjectImpl(const std::string& FullName, EClassCastFlags RequiredType = EClassCastFlags::None);
 
 	std::string GetFullName() const;
-	std::string GetName() const;
+	FAllocatedString GetName() const;
 	bool HasTypeFlag(EClassCastFlags TypeFlags) const;
 	bool IsA(EClassCastFlags TypeFlags) const;
 	bool IsA(class UClass* TypeClass) const;

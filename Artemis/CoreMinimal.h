@@ -14,6 +14,8 @@
 #include <type_traits>
 #include "SDK/SDK.hpp"
 #include "MinHook.h"
+#include "Engine/Source/Runtime/Core/Public/Logging/LogMacros.h"
+#include "Engine/Source/Runtime/Core/Public/CoreGlobals.h"
 
 template<typename T>
 T* Cast(UObject* Object)

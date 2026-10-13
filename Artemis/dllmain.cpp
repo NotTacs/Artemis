@@ -7,6 +7,7 @@
 #include "Engine\Source\Runtime\Core\Public\CoreGlobals.h"
 #include "Engine\Plugins\Runtime\GameplayAbilities\Source\GameplayAbilities\Public\AbilitySystemComponent.h"
 #include "FortniteGame\Source\FortniteGame\Public\Components\FortControllerComponent_Aircraft.h"
+#include "FortniteGame\Source\FortniteGame\Public\Athena\FortPlayerControllerAthena.h"
 
 DWORD WINAPI Main(LPVOID lpThread)
 {
@@ -23,6 +24,7 @@ DWORD WINAPI Main(LPVOID lpThread)
     NetDriver::LoadModule();
     AbilitySystemComponent::LoadModule();
     FortControllerComponent_Aircraft::LoadModule();
+    FortPlayerControllerAthena::LoadModule();
     FMemoryLibrary::SetTrue(0x78857F4); //AGameSession::KickPlayer
     FMemoryLibrary::SetNull(0x258D0DC); //AFortGameState::StoreGameSessionID undo this later
     FMemoryLibrary::SetTrue(0x17dd630); //UGameInstance::IsDedicatedServerInstance

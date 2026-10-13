@@ -64,6 +64,13 @@ public:
 	{
 		InSDKUtils::CallGameFunction(InSDKUtils::GetVirtualFunction<void(*)(const UObject*, class UFunction*, void*)>(this, Offsets::ProcessEventIdx), this, Function, Parms);
 	}
+
+	template<typename T>
+	T* GetInterfaceAddress()
+	{
+		static T* (*GetInterfaceAddressInternal)(void*, void*) = decltype(GetInterfaceAddressInternal)(InSDKUtils::GetImageBase() + 0xB1B28C);
+		return GetInterfaceAddressInternal(this, T::StaticClass());
+	}
 };
 
 // Class CoreUObject.Field

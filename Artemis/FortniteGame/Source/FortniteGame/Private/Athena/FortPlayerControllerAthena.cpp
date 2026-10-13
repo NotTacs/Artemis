@@ -7,8 +7,13 @@ void FortPlayerControllerAthena::ServerAcknowledgePossession_Implementation(AFor
 	static void (*APlayerController__ServerAcknowledgePossession_Implementation)(APlayerController * __this, APawn * P) = decltype(APlayerController__ServerAcknowledgePossession_Implementation)(APlayerController::GetDefaultObj()->VTable[0x122]);
 	APlayerController__ServerAcknowledgePossession_Implementation(__this, P);
 
+	IAbilitySystemInterface* Interface = Cast<IAbilitySystemInterface>(P);
+
+	if (Interface == NULL)
+		return;
+
 	static void (*UFortGlobals__InitializePlayerGameplayAbilities)(void*) = decltype(UFortGlobals__InitializePlayerGameplayAbilities)(InSDKUtils::GetImageBase() + 0x63edd2c);
-	UFortGlobals__InitializePlayerGameplayAbilities(P->GetInterfaceAddress<IAbilitySystemInterface>());
+	UFortGlobals__InitializePlayerGameplayAbilities(Interface);
 
 	/* TODO: ADD GAMESTATE FUNC HERE*/
 }

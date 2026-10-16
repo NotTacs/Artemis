@@ -8,6 +8,8 @@
 #include "Engine\Plugins\Runtime\GameplayAbilities\Source\GameplayAbilities\Public\AbilitySystemComponent.h"
 #include "FortniteGame\Source\FortniteGame\Public\Components\FortControllerComponent_Aircraft.h"
 #include "FortniteGame\Source\FortniteGame\Public\Athena\FortPlayerControllerAthena.h"
+#include "FortniteGame\Source\FortniteAI\Public\Athena\AI\Systems\AthenaAIServicePlayerBots.h"
+#include "FortniteGame\Source\FortniteAI\Public\AI\Navigation\AthenaNavSystem.h"
 
 DWORD WINAPI Main(LPVOID lpThread)
 {
@@ -28,6 +30,11 @@ DWORD WINAPI Main(LPVOID lpThread)
     FMemoryLibrary::SetTrue(0x78857F4); //AGameSession::KickPlayer
     FMemoryLibrary::SetNull(0x258D0DC); //AFortGameState::StoreGameSessionID undo this later
     FMemoryLibrary::SetTrue(0x17dd630); //UGameInstance::IsDedicatedServerInstance
+    AthenaAIServicePlayerBots::LoadModule();
+    FMemoryLibrary::SetTrue(0xD708E0); //CanCreateInCurrentContext
+    AthenaNavSystemConfig::LoadModule();
+    UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"log LogAthenaBots VeryVerbose", nullptr);
+    UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"log LogFortUIDirector", nullptr);
     /* THIS IS SKUNKY WE NEED TO DO PROPER */
     UWorld::GetWorld()->OwningGameInstance->LocalPlayers[0]->PlayerController->SwitchLevel(L"Artemis_Terrain");
     UWorld::GetWorld()->OwningGameInstance->LocalPlayers.Remove(0);

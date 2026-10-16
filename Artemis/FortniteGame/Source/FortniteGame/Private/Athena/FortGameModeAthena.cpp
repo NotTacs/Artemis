@@ -33,6 +33,10 @@ void FortGameModeAthena::OnGivenMatchAssignment(AFortGameModeAthena* __this, boo
 		GameState->CurrentPlaylistId = __this->CurrentPlaylistId;
 		GameState->OnRep_CurrentPlaylistId();
 
+		__this->AISettings = Playlist->AISettings;
+
+		__this->AISettings->AIServices[1] = UAthenaAIServicePlayerBots::StaticClass();
+
 		__this->WarmupRequiredPlayerCount = 1;
 
 		UE_LOG(LogArtemis, Log, TEXT("AFortGameModeAthena::OnGivenMatchAssignment Initialied Playlist to %s"), *Playlist->GetName());

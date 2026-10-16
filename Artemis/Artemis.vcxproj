@@ -161,6 +161,8 @@
     <ClInclude Include="Engine\Source\Runtime\Json\Public\Dom\JsonObject.h" />
     <ClInclude Include="Engine\Source\Runtime\Json\Public\Dom\JsonValue.h" />
     <ClInclude Include="Engine\Source\Runtime\Json\Public\Serialization\JsonTypes.h" />
+    <ClInclude Include="FortniteGame\Source\FortniteAI\Public\AI\Navigation\AthenaNavSystem.h" />
+    <ClInclude Include="FortniteGame\Source\FortniteAI\Public\Athena\AI\Systems\AthenaAIServicePlayerBots.h" />
     <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Athena\FortGameModeAthena.h" />
     <ClInclude Include="Engine\Source\Runtime\Core\Public\CoreGlobals.h" />
     <ClInclude Include="Engine\Source\Runtime\Core\Public\Logging\LogCategory.h" />
@@ -169,6 +171,7 @@
     <ClInclude Include="CoreMinimal.h" />
     <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Athena\FortPlayerControllerAthena.h" />
     <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Components\FortControllerComponent_Aircraft.h" />
+    <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Items\FortInventoryOwnerInterface.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="SDK\SDK\Basic.hpp" />
     <ClInclude Include="SDK\UnrealContainers.hpp" />
@@ -183,9 +186,12 @@
     <ClCompile Include="Engine\Source\Runtime\Engine\Private\NetDriver.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Private\UnrealEngine.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Private\World.cpp" />
+    <ClCompile Include="FortniteGame\Source\FortniteAI\Private\AI\Navigation\AthenaNavSystem.cpp" />
+    <ClCompile Include="FortniteGame\Source\FortniteAI\Private\Athena\AI\Systems\AthenaAIServicePlayerBots.cpp" />
     <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Athena\FortGameModeAthena.cpp" />
     <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Athena\FortPlayerControllerAthena.cpp" />
     <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Components\FortControllerComponent_Aircraft.cpp" />
+    <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Items\FortInventoryOwnerInterface.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

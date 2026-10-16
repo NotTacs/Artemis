@@ -16236,7 +16236,11 @@ public:
 struct alignas(0x08) FMMRSpawningInfo final
 {
 public:
-	uint8                                         Pad_0[0x28];                                       // 0x0000(0x0028)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	float BotSpawningDataInfoTargetELO;
+	float BotSpawningDataInfoWeight;
+	int NumBotsToSpawn;
+	struct TSubclassOf<class UFortAthenaAISpawnerData> AISpawnerData;
+	uint8_t SpawnedCallbacks[0x10];
 };
 
 // ScriptStruct FortniteGame.MMRSpawningBaseRuntimeInfo
@@ -16244,7 +16248,9 @@ public:
 struct alignas(0x08) FMMRSpawningBaseRuntimeInfo
 {
 public:
-	uint8                                         Pad_0[0x10];                                       // 0x0000(0x0010)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	void** VTable;
+	int MMRBracketLow;
+	int MMRBracketHigh;
 };
 
 // ScriptStruct FortniteGame.MMRSpawningPlayerBotsRuntimeInfo
@@ -16252,9 +16258,10 @@ public:
 struct FMMRSpawningPlayerBotsRuntimeInfo final : public FMMRSpawningBaseRuntimeInfo
 {
 public:
-	uint8                                         Pad_10[0x10];                                      // 0x0010(0x0010)(Fixing Size After Last Property [ Dumper-8 ])
+	struct FString                                       MMRName;
 	TArray<struct FMMRSpawningInfo>               SpawningInfos;                                     // 0x0020(0x0010)(ZeroConstructor, Transient, NativeAccessSpecifierPublic)
-	uint8                                         Pad_30[0x8];                                       // 0x0030(0x0008)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	int TotalSpawningInfoWeight;
+	int CachedTotalAmountToSpawnComputed;
 };
 
 // ScriptStruct FortniteGame.FortVoteConfig

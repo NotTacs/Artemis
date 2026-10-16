@@ -174,6 +174,26 @@ ClassType* GetDefaultObjImpl()
 	return reinterpret_cast<ClassType*>(ClassType::StaticClass()->DefaultObject);
 }
 
+enum class EInternalObjectFlags : int32
+{
+	None = 0,
+	//~ All the other bits are reserved, DO NOT ADD NEW FLAGS HERE!
+
+	ReachableInCluster = 1 << 23, ///< External reference to object in cluster exists
+	ClusterRoot = 1 << 24, ///< Root of a cluster
+	Native = 1 << 25, ///< Native (UClass only). 
+	Async = 1 << 26, ///< Object exists only on a different thread than the game thread.
+	AsyncLoading = 1 << 27, ///< Object is being asynchronously loaded.
+	Unreachable = 1 << 28, ///< Object is not reachable on the object graph.
+	PendingKill = 1 << 29, ///< Objects that are pending destruction (invalid for gameplay but valid objects). This flag is mirrored in EObjectFlags as RF_PendingKill for performance
+	RootSet = 1 << 30, ///< Object will not be garbage collected, even if unreferenced.
+	PendingConstruction = 1 << 31, ///< Object didn't have its class constructor called yet (only the UObjectBase one to initialize its most basic members)
+
+	GarbageCollectionKeepFlags = Native | Async | AsyncLoading,
+
+	//~ Make sure this is up to date!
+	AllFlags = ReachableInCluster | ClusterRoot | Native | Async | AsyncLoading | Unreachable | PendingKill | RootSet | PendingConstruction
+};
 
 // Predefined struct FUObjectItem
 // 0x0018 (0x0018 - 0x0000)
@@ -181,7 +201,68 @@ struct FUObjectItem final
 {
 public:
 	class UObject*                                Object;                                            // 0x0000(0x0008)(NOT AUTO-GENERATED PROPERTY)
-	uint8                                         Pad_8[0x10];                                       // 0x0008(0x0010)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	int32                                         Flags;                                             // 0x0008(0x0004)(EInternalObjectFlags)
+	int32                                         ClusterRootIndex;                                  // 0x000C(0x0004)
+	int32                                         SerialNumber;                                      // 0x0010(0x0004)
+
+public:
+	FORCEINLINE void SetFlags(EInternalObjectFlags FlagsToSet)
+	{
+		//check((int32(FlagsToSet) & ~int32(EInternalObjectFlags::AllFlags)) == 0);
+		ThisThreadAtomicallySetFlag(FlagsToSet);
+	}
+
+	FORCEINLINE EInternalObjectFlags GetFlags() const
+	{
+		return EInternalObjectFlags(Flags);
+	}
+
+	FORCEINLINE bool ThisThreadAtomicallyClearedFlag(EInternalObjectFlags FlagToClear)
+	{
+		static_assert(sizeof(int32) == sizeof(Flags), "Flags must be 32-bit for atomics.");
+		bool bIChangedIt = false;
+		while (1)
+		{
+			int32 StartValue = int32(Flags);
+			if (!(StartValue & int32(FlagToClear)))
+			{
+				break;
+			}
+			int32 NewValue = StartValue & ~int32(FlagToClear);
+			if ((int32)_InterlockedCompareExchange((long*)&Flags, (long)NewValue, (long)StartValue) == StartValue)
+			{
+				bIChangedIt = true;
+				break;
+			}
+		}
+		return bIChangedIt;
+	}
+
+	FORCEINLINE bool ThisThreadAtomicallySetFlag(EInternalObjectFlags FlagToSet)
+	{
+		static_assert(sizeof(int32) == sizeof(Flags), "Flags must be 32-bit for atomics.");
+		bool bIChangedIt = false;
+		while (1)
+		{
+			int32 StartValue = int32(Flags);
+			if (StartValue & int32(FlagToSet))
+			{
+				break;
+			}
+			int32 NewValue = StartValue | int32(FlagToSet);
+			if ((int32)_InterlockedCompareExchange((long*)&Flags, (long)NewValue, (long)StartValue) == StartValue)
+			{
+				bIChangedIt = true;
+				break;
+			}
+		}
+		return bIChangedIt;
+	}
+
+	FORCEINLINE void SetRootSet()
+	{
+		ThisThreadAtomicallySetFlag(EInternalObjectFlags::RootSet);
+	}
 };
 
 // Predefined struct TUObjectArray
@@ -226,6 +307,20 @@ public:
 		if (!ChunkPtr) return nullptr;
 		
 		return ChunkPtr[InChunkIdx].Object;
+	}
+
+	inline FUObjectItem* GetItemByIndex(const int32 Index) const
+	{
+		const int32 ChunkIndex = Index / ElementsPerChunk;
+		const int32 InChunkIdx = Index % ElementsPerChunk;
+
+		if (Index < 0 || ChunkIndex >= NumChunks || Index >= NumElements)
+			return nullptr;
+
+		FUObjectItem* ChunkPtr = GetDecrytedObjPtr()[ChunkIndex];
+		if (!ChunkPtr) return nullptr;
+
+		return &ChunkPtr[InChunkIdx];
 	}
 };
 
@@ -1516,6 +1611,12 @@ public:
 	UEType* operator->() const
 	{
 		return static_cast<UEType*>(TPersistentObjectPtr::Get());
+	}
+
+	UEType* LoadSynchronus() const
+	{
+		static UObject* (*LoadSynchronusOriginal)(const void*) = decltype(LoadSynchronusOriginal)(InSDKUtils::GetImageBase() + 0x155463c);
+		return static_cast<UEType*>(LoadSynchronusOriginal(this));
 	}
 };
 

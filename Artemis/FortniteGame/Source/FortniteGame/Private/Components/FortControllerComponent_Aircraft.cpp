@@ -10,7 +10,7 @@ void FortControllerComponent_Aircraft::ServerAttemptAircraftJump_Implementation(
 	if (Owner->IsInAircraft())
 	{
 		Owner->SetControlRotation(ClientRotation);
-		Owner->AircraftJumpRotation() = ClientRotation;
+		Owner->AirSpawnControlRotation() = ClientRotation;
 		void (*AFortPlayerControllerZone__ServerRestartPlayer)(AFortPlayerControllerZone*) = decltype(AFortPlayerControllerZone__ServerRestartPlayer)(AFortPlayerControllerZone::GetDefaultObj()->VTable[0x11A]);
 		AFortPlayerControllerZone__ServerRestartPlayer(Owner);
 	}

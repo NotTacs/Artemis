@@ -4,6 +4,9 @@
 
 DEFINE_LOG_CATEGORY(LogTemp);
 DEFINE_LOG_CATEGORY(LogArtemis);
+DEFINE_LOG_CATEGORY(LogInventory);
+DEFINE_LOG_CATEGORY(LogAthenaAIServicePlayerBots);
+DEFINE_LOG_CATEGORY(LogFort);
 
 void CoreGlobals::LoadModule()
 {

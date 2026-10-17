@@ -6,19 +6,29 @@ namespace PlayerBotsConsoleVariables
 	extern int32 BotMaxSpawnAmount;
 }
 
+struct FFlowHandleSharedPtr
+{
+	void* Object;
+	void* ReferenceController;
+};
+
 class AthenaAIServicePlayerBots
 {
 private:
 	class Originals
 	{
 	public:
-		static inline void (*WaitForMatchAssignmentReady)(UAthenaAIServicePlayerBots* __this, __int64 FlowHandle);
+		static inline void (*WaitForMatchAssignmentReady)(UAthenaAIServicePlayerBots* __this, FFlowHandleSharedPtr* FlowHandle);
 	};
+
+	static inline UAthenaAIServicePlayerBots* PendingMatchAssignmentService = nullptr;
+	static inline FFlowHandleSharedPtr PendingMatchAssignmentFlowHandle{};
 public:
 	static int32 GetPlaylistMaxPlayerCount(UAthenaAIServicePlayerBots* __this);
 	static void CalculateSpawnAmountAndSkill(UAthenaAIServicePlayerBots* __this); /*I LOWK DONT THINK THIS FUNC IS FINDABLE IN IDA BUT IDK*/
 	static void UseFailSafeMMRInfo(UAthenaAIServicePlayerBots* __this, float SkillOverride);
 	static void InitializeMMRInfos(UAthenaAIServicePlayerBots* __this);
-	static void WaitForMatchAssignmentReady(UAthenaAIServicePlayerBots* __this, __int64 FlowHandle);
+	static void WaitForMatchAssignmentReady(UAthenaAIServicePlayerBots* __this, FFlowHandleSharedPtr* FlowHandle);
+	static void TickPendingMatchAssignment();
 	static void LoadModule();
 };

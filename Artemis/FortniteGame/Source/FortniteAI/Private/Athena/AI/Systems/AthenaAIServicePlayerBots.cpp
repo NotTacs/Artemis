@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "../../../../Public/Athena/AI/Systems/AthenaAIServicePlayerBots.h"
 #include "Engine/Source/Runtime/Engine/Classes/Kismet/MemoryLibrary.h"
+#include "Backend/Public/Backend.h"
 
 int32 PlayerBotsConsoleVariables::BotMaxSpawnAmount = *reinterpret_cast<int32*>(InSDKUtils::GetImageBase() + 0xB1BE974);
 
@@ -236,11 +237,46 @@ void AthenaAIServicePlayerBots::InitializeMMRInfos(UAthenaAIServicePlayerBots* _
 	}
 }
 
-void AthenaAIServicePlayerBots::WaitForMatchAssignmentReady(UAthenaAIServicePlayerBots* __this, __int64 FlowHandle)
+void AthenaAIServicePlayerBots::WaitForMatchAssignmentReady(UAthenaAIServicePlayerBots* __this, FFlowHandleSharedPtr* FlowHandle)
 {
-	__this->CachedHumanPlayersCount()++;
 	__this->GamePhaseToStartSpawning = EAthenaGamePhase::Warmup;
-	return AthenaAIServicePlayerBots::Originals::WaitForMatchAssignmentReady(__this, FlowHandle);
+
+	if (!BackendVars::PlayerBots::bHumanPlayersCountReceived.load(std::memory_order_acquire))
+	{
+		if (PendingMatchAssignmentService)
+		{
+			UE_LOG(LogAthenaAIServicePlayerBots, Error, TEXT("WaitForMatchAssignmentReady: Already waiting on the backend, letting the original handle this call"));
+			return Originals::WaitForMatchAssignmentReady(__this, FlowHandle);
+		}
+
+		UE_LOG(LogAthenaAIServicePlayerBots, Log, TEXT("WaitForMatchAssignmentReady: Waiting for the backend to send the human player count..."));
+
+		PendingMatchAssignmentService = __this;
+		PendingMatchAssignmentFlowHandle = *FlowHandle;
+		*FlowHandle = {};
+		return;
+	}
+
+	__this->CachedHumanPlayersCount() = BackendVars::PlayerBots::CachedHumanPlayersCount.load(std::memory_order_relaxed);
+
+	UE_LOG(LogAthenaAIServicePlayerBots, Log, TEXT("WaitForMatchAssignmentReady: CachedHumanPlayersCount = %d"), __this->CachedHumanPlayersCount());
+
+	return Originals::WaitForMatchAssignmentReady(__this, FlowHandle);
+}
+
+void AthenaAIServicePlayerBots::TickPendingMatchAssignment()
+{
+	if (!PendingMatchAssignmentService || !BackendVars::PlayerBots::bHumanPlayersCountReceived.load(std::memory_order_acquire))
+	{
+		return;
+	}
+
+	UAthenaAIServicePlayerBots* Service = PendingMatchAssignmentService;
+	FFlowHandleSharedPtr FlowHandle = PendingMatchAssignmentFlowHandle;
+	PendingMatchAssignmentService = nullptr;
+	PendingMatchAssignmentFlowHandle = {};
+
+	WaitForMatchAssignmentReady(Service, &FlowHandle);
 }
 
 void AthenaAIServicePlayerBots::LoadModule()

@@ -14,6 +14,10 @@ private:
     {
         return;
     }
+    static int ReturnOne()
+    {
+        return 1;
+    }
 public:
     template<typename T = void*>
     static void VFTHook(void** VTable, int Index, void* Detour, T& og = nullptrForHook)
@@ -68,6 +72,11 @@ public:
     static void SetNull(uintptr_t Address)
     {
         DetourHook(Address, Return);
+    }
+
+    static void SetOne(uintptr_t Address)
+    {
+        DetourHook(Address, ReturnOne);
     }
 
     template<typename T = uint8>

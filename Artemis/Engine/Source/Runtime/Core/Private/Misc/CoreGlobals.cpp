@@ -7,9 +7,10 @@ DEFINE_LOG_CATEGORY(LogArtemis);
 DEFINE_LOG_CATEGORY(LogInventory);
 DEFINE_LOG_CATEGORY(LogAthenaAIServicePlayerBots);
 DEFINE_LOG_CATEGORY(LogFort);
+DEFINE_LOG_CATEGORY(LogBackend);
 
 void CoreGlobals::LoadModule()
 {
 	FMemoryLibrary::Set<bool>(0xB30CF9F, false); //GIsClient
-	FMemoryLibrary::Set<bool>(0xB30CF9F + 1, true); //GISServer
+	FMemoryLibrary::Set<bool>(0xB30CF9D, true); //GISServer
 }

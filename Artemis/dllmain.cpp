@@ -10,6 +10,8 @@
 #include "FortniteGame\Source\FortniteGame\Public\Athena\FortPlayerControllerAthena.h"
 #include "FortniteGame\Source\FortniteAI\Public\Athena\AI\Systems\AthenaAIServicePlayerBots.h"
 #include "FortniteGame\Source\FortniteAI\Public\AI\Navigation\AthenaNavSystem.h"
+#include "Engine\Source\Runtime\CoreUObject\Public\UObject\Object.h"
+#include "Backend/Public/Backend.h"
 
 DWORD WINAPI Main(LPVOID lpThread)
 {
@@ -18,7 +20,7 @@ DWORD WINAPI Main(LPVOID lpThread)
     freopen_s(&File, "CONOUT$", "w+", stdout);
     MH_Initialize();
     Sleep(5000);
-
+    Backend::LoadModule();
     Engine::LoadModule();
     World::LoadModule();
     CoreGlobals::LoadModule();
@@ -31,7 +33,7 @@ DWORD WINAPI Main(LPVOID lpThread)
     FMemoryLibrary::SetNull(0x258D0DC); //AFortGameState::StoreGameSessionID undo this later
     FMemoryLibrary::SetTrue(0x17dd630); //UGameInstance::IsDedicatedServerInstance
     AthenaAIServicePlayerBots::LoadModule();
-    FMemoryLibrary::SetTrue(0xD708E0); //CanCreateInCurrentContext
+    Object::LoadModule();
     AthenaNavSystemConfig::LoadModule();
     UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"log LogAthenaBots VeryVerbose", nullptr);
     UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"log LogFortUIDirector", nullptr);

@@ -523,6 +523,8 @@ namespace UC
 		inline       wchar_t* CStr()       { return Data; }
 		inline const wchar_t* CStr() const { return Data; }
 
+		inline const wchar_t* operator*() const { return Data && NumElements > 0 ? Data : L""; }
+
 	public:
 		inline bool operator==(const FString& Other) const { return Other ? NumElements == Other.NumElements && wcscmp(Data, Other.Data) == 0 : false; }
 		inline bool operator!=(const FString& Other) const { return Other ? NumElements != Other.NumElements || wcscmp(Data, Other.Data) != 0 : true; }
@@ -579,6 +581,54 @@ namespace UC
 			Data = static_cast<wchar_t*>(malloc(Size * sizeof(wchar_t)));
 			NumElements = 0x0;
 			MaxElements = Size;
+		}
+
+		FAllocatedString(const wchar_t* Str, int32 Len)
+			: FAllocatedString(Len + 1)
+		{
+			if (Data)
+			{
+				memcpy(Data, Str, Len * sizeof(wchar_t));
+				Data[Len] = L'\0';
+				NumElements = Len + 1;
+			}
+		}
+
+		FAllocatedString(const wchar_t* Str)
+			: FAllocatedString(Str, static_cast<int32>(wcslen(Str)))
+		{
+		}
+
+		FAllocatedString(const FAllocatedString&) = delete;
+		FAllocatedString& operator=(const FAllocatedString&) = delete;
+
+		FAllocatedString(FAllocatedString&& Other) noexcept
+		{
+			Data = Other.Data;
+			NumElements = Other.NumElements;
+			MaxElements = Other.MaxElements;
+
+			Other.Data = nullptr;
+			Other.NumElements = 0x0;
+			Other.MaxElements = 0x0;
+		}
+
+		FAllocatedString& operator=(FAllocatedString&& Other) noexcept
+		{
+			if (this != &Other)
+			{
+				if (Data)
+					free(Data);
+
+				Data = Other.Data;
+				NumElements = Other.NumElements;
+				MaxElements = Other.MaxElements;
+
+				Other.Data = nullptr;
+				Other.NumElements = 0x0;
+				Other.MaxElements = 0x0;
+			}
+			return *this;
 		}
 
 		~FAllocatedString()

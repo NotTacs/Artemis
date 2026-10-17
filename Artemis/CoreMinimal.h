@@ -16,11 +16,20 @@
 #include <chrono>
 #include "SDK/SDK.hpp"
 #include "MinHook.h"
+#include "Engine/Source/Runtime/Core/Public/Logging/LogMacros.h"
+#include "Engine/Source/Runtime/Core/Public/CoreGlobals.h"
 
-template<typename T>
-T* Cast(UObject* Object)
+template<class T>
+FORCEINLINE T* Cast(UObject* Src)
 {
-    if (Object && Object->IsA(T::StaticClass()))
-        return static_cast<T*>(Object);
-    return nullptr;
+    if (Src == NULL)
+        return NULL;
+
+    if (void* InterfaceAddress = Src->GetInterfaceAddress(T::StaticClass()))
+        return (T*)InterfaceAddress;
+
+    if (Src->IsA(T::StaticClass()))
+        return (T*)Src;
+
+    return NULL;
 }

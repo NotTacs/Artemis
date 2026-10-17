@@ -32,7 +32,7 @@ class UClass* BasicFilesImpleUtils::FindClassByFullName(const std::string& Name)
 
 std::string BasicFilesImpleUtils::GetObjectName(class UClass* Class)
 {
-	return Class->GetName();
+	return Class->GetName().ToString();
 }
 
 int32 BasicFilesImpleUtils::GetObjectIndex(class UClass* Class)

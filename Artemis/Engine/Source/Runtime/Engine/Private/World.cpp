@@ -72,5 +72,5 @@ bool World::Listen(UWorld* __this, FURL& InURL)
 
 void World::LoadModule()
 {
-	FMemoryLibrary::SetTrue(0xC9EEBC); //UWorld::GetNetMode
+	FMemoryLibrary::SetOne(0xC9EEBC); //UWorld::GetNetMode
 }

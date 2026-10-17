@@ -26,6 +26,43 @@ void FortGameModeAthena::OnGivenMatchAssignment(AFortGameModeAthena* __this, boo
 	printf(__FUNCTION__"\n");
 	static void (*FortGameMode__OnGivenMatchAssignment)(AFortGameModeAthena * __this, bool bSuccess, TSharedPtr<FJsonObject>& MatchOptions) = decltype(FortGameMode__OnGivenMatchAssignment)(AFortGameMode::GetDefaultObj()->VTable[0x184]);
 	FortGameMode__OnGivenMatchAssignment(__this, bSuccess, MatchOptions);
+
+	for (const auto& [Key, Value] : MatchOptions->Values)
+	{
+		if (!Value.IsValid())
+		{
+			continue;
+		}
+
+		switch (Value->Type)
+		{
+		case EJson::String:
+			UE_LOG(LogTemp, Log, TEXT("Key: %s | Type: String | Value: %s"), *Key, *Value->AsString());
+			break;
+
+		case EJson::Number:
+			UE_LOG(LogTemp, Log, TEXT("Key: %s | Type: Number | Value: %f"), *Key, Value->AsNumber());
+			break;
+
+		case EJson::Boolean:
+			UE_LOG(LogTemp, Log, TEXT("Key: %s | Type: Boolean | Value: %s"), *Key, Value->AsBool() ? TEXT("True") : TEXT("False"));
+			break;
+
+		case EJson::Object:
+			UE_LOG(LogTemp, Log, TEXT("Key: %s | Type: Object"), *Key);
+			break;
+
+		case EJson::Array:
+			UE_LOG(LogTemp, Log, TEXT("Key: %s | Type: Array"), *Key);
+			break;
+
+		case EJson::Null:
+		case EJson::None:
+			UE_LOG(LogTemp, Log, TEXT("Key: %s | Type: Null/None"), *Key);
+			break;
+		}
+	}
+
 	AFortGameStateAthena* GameState = Cast<AFortGameStateAthena>(__this->GameState);
 	UFortGameInstance* OwningGameInstance = Cast<UFortGameInstance>(UWorld::GetWorld()->OwningGameInstance);
 	if (GameState)
@@ -39,6 +76,10 @@ void FortGameModeAthena::OnGivenMatchAssignment(AFortGameModeAthena* __this, boo
 		GameState->OnRep_CurrentPlaylistId();
 
 		__this->WarmupRequiredPlayerCount = 1;
+
+		__this->AISettings = Playlist->AISettings;
+
+		__this->AISettings->AIServices[1] = UAthenaAIServicePlayerBots::StaticClass();
 	}
 }
 

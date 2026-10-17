@@ -1397,21 +1397,20 @@ LABEL_170:
     v6 = 1;
 LABEL_176:
     ((decltype(&sub_143E83C))(GET_BASE() + 0x143E83C))(v211);
+
     return v6;
 }
 
 void Engine::Init(UEngine* __this, void* InEngineLoop)
 {
     Originals::Init(__this, InEngineLoop);
-    //UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"Preload.Playlist Playlist_DefaultSolo", nullptr);
-    //FortGameInstance::LoadServerGameFeatures();
-    printf("Initialized Engine.\n Loading all Modules.\n");
+    UE_LOG(LogModuleManager, Verbose, TEXT("Loading all modules..."));
     FModuleManager::LoadAllModules();
 }
 
 void Engine::InitEngine()
 {
     FortGameInstance::LoadModule();
-    FMemoryLibrary::DetourHook(0x13f9ec8, LoadMap);
-    FMemoryLibrary::DetourHook(0x1ac8cb4, Init, Originals::Init);
+    FMemoryLibrary::DetourHook(0x13f9ec8, LoadMap); 
+    FMemoryLibrary::DetourHook(0x1ac8cb4, Init, Originals::Init); /*SOMEONE TELL ME IF IM WRONG BUT WOULD SETTING GISCLIENT TOO EARLY CAUSE A CRASH*/
 }

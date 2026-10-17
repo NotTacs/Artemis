@@ -14,6 +14,10 @@ private:
     {
         return;
     }
+    static int ReturnOne()
+    {
+        return 1;
+    }
 public:
 
     static void Setup()
@@ -72,7 +76,6 @@ public:
                 continue;
             }
 
-            printf("Successfully Hooked: %p\n", Address);
             break;
         }
     }
@@ -80,6 +83,7 @@ public:
     static void Rel32Swap(uintptr_t Target, void* Detour);
     static void Rel32Swap_Jnz(uintptr_t Target, void* Detour);
     static void Rel32Swap_Jmp(uintptr_t Target, void* Detour);
+    static void Rel32Swap_Lea(uintptr_t Target, void* Detour);
 
     template<typename T>
     static void Set(uintptr_t Address, T Value)
@@ -96,6 +100,11 @@ public:
     static void SetTrue(uintptr_t Address)
     {
         DetourHook(Address, ReturnTrue);
+    }
+
+    static void SetOne(uintptr_t Address)
+    {
+        DetourHook(Address, ReturnOne);
     }
 
     static void SetNull(uintptr_t Address)
@@ -238,4 +247,33 @@ inline void FMemoryLibrary::Rel32Swap_Jmp(uintptr_t Target, void* Detour)
     VirtualProtect(Impl + 1, sizeof(int), PAGE_EXECUTE_READWRITE, &OldProtect);
     memcpy(Impl + 1, &Offset, sizeof(int));
     VirtualProtect(Impl + 1, sizeof(int), OldProtect, &OldProtect);
+}
+
+inline void FMemoryLibrary::Rel32Swap_Lea(uintptr_t Target, void* Detour)
+{
+    Target = Target + InSDKUtils::GetImageBase();
+    void** T = reinterpret_cast<void**>(&Target);
+    auto Impl = (uint8_t*)(*T);
+    auto NearPage = AllocateNearbyPage(Impl);
+
+    if (!NearPage)
+    {
+        return;
+    }
+
+    uint8_t Shellcode[] =
+    {
+        0xFF, 0x25, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    };
+
+    memcpy(Shellcode + 6, &Detour, 8);
+    memcpy(NearPage, Shellcode, sizeof(Shellcode));
+
+    auto Offset = static_cast<int>(NearPage - (Impl + 7));
+
+    DWORD OldProtect;
+    VirtualProtect(Impl + 3, sizeof(int), PAGE_EXECUTE_READWRITE, &OldProtect);
+    memcpy(Impl + 3, &Offset, sizeof(int));
+    VirtualProtect(Impl + 3, sizeof(int), OldProtect, &OldProtect);
 }

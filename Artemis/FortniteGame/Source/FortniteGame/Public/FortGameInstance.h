@@ -11,6 +11,5 @@ private:
 	};
 public:
 	static uint8 GetClientFeatureAvailability(void* __this, uint8 Feature);
-	static void LoadServerGameFeatures();
 	static void LoadModule();
 };

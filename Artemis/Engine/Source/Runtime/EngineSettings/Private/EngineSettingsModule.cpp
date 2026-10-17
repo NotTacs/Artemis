@@ -14,7 +14,6 @@ FString GameMapsSettings::GetGameDefaultMap()
 	FString LeftSide;
 	FString RightSide;
 	UKismetStringLibrary::Split(UKismetStringLibrary::Conv_NameToString(ClassDefaultObject->ServerDefaultMap.AssetPathName), TEXT("."), &LeftSide, &RightSide, ESearchCase::CaseSensitive, ESearchDir::FromStart);
-	printf("PackageName: %s\n", LeftSide.ToString().c_str());
 	return LeftSide;
 
 }
@@ -32,7 +31,6 @@ FString GameMapsSettings::GetGlobalDefaultGameMode()
 	if (ClassDefaultObject->GlobalDefaultServerGameMode.SubPathString.Num() <= 1)
 	{
 		PackageName = UKismetStringLibrary::Conv_NameToString(ClassDefaultObject->GlobalDefaultServerGameMode.AssetPathName);
-		printf("PackageName: %s\n", PackageName.ToString().c_str());
 		return PackageName;
 	}
 	TArray<FString> PathParts;
@@ -43,7 +41,6 @@ FString GameMapsSettings::GetGlobalDefaultGameMode()
 	PathParts.Add(ClassDefaultObject->GlobalDefaultServerGameMode.SubPathString);
 
 	FString FullPathString = UKismetStringLibrary::JoinStringArray(PathParts, TEXT(":"));
-	printf("FullPathString: %s\n", FullPathString.ToString().c_str());
 	return FullPathString;
 }
 

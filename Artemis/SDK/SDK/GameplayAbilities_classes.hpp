@@ -256,6 +256,17 @@ public:
 	struct FGameplayEffectSpecHandle MakeOutgoingSpec(TSubclassOf<class UGameplayEffect> GameplayEffectClass, float Level, const struct FGameplayEffectContextHandle& Context) const;
 
 public:
+	FGameplayAbilitySpec* FindAbilitySpecFromHandle(FGameplayAbilitySpecHandle Handle)
+	{
+		static FGameplayAbilitySpec* (*FindAbilitySpecFromHandleOriginal)(void*, FGameplayAbilitySpecHandle Handle) = decltype(FindAbilitySpecFromHandleOriginal)(InSDKUtils::GetImageBase() + 0x12109B8);
+		return FindAbilitySpecFromHandleOriginal(this, Handle);
+	}
+	bool InternalTryActivateAbility(FGameplayAbilitySpecHandle Handle, FPredictionKey InPredictionKey, UGameplayAbility** OutInstancedAbility, void* OnGameplayAbilityEndedDelegate, const FGameplayEventData* TriggerEventData)
+	{
+		static bool (*InternalTryActivateAbilityOriginal)(void*, FGameplayAbilitySpecHandle Handle, FPredictionKey InPredictionKey, UGameplayAbility * *OutInstancedAbility, void* OnGameplayAbilityEndedDelegate, const FGameplayEventData * TriggerEventData) = decltype(InternalTryActivateAbilityOriginal)(InSDKUtils::GetImageBase() + 0x4e02108);
+		return InternalTryActivateAbilityOriginal(this, Handle, InPredictionKey, OutInstancedAbility, OnGameplayAbilityEndedDelegate, TriggerEventData);
+	}
+public:
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"AbilitySystemComponent">();

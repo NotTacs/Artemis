@@ -2908,6 +2908,11 @@ public:
 	bool ShouldShowInfoIndicator(const class AActor* TestActor) const;
 
 public:
+	struct FRotator& AirSpawnControlRotation()
+	{
+		return *reinterpret_cast<FRotator*>(__int64(this) + 0x890);
+	}
+public:
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"FortPlayerController">();
@@ -19582,7 +19587,12 @@ public:
 	int32                                         CurrentBotControllerUID;                           // 0x09F8(0x0004)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 	uint8                                         Pad_9FC[0x4];                                      // 0x09FC(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
 	TArray<class UFortAthenaBeaconComponent*>     BeaconList;                                        // 0x0A00(0x0010)(ExportObject, ZeroConstructor, Transient, ContainsInstancedReference, NativeAccessSpecifierPrivate)
-	uint8                                         BitPad_A10_0 : 6;                                  // 0x0A10(0x0001)(Fixing Bit-Field Size Between Bits [ Dumper-8 ])
+	uint8                                         bMovingOnGroundPOILocationsCached : 1;
+	uint8                                         bBusDropPOILocationsCached : 1;
+	uint8                                         bEQSMapSamplingDone : 1;
+	uint8                                         bSpawningAmountComputed : 1;
+	uint8                                         bWaitingForGamePhaseToStartSpawning : 1;
+	uint8                                         bPlayerBotSpawnStarted : 1;
 	uint8                                         bWaitForNavmeshToBeLoaded : 1;                     // 0x0A10(0x0001)(BitIndex: 0x06, PropSize: 0x0001 (Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate))
 	uint8                                         bDoSpawnBotFlow : 1;                               // 0x0A10(0x0001)(BitIndex: 0x07, PropSize: 0x0001 (Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate))
 	uint8                                         bDoMapSampling : 1;                                // 0x0A11(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate))
@@ -19614,6 +19624,21 @@ public:
 	class APawn* SpawnAI(const struct FVector& InSpawnLocation, const struct FRotator& InSpawnRotation, const class UFortAthenaAISpawnerDataComponentList* AISpawnerComponentList);
 
 public:
+	int& CachedHumanPlayersCount()
+	{
+		return *reinterpret_cast<int*>(__int64(this) + 0xB28);
+	}
+
+	int& CachedAmountOfBotsToSpawn()
+	{
+		return *reinterpret_cast<int*>(__int64(this) + 0xB2C);
+	}
+
+	int& OverridenMaxSpawnAmount()
+	{
+		return *reinterpret_cast<int*>(__int64(this) + 0xB30);
+	}
+
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"AthenaAIServicePlayerBots">();
@@ -66966,6 +66991,11 @@ public:
 	bool IsInAircraft() const;
 
 public:
+	bool& bIsAttemptingAircraftJump()
+	{
+		return *reinterpret_cast<bool*>(__int64(this) + 0x14A);
+	}
+public:
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"FortControllerComponent_Aircraft">();
@@ -86777,6 +86807,7 @@ public:
 class IFortInventoryOwnerInterface final
 {
 public:
+	void** VTable;
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"FortInventoryOwnerInterface">();
@@ -86793,6 +86824,12 @@ public:
 	const class UObject* AsUObject() const
 	{
 		return reinterpret_cast<const UObject*>(this);
+	}
+
+	UObject* _getUObject()
+	{
+		UObject* (*_getUObject)(void*) = decltype(_getUObject)(VTable[1]);
+		return _getUObject(this);
 	}
 };
 

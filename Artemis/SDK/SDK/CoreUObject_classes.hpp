@@ -10,7 +10,8 @@
 
 #include "Basic.hpp"
 
-
+static class UObject* (*StaticLoadObjectOG)(class UClass* Class, class UObject* InOuter, const TCHAR* Name, const TCHAR* Filename, uint32_t LoadFlags, UObject* Sandbox, bool bAllowObjectReconciliation, void*) = decltype(StaticLoadObjectOG)(__int64(GetModuleHandleW(0)) + 0x10a6b08);
+static class UObject* (*StaticFindObjectOG)(class UClass*, class UObject* Package, const wchar_t* OrigInName, bool ExactClass) = decltype(StaticFindObjectOG)(__int64(GetModuleHandleW(0)) + 0xbc9b40);
 
 // Class CoreUObject.Object
 // 0x0028 (0x0028 - 0x0000)
@@ -31,7 +32,7 @@ public:
 	static class UObject* FindObjectImpl(const std::string& FullName, EClassCastFlags RequiredType = EClassCastFlags::None);
 
 	std::string GetFullName() const;
-	std::string GetName() const;
+	FAllocatedString GetName() const;
 	bool HasTypeFlag(EClassCastFlags TypeFlags) const;
 	bool IsA(EClassCastFlags TypeFlags) const;
 	bool IsA(class UClass* TypeClass) const;
@@ -63,6 +64,47 @@ public:
 	void ProcessEvent(class UFunction* Function, void* Parms) const
 	{
 		InSDKUtils::CallGameFunction(InSDKUtils::GetVirtualFunction<void(*)(const UObject*, class UFunction*, void*)>(this, Offsets::ProcessEventIdx), this, Function, Parms);
+	}
+
+	class UWorld* GetWorld()
+	{
+		UWorld* (*GetWorldInternal)(UObject*) = decltype(GetWorldInternal)(VTable[0x31]);
+		return GetWorldInternal(this);
+	}
+
+	template <typename T>
+	static T* StaticFindObject(std::string ObjectName, UClass* OverrideClass = T::StaticClass())
+	{
+		auto NameWStr = std::wstring(ObjectName.begin(), ObjectName.end()).c_str();
+
+		return (T*)StaticFindObjectOG(T::StaticClass(), nullptr, NameWStr, false);
+	}
+
+	template<typename T>
+	static T* StaticLoadObject(std::string name, UClass* OverrideClass = T::StaticClass())
+	{
+		T* Object = StaticFindObject<T>(name, OverrideClass);
+
+		if (!Object)
+		{
+			auto Name = std::wstring(name.begin(), name.end()).c_str();
+			Object = (T*)StaticLoadObjectOG(OverrideClass, nullptr, Name, nullptr, 0, nullptr, false, nullptr);
+		}
+
+		return Object;
+	}
+
+	void* GetInterfaceAddress(UClass* InterfaceClass)
+	{
+		static void* (*GetInterfaceAddress)(UObject*, UClass * InterfaceClass) =
+			decltype(GetInterfaceAddress)(InSDKUtils::GetImageBase() + 0xB1B28C);
+
+		return GetInterfaceAddress(this, InterfaceClass);
+	}
+
+	FORCEINLINE void AddToRoot()
+	{
+		GObjects->GetItemByIndex(Index)->SetRootSet();
 	}
 };
 

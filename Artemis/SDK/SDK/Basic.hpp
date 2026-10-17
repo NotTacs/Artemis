@@ -32,7 +32,9 @@ namespace Offsets
 {
 	constexpr int32 GObjects          = 0x0B3C9A78;
 	constexpr int32 AppendString      = 0x00EC0900;
+	constexpr int32 FNameConstructor = 0x00B1ECB0;
 	constexpr int32 GNames            = 0x0B5DA400;
+	constexpr int32 bNamePoolInitialized = 0x0B44351C;
 	constexpr int32 GWorld            = 0x0B59BD30;
 	constexpr int32 ProcessEvent      = 0x00CCA65C;
 	constexpr int32 ProcessEventIdx   = 0x0000004B;
@@ -172,6 +174,26 @@ ClassType* GetDefaultObjImpl()
 	return reinterpret_cast<ClassType*>(ClassType::StaticClass()->DefaultObject);
 }
 
+enum class EInternalObjectFlags : int32
+{
+	None = 0,
+	//~ All the other bits are reserved, DO NOT ADD NEW FLAGS HERE!
+
+	ReachableInCluster = 1 << 23, ///< External reference to object in cluster exists
+	ClusterRoot = 1 << 24, ///< Root of a cluster
+	Native = 1 << 25, ///< Native (UClass only). 
+	Async = 1 << 26, ///< Object exists only on a different thread than the game thread.
+	AsyncLoading = 1 << 27, ///< Object is being asynchronously loaded.
+	Unreachable = 1 << 28, ///< Object is not reachable on the object graph.
+	PendingKill = 1 << 29, ///< Objects that are pending destruction (invalid for gameplay but valid objects). This flag is mirrored in EObjectFlags as RF_PendingKill for performance
+	RootSet = 1 << 30, ///< Object will not be garbage collected, even if unreferenced.
+	PendingConstruction = 1 << 31, ///< Object didn't have its class constructor called yet (only the UObjectBase one to initialize its most basic members)
+
+	GarbageCollectionKeepFlags = Native | Async | AsyncLoading,
+
+	//~ Make sure this is up to date!
+	AllFlags = ReachableInCluster | ClusterRoot | Native | Async | AsyncLoading | Unreachable | PendingKill | RootSet | PendingConstruction
+};
 
 // Predefined struct FUObjectItem
 // 0x0018 (0x0018 - 0x0000)
@@ -179,7 +201,68 @@ struct FUObjectItem final
 {
 public:
 	class UObject*                                Object;                                            // 0x0000(0x0008)(NOT AUTO-GENERATED PROPERTY)
-	uint8                                         Pad_8[0x10];                                       // 0x0008(0x0010)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	int32                                         Flags;                                             // 0x0008(0x0004)(EInternalObjectFlags)
+	int32                                         ClusterRootIndex;                                  // 0x000C(0x0004)
+	int32                                         SerialNumber;                                      // 0x0010(0x0004)
+
+public:
+	FORCEINLINE void SetFlags(EInternalObjectFlags FlagsToSet)
+	{
+		//check((int32(FlagsToSet) & ~int32(EInternalObjectFlags::AllFlags)) == 0);
+		ThisThreadAtomicallySetFlag(FlagsToSet);
+	}
+
+	FORCEINLINE EInternalObjectFlags GetFlags() const
+	{
+		return EInternalObjectFlags(Flags);
+	}
+
+	FORCEINLINE bool ThisThreadAtomicallyClearedFlag(EInternalObjectFlags FlagToClear)
+	{
+		static_assert(sizeof(int32) == sizeof(Flags), "Flags must be 32-bit for atomics.");
+		bool bIChangedIt = false;
+		while (1)
+		{
+			int32 StartValue = int32(Flags);
+			if (!(StartValue & int32(FlagToClear)))
+			{
+				break;
+			}
+			int32 NewValue = StartValue & ~int32(FlagToClear);
+			if ((int32)_InterlockedCompareExchange((long*)&Flags, (long)NewValue, (long)StartValue) == StartValue)
+			{
+				bIChangedIt = true;
+				break;
+			}
+		}
+		return bIChangedIt;
+	}
+
+	FORCEINLINE bool ThisThreadAtomicallySetFlag(EInternalObjectFlags FlagToSet)
+	{
+		static_assert(sizeof(int32) == sizeof(Flags), "Flags must be 32-bit for atomics.");
+		bool bIChangedIt = false;
+		while (1)
+		{
+			int32 StartValue = int32(Flags);
+			if (StartValue & int32(FlagToSet))
+			{
+				break;
+			}
+			int32 NewValue = StartValue | int32(FlagToSet);
+			if ((int32)_InterlockedCompareExchange((long*)&Flags, (long)NewValue, (long)StartValue) == StartValue)
+			{
+				bIChangedIt = true;
+				break;
+			}
+		}
+		return bIChangedIt;
+	}
+
+	FORCEINLINE void SetRootSet()
+	{
+		ThisThreadAtomicallySetFlag(EInternalObjectFlags::RootSet);
+	}
 };
 
 // Predefined struct TUObjectArray
@@ -224,6 +307,20 @@ public:
 		if (!ChunkPtr) return nullptr;
 		
 		return ChunkPtr[InChunkIdx].Object;
+	}
+
+	inline FUObjectItem* GetItemByIndex(const int32 Index) const
+	{
+		const int32 ChunkIndex = Index / ElementsPerChunk;
+		const int32 InChunkIdx = Index % ElementsPerChunk;
+
+		if (Index < 0 || ChunkIndex >= NumChunks || Index >= NumElements)
+			return nullptr;
+
+		FUObjectItem* ChunkPtr = GetDecrytedObjPtr()[ChunkIndex];
+		if (!ChunkPtr) return nullptr;
+
+		return &ChunkPtr[InChunkIdx];
 	}
 };
 
@@ -776,6 +873,15 @@ public:
 		return CurrentBlock + 1;
 	}
 
+	bool IsWithinBounds(FNameEntryHandle Handle) const
+	{
+		Lock.ReadLock();
+		const bool bWithinBounds = Handle.Block < CurrentBlock
+			|| (Handle.Block == CurrentBlock && Stride * Handle.Offset < CurrentByteCursor);
+		Lock.ReadUnlock();
+		return bWithinBounds;
+	}
+
 	uint8** GetBlocksForDebugVisualizer() { return Blocks; }
 
 private:
@@ -1146,13 +1252,41 @@ private:
 
 inline bool FNamePool::IsValid(FNameEntryHandle Handle) const
 {
-	return Handle.Block < Entries.NumBlocks();
+	return Entries.IsWithinBounds(Handle);
 }
+
+/** Enumeration for finding name. */
+enum EFindName
+{
+	/** Find a name; return 0 if it doesn't exist. */
+	FNAME_Find,
+
+	/** Find a name or add it if it doesn't exist. */
+	FNAME_Add,
+
+	/** Finds a name and replaces it. Adds it if missing. This is only used by UHT and is generally not safe for threading.
+	 * All this really is used for is correcting the case of names. In MT conditions you might get a half-changed name.
+	 */
+	FNAME_Replace_Not_Safe_For_Threading,
+};
 
 // Predefined struct FName
 // 0x0008 (0x0008 - 0x0000)
 class FName final
 {
+public:
+	FName() = default;
+
+	FName(const FNameEntryId& ComparisonIndex, const uint32& Number)
+		: ComparisonIndex(ComparisonIndex), Number(Number)
+	{
+	}
+
+	FName(const TCHAR* Name, EFindName FindType)
+	{
+		static FName* (*FNameConstructor)(FName * This, const TCHAR * Name, EFindName FindType) = decltype(FNameConstructor)(InSDKUtils::GetImageBase() + Offsets::FNameConstructor);
+		FNameConstructor(this, Name, FindType);
+	}
 public:
 	static inline void*                           AppendString = nullptr;                            // 0x0000(0x0004)(NOT AUTO-GENERATED PROPERTY)
 
@@ -1189,6 +1323,20 @@ public:
 		return OutputString;
 	}
 	
+	FAllocatedString ToFString() const
+	{
+		if (!AppendString)
+			InitInternal();
+
+		FAllocatedString RawString(1024);
+		InSDKUtils::CallGameFunction(reinterpret_cast<void(*)(const FName*, FString&)>(AppendString), this, RawString);
+
+		if (const wchar_t* Slash = wcsrchr(*RawString, L'/'))
+			return FAllocatedString(Slash + 1);
+
+		return RawString;
+	}
+
 	std::string ToString() const
 	{
 		std::string OutputString = GetRawString();
@@ -1244,10 +1392,13 @@ public:
 	}
 	static bool IsWithinBounds(FNameEntryId Id);
 
-	bool IsValid() const { return (Number > 0 || ComparisonIndex.Value > 0); }
+	bool IsValid() const { return IsWithinBounds(ComparisonIndex); }
 };
 
-static bool bNamePoolInitialized;
+static bool IsNamePoolInitialized()
+{
+	return *reinterpret_cast<bool*>(InSDKUtils::GetImageBase() + Offsets::bNamePoolInitialized);
+}
 
 static FNamePool& GetNamePoolPostInit()
 {
@@ -1256,7 +1407,7 @@ static FNamePool& GetNamePoolPostInit()
 
 inline bool FName::IsWithinBounds(FNameEntryId Id)
 {
-	return GetNamePoolPostInit().IsValid(Id);
+	return IsNamePoolInitialized() && GetNamePoolPostInit().IsValid(Id);
 }
 
 
@@ -1459,6 +1610,12 @@ public:
 	UEType* operator->() const
 	{
 		return static_cast<UEType*>(TPersistentObjectPtr::Get());
+	}
+
+	UEType* LoadSynchronus() const
+	{
+		static UObject* (*LoadSynchronusOriginal)(const void*) = decltype(LoadSynchronusOriginal)(InSDKUtils::GetImageBase() + 0x155463c);
+		return static_cast<UEType*>(LoadSynchronusOriginal(this));
 	}
 };
 

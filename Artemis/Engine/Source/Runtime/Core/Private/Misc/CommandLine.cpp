@@ -4,7 +4,7 @@
 
 const wchar_t* FCommandLine::Get()
 {
-	static auto cmdLine = std::wstring(Originals::Get()) + L" -server -McpRegion=NAE -EnableMMS -OverrideMap=/Game/Athena/Artemis/Maps/Artemis_Terrain -ServesPlaylists=Playlist_DefaultSolo -Playlist=Playlist_DefaultSolo";
+	static auto cmdLine = std::wstring(Originals::Get()) + L" -server -McpRegion=NAE -EnableMMS -OverrideMap=/Game/Athena/Artemis/Maps/Artemis_Terrain -AllowAllPlaylistsInShipping";
 	return cmdLine.c_str();
 }
 

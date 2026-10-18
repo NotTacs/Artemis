@@ -1053,6 +1053,18 @@ struct alignas(0x10) FPlane final : public FVector
 {
 public:
 	float                                         W;                                                 // 0x000C(0x0004)(Edit, BlueprintVisible, ZeroConstructor, SaveGame, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+public:
+	/** Get a flipped version of the plane. */
+	FPlane Flip() const
+	{
+		FPlane Result = *this;
+		Result.X = -X;
+		Result.Y = -Y;
+		Result.Z = -Z;
+		Result.W = -W;
+		return Result;
+	}
 };
 
 // ScriptStruct CoreUObject.Matrix

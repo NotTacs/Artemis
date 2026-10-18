@@ -16,6 +16,8 @@ void FortPlayerControllerAthena::ServerAcknowledgePossession_Implementation(AFor
 	UFortGlobals__InitializePlayerGameplayAbilities(Interface);
 
 	/* TODO: ADD GAMESTATE FUNC HERE*/
+	UFortKismetLibrary::UpdatePlayerCustomCharacterPartsVisualization(Cast<AFortPlayerStateAthena>(__this->PlayerState));
+	
 }
 
 void FortPlayerControllerAthena::LoadModule()

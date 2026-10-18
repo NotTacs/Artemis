@@ -247,7 +247,17 @@ public:
 	FMulticastSparseDelegateProperty_             OnComponentDeactivated;                            // 0x008E(0x0001)(InstancedReference, BlueprintAssignable, NoDestructor, NativeAccessSpecifierPublic)
 	uint8                                         Pad_8F[0x1];                                       // 0x008F(0x0001)(Fixing Size After Last Property [ Dumper-8 ])
 	TArray<struct FSimpleMemberReference>         UCSModifiedProperties;                             // 0x0090(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_A0[0x10];                                      // 0x00A0(0x0010)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	class AActor* OwnerPrivate;
+	UWorld* WorldPrivate;
+
+public:
+	void RecreatePhysicsState()
+	{
+		static void (*RecreatePhysicsStateOriginal)(void*) = decltype(RecreatePhysicsStateOriginal)(InSDKUtils::GetImageBase() + 0x14E9C2C);
+		RecreatePhysicsStateOriginal(this);
+	}
+
+	void RegisterComponent();
 
 public:
 	void Activate(bool bReset);
@@ -574,6 +584,12 @@ public:
 	class USceneComponent* K2_GetRootComponent() const;
 	bool WasRecentlyRendered(float Tolerance) const;
 
+public:
+	bool SetRootComponent(USceneComponent* NewRootComponent)
+	{
+		static bool (*SetRootComponentInternal)(void*, void*) = decltype(SetRootComponentInternal)(InSDKUtils::GetImageBase() + 0x16d38e4);
+		return SetRootComponentInternal(this, NewRootComponent);
+	}
 public:
 	static class UClass* StaticClass()
 	{
@@ -1038,6 +1054,12 @@ public:
 	struct FVector K2_GetComponentScale() const;
 	struct FTransform K2_GetComponentToWorld() const;
 
+public:
+	void SetupAttachment(USceneComponent* InParent, FName InSocketName)
+	{
+		void (*SetupAttachmentOriginal)(void*, USceneComponent * InParent, FName InSocketName) = decltype(SetupAttachmentOriginal)(InSDKUtils::GetImageBase() + 0xf4ea48);
+		SetupAttachmentOriginal(this, InParent, InSocketName);
+	}
 public:
 	static class UClass* StaticClass()
 	{
@@ -10766,6 +10788,15 @@ public:
 	uint8                                         Pad_294[0x14];                                     // 0x0294(0x0014)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
+	void InvalidatePhysicsData()
+	{
+		static void (*InvalidatePhysicsDataOriginal)(void*) = decltype(InvalidatePhysicsDataOriginal)(InSDKUtils::GetImageBase() + 0x797ab98);
+		InvalidatePhysicsDataOriginal(this);
+	}
+
+	void RemoveSimpleCollision();
+	bool CreateFromModel(class UModel* InModel, bool bRemoveExisting);
+public:
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"BodySetup">();
@@ -11188,7 +11219,27 @@ public:
 class UModel final : public UObject
 {
 public:
-	uint8                                         Pad_28[0x230];                                     // 0x0028(0x0230)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	TArray<struct FBspNode>                       Nodes;                                             // 0x0028(0x0010)(NOT AUTO-GENERATED PROPERTY)
+	TArray<struct FVert>                          Verts;                                             // 0x0038(0x0010)(NOT AUTO-GENERATED PROPERTY)
+	TArray<struct FVector>                        Vectors;                                           // 0x0048(0x0010)(NOT AUTO-GENERATED PROPERTY)
+	TArray<struct FVector>                        Points;                                            // 0x0058(0x0010)(NOT AUTO-GENERATED PROPERTY)
+	TArray<struct FBspSurf>                       Surfs;                                             // 0x0068(0x0010)(NOT AUTO-GENERATED PROPERTY)
+	TArray<struct FLightmassPrimitiveSettings>    LightmassSettings;                                 // 0x0078(0x0010)(NOT AUTO-GENERATED PROPERTY)
+	uint8                                         MaterialIndexBuffers[0x50];                        // 0x0088(0x0050)(NOT AUTO-GENERATED PROPERTY) TMap<UMaterialInterface*, TUniquePtr<FRawIndexBuffer16or32>>
+	uint8                                         VertexBuffer[0x130];                               // 0x00D8(0x0130)(NOT AUTO-GENERATED PROPERTY) FModelVertexBuffer
+	uint8                                         ReleaseResourcesFence[0x10];                       // 0x0208(0x0010)(NOT AUTO-GENERATED PROPERTY) FRenderCommandFence
+	bool                                          InvalidSurfaces;                                   // 0x0218(0x0001)(NOT AUTO-GENERATED PROPERTY)
+	bool                                          bOnlyRebuildMaterialIndexBuffers;                  // 0x0219(0x0001)(NOT AUTO-GENERATED PROPERTY)
+	bool                                          bInvalidForStaticLighting;                         // 0x021A(0x0001)(NOT AUTO-GENERATED PROPERTY)
+	uint8                                         Pad_21B[0x1];                                      // 0x021B(0x0001)(Fixing Size After Last Property [ Dumper-8 ])
+	uint32                                        NumUniqueVertices;                                 // 0x021C(0x0004)(NOT AUTO-GENERATED PROPERTY)
+	struct FGuid                                  LightingGuid;                                      // 0x0220(0x0010)(NOT AUTO-GENERATED PROPERTY)
+	bool                                          RootOutside;                                       // 0x0230(0x0001)(NOT AUTO-GENERATED PROPERTY)
+	bool                                          Linked;                                            // 0x0231(0x0001)(NOT AUTO-GENERATED PROPERTY)
+	uint8                                         Pad_232[0x2];                                      // 0x0232(0x0002)(Fixing Size After Last Property [ Dumper-8 ])
+	int32                                         NumSharedSides;                                    // 0x0234(0x0004)(NOT AUTO-GENERATED PROPERTY)
+	struct FBoxSphereBounds                       Bounds;                                            // 0x0238(0x001C)(NOT AUTO-GENERATED PROPERTY)
+	uint8                                         Pad_254[0x4];                                      // 0x0254(0x0004)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
 	static class UClass* StaticClass()
@@ -11200,6 +11251,16 @@ public:
 		return GetDefaultObjImpl<UModel>();
 	}
 };
+
+static_assert(sizeof(FVert) == 0x18, "FVert size mismatch");
+static_assert(sizeof(FBspNode) == 0x40, "FBspNode size mismatch");
+static_assert(offsetof(FBspNode, iBack) == 0x24 && offsetof(FBspNode, iFront) == 0x28 && offsetof(FBspNode, NodeFlags) == 0x37, "FBspNode layout mismatch");
+static_assert(sizeof(FBspSurf) == 0x50 && offsetof(FBspSurf, Plane) == 0x30, "FBspSurf layout mismatch");
+static_assert(sizeof(FKConvexElem) == 0xB0 && offsetof(FKConvexElem, VertexData) == 0x30 && offsetof(FKConvexElem, ElemBox) == 0x50, "FKConvexElem layout mismatch");
+static_assert(sizeof(UModel) == 0x258, "UModel size mismatch (UModel::StaticClass registers 600 bytes)");
+static_assert(offsetof(UModel, Nodes) == 0x28 && offsetof(UModel, Verts) == 0x38 && offsetof(UModel, Points) == 0x58 && offsetof(UModel, Surfs) == 0x68, "UModel array offsets mismatch");
+static_assert(offsetof(UModel, VertexBuffer) == 0xD8 && offsetof(UModel, NumUniqueVertices) == 0x21C && offsetof(UModel, LightingGuid) == 0x220, "UModel offsets mismatch");
+static_assert(offsetof(UModel, RootOutside) == 0x230 && offsetof(UModel, NumSharedSides) == 0x234 && offsetof(UModel, Bounds) == 0x238, "UModel offsets mismatch");
 
 // Class Engine.MaterialExpressionTextureSampleParameterCubeArray
 // 0x0000 (0x0080 - 0x0080)
@@ -13904,6 +13965,9 @@ public:
 	class UModel*                                 Brush;                                             // 0x0450(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class UBodySetup*                             BrushBodySetup;                                    // 0x0458(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
+public:
+	void RequestUpdateBrushCollision();
+	void BuildSimpleBrushCollision();
 public:
 	static class UClass* StaticClass()
 	{

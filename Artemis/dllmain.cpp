@@ -12,6 +12,14 @@
 #include "FortniteGame\Source\FortniteAI\Public\AI\Navigation\AthenaNavSystem.h"
 #include "Engine\Source\Runtime\CoreUObject\Public\UObject\Object.h"
 #include "Backend/Public/Backend.h"
+#include "FortniteGame\Source\FortniteGame\Public\Athena\FortPoiVolume.h"
+#include "FortniteGame\Source\FortniteGame\Public\Athena\ControllerComponents\FortControllerComponent_MapDiscoverability.h"
+
+void (*SendRequestNowOriginal)(UMcpProfileGroup*, __int64 a2, int a3);
+void SendRequestNow(UMcpProfileGroup*__this, __int64 a2, int a3)
+{
+    return SendRequestNowOriginal(__this, a2, 3);
+}
 
 DWORD WINAPI Main(LPVOID lpThread)
 {
@@ -35,7 +43,10 @@ DWORD WINAPI Main(LPVOID lpThread)
     AthenaAIServicePlayerBots::LoadModule();
     Object::LoadModule();
     AthenaNavSystemConfig::LoadModule();
-    UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"log LogAthenaBots VeryVerbose", nullptr);
+    FortPoiVolume::LoadModule();
+    FortControllerComponent_MapDiscoverability::LoadModule();
+    FMemoryLibrary::DetourHook(0x1674270, SendRequestNow, SendRequestNowOriginal);
+    UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"log LogAthenaBots VeryVerbose | log LogFortQuest VeryVerbose", nullptr);
     UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"log LogFortUIDirector", nullptr);
     /* THIS IS SKUNKY WE NEED TO DO PROPER */
     UWorld::GetWorld()->OwningGameInstance->LocalPlayers[0]->PlayerController->SwitchLevel(L"Artemis_Terrain");

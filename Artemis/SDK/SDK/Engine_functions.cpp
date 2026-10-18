@@ -631,6 +631,12 @@ bool UActorComponent::IsComponentTickEnabled() const
 	return Parms.ReturnValue;
 }
 
+void UActorComponent::RegisterComponent()
+{
+	static void (*RegisterComponentWithWorld)(void*, void*, void*) = decltype(RegisterComponentWithWorld)(InSDKUtils::GetImageBase() + 0xd80220);
+	RegisterComponentWithWorld(this, OwnerPrivate->GetWorld(), nullptr);
+}
+
 
 // Function Engine.Actor.AddComponent
 // (Final, Native, Public, HasOutParams, HasDefaults, BlueprintCallable)
@@ -106564,3 +106570,184 @@ bool UWorldPartitionSubsystem::IsStreamingCompleted(EWorldPartitionRuntimeCellSt
 	return Parms.ReturnValue;
 }
 
+void UBrushComponent::RequestUpdateBrushCollision()
+{
+	if (BrushBodySetup)
+	{
+
+		const FVector LocalRelativeScale3D = RelativeScale3D;
+		const bool bIsMirrored = (LocalRelativeScale3D.X * LocalRelativeScale3D.Y * LocalRelativeScale3D.Z) < 0.0f;
+		if ((BrushBodySetup->bGenerateNonMirroredCollision && bIsMirrored) || (BrushBodySetup->bGenerateMirroredCollision && !bIsMirrored))
+		{
+			BrushBodySetup->bGenerateNonMirroredCollision = !bIsMirrored;
+			BrushBodySetup->bGenerateMirroredCollision = bIsMirrored;
+			BrushBodySetup->InvalidatePhysicsData();
+		}
+	}
+}
+
+void UBrushComponent::BuildSimpleBrushCollision()
+{
+	AActor* Owner = GetOwner();
+	if (!Owner)
+	{
+		UE_LOG(LogArtemis, Warning, TEXT("BuildSimpleBrushCollision: BrushComponent with no Owner!"));
+		return;
+	}
+
+	if (BrushBodySetup == NULL)
+	{
+		BrushBodySetup = NewObject<UBodySetup>(this);
+		//check(BrushBodySetup);
+	}
+
+	// No complex collision, so use the simple for that
+	BrushBodySetup->CollisionTraceFlag = ECollisionTraceFlag::CTF_UseSimpleAsComplex;
+
+
+	RequestUpdateBrushCollision();
+
+	// Convert collision model into convex hulls.
+	BrushBodySetup->CreateFromModel(Brush, true);
+
+	RecreatePhysicsState();
+}
+
+static void EmptyConvexElems(FKAggregateGeom* Geom)
+{
+	TArray<FKConvexElem>& ConvexElems = Geom->ConvexElems;
+	for (int32 i = 0; i < ConvexElems.Num(); i++)
+	{
+		FKConvexElem::Destruct(&ConvexElems[i]);
+	}
+	ConvexElems.Free();
+}
+
+static void FixupConvexUserData(FKAggregateGeom* Geom)
+{
+	TArray<FKConvexElem>& ConvexElems = Geom->ConvexElems;
+	for (int32 i = 0; i < ConvexElems.Num(); i++)
+	{
+		ConvexElems[i].UserDataPayload = &ConvexElems[i];
+	}
+}
+
+void UBodySetup::RemoveSimpleCollision()
+{
+	InvalidatePhysicsData();
+
+	AggGeom.BoxElems.Free();
+	EmptyConvexElems(&AggGeom);
+	AggGeom.SphylElems.Free();
+	AggGeom.SphereElems.Free();
+	AggGeom.TaperedCapsuleElems.Free();
+}
+
+static bool AddConvexPrim(FKAggregateGeom* OutGeom, TArray<FPlane>& Planes, UModel* InModel)
+{
+	TArray<FVector> SnapVerts;
+	for (int32 k = 0; k < InModel->Verts.Num(); k++)
+	{
+		const int32 PointIx = InModel->Verts[k].pVertex;
+		if (PointIx < 0 || PointIx >= InModel->Points.Num())
+		{
+			continue;
+		}
+
+		SnapVerts.Add(InModel->Points[PointIx]);
+	}
+
+	alignas(FKConvexElem) uint8 NewConvexStorage[sizeof(FKConvexElem)];
+	FKConvexElem* NewConvex = reinterpret_cast<FKConvexElem*>(NewConvexStorage);
+	FKConvexElem::Construct(NewConvex);
+
+	bool bSuccess = NewConvex->HullFromPlanes(Planes, SnapVerts);
+
+	if (bSuccess && NewConvex->ElemBox.IsValid)
+	{
+		OutGeom->ConvexElems.Add(*NewConvex);
+		FixupConvexUserData(OutGeom);
+	}
+	else
+	{
+		FKConvexElem::Destruct(NewConvex);
+	}
+
+	SnapVerts.Free();
+
+	return bSuccess;
+}
+
+static bool ModelToHullsWorker(FKAggregateGeom* outGeom,
+	UModel* inModel,
+	int32 nodeIx,
+	bool bOutside,
+	TArray<FPlane>& planes)
+{
+	FBspNode& node = inModel->Nodes[nodeIx];
+	if (node.iBack != INDEX_NONE)
+	{
+		planes.Add(node.Plane);
+		if (!ModelToHullsWorker(outGeom, inModel, node.iBack, node.ChildOutside(0, bOutside), planes))
+		{
+			return false;
+		}
+		planes.Remove(planes.Num() - 1);
+	}
+	else if (!node.ChildOutside(0, bOutside)) 
+	{
+		planes.Add(node.Plane);
+		if (!AddConvexPrim(outGeom, planes, inModel))
+		{
+			return false;
+		}
+		planes.Remove(planes.Num() - 1);
+	}
+
+	if (node.iFront != INDEX_NONE)
+	{
+		planes.Add(node.Plane.Flip());
+		if (!ModelToHullsWorker(outGeom, inModel, node.iFront, node.ChildOutside(1, bOutside), planes))
+		{
+			return false;
+		}
+		planes.Remove(planes.Num() - 1);
+	}
+	else if (!node.ChildOutside(1, bOutside))
+	{
+		planes.Add(node.Plane.Flip());
+		if (!AddConvexPrim(outGeom, planes, inModel))
+		{
+			return false;
+		}
+		planes.Remove(planes.Num() - 1);
+	}
+
+	return true;
+}
+
+bool UBodySetup::CreateFromModel(UModel* InModel, bool bRemoveExisting)
+{
+	if (bRemoveExisting)
+	{
+		RemoveSimpleCollision();
+	}
+
+	const int32 NumHullsAtStart = AggGeom.ConvexElems.Num();
+
+	bool bSuccess = false;
+
+	if (InModel != NULL && InModel->Nodes.Num() > 0)
+	{
+		TArray<FPlane> Planes;
+		bSuccess = ModelToHullsWorker(&AggGeom, InModel, 0, InModel->RootOutside, Planes);
+		if (!bSuccess)
+		{
+			EmptyConvexElems(&AggGeom);
+		}
+		Planes.Free();
+	}
+
+	InvalidatePhysicsData();
+	return bSuccess;
+}

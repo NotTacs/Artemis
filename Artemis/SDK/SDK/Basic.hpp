@@ -1513,7 +1513,16 @@ public:
 	int32                                         ObjectSerialNumber;                                // 0x0004(0x0004)(NOT AUTO-GENERATED PROPERTY)
 
 public:
-	class UObject* Get() const;
+	/** Copy from an object pointer, allocates the slot's serial number the same way the engine does */
+	FWeakObjectPtr& operator=(const class UObject* Object);
+
+	/** Reset the weak pointer back to the NULL state */
+	void Reset();
+
+	/** Dereference the weak pointer, nullptr if the object is gone, its slot was reused, or it's pending kill/unreachable */
+	class UObject* Get(bool bEvenIfPendingKill = false) const;
+	bool IsValid(bool bEvenIfPendingKill = false) const;
+
 	class UObject* operator->() const;
 	bool operator==(const FWeakObjectPtr& Other) const;
 	bool operator!=(const FWeakObjectPtr& Other) const;
@@ -1525,14 +1534,20 @@ template<typename UEType>
 class TWeakObjectPtr : public FWeakObjectPtr
 {
 public:
-	UEType* Get() const
+	TWeakObjectPtr& operator=(const UEType* Object)
 	{
-		return static_cast<UEType*>(FWeakObjectPtr::Get());
+		FWeakObjectPtr::operator=(reinterpret_cast<const class UObject*>(Object));
+		return *this;
+	}
+
+	UEType* Get(bool bEvenIfPendingKill = false) const
+	{
+		return reinterpret_cast<UEType*>(FWeakObjectPtr::Get(bEvenIfPendingKill));
 	}
 
 	UEType* operator->() const
 	{
-		return static_cast<UEType*>(FWeakObjectPtr::Get());
+		return reinterpret_cast<UEType*>(FWeakObjectPtr::Get());
 	}
 };
 

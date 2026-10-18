@@ -22785,6 +22785,11 @@ public:
 	uint8                                         Pad_660[0x2C0];                                    // 0x0660(0x02C0)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
+	static UFortAssetManager* Get()
+	{
+		return (UFortAssetManager*)UEngine::GetEngine()->AssetManager;
+	}
+public:
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"FortAssetManager">();
@@ -79075,6 +79080,11 @@ public:
 	static TArray<class FName> GetHighlightStencilParamNames();
 
 public:
+	static UFortGameData* Get()
+	{
+		return UFortAssetManager::Get()->GameDataCommon;
+	}
+public:
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"FortGameData">();
@@ -104796,6 +104806,11 @@ public:
 	class UDataTable*                             QuestTagToCategoryDataTable;                       // 0x00B8(0x0008)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	TArray<struct FFortChallengeMapPoiData>       ChallengeMapPoiData;                               // 0x00C0(0x0010)(Edit, ZeroConstructor, EditConst, Protected, NativeAccessSpecifierProtected)
 
+public:
+	static UFortQuestIndicatorData* Get()
+	{
+		return UFortGameData::Get()->QuestIndicatorData;
+	}
 public:
 	static class UClass* StaticClass()
 	{

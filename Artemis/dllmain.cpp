@@ -14,12 +14,11 @@
 #include "Backend/Public/Backend.h"
 #include "FortniteGame\Source\FortniteGame\Public\Athena\FortPoiVolume.h"
 #include "FortniteGame\Source\FortniteGame\Public\Athena\ControllerComponents\FortControllerComponent_MapDiscoverability.h"
+#include "FortniteGame\Source\FortniteGame\Public\Athena\FortGameStateAthena.h"
+#include "FortniteGame\Source\FortniteAI\Public\Athena\AI\FortAthenaAISpawnerDataComponent_AIBotCosmeticBase.h"
+#include "Engine\Restricted\NotForLicensees\Plugins\OnlineGameplayFramework\Source\McpProfileSys\Public\McpProfileGroup.h"
 
-void (*SendRequestNowOriginal)(UMcpProfileGroup*, __int64 a2, int a3);
-void SendRequestNow(UMcpProfileGroup*__this, __int64 a2, int a3)
-{
-    return SendRequestNowOriginal(__this, a2, 3);
-}
+
 
 DWORD WINAPI Main(LPVOID lpThread)
 {
@@ -45,8 +44,11 @@ DWORD WINAPI Main(LPVOID lpThread)
     AthenaNavSystemConfig::LoadModule();
     FortPoiVolume::LoadModule();
     FortControllerComponent_MapDiscoverability::LoadModule();
-    FMemoryLibrary::DetourHook(0x1674270, SendRequestNow, SendRequestNowOriginal);
-    UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"log LogAthenaBots VeryVerbose | log LogFortQuest VeryVerbose", nullptr);
+    FortGameStateAthena::LoadModule();
+    FortAthenaAISpawnerDataComponent_AIBotCosmeticBase::LoadModule();
+    McpProfileGroup::LoadModule();
+    FMemoryLibrary::Set<int>(0xB5D6038, 1); //Phoebe.Minimap
+    UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"log LogAthenaBots VeryVerbose | log LogFortQuest VeryVerbose | log LogFort VeryVerbose", nullptr);
     UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"log LogFortUIDirector", nullptr);
     /* THIS IS SKUNKY WE NEED TO DO PROPER */
     UWorld::GetWorld()->OwningGameInstance->LocalPlayers[0]->PlayerController->SwitchLevel(L"Artemis_Terrain");

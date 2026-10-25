@@ -151,7 +151,7 @@ struct TargetingSubsystem_StartAsyncTargetingRequest final
 public:
 	const class UTargetingPreset*                 TargetingPreset;                                   // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	struct FTargetingSourceContext                InSourceContext;                                   // 0x0008(0x0028)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	TDelegate<void(const struct FTargetingRequestHandle& TargetingRequestHandle)> CompletionDynamicDelegate; // 0x0030(0x0010)(Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const struct FTargetingRequestHandle& TargetingRequestHandle)> CompletionDynamicDelegate; // 0x0030(0x0010)(Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function TargetingSystem.TargetingSubsystem.ExecuteTargetingRequest
@@ -161,5 +161,5 @@ struct TargetingSubsystem_ExecuteTargetingRequest final
 public:
 	const class UTargetingPreset*                 TargetingPreset;                                   // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	struct FTargetingSourceContext                InSourceContext;                                   // 0x0008(0x0028)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	TDelegate<void(const struct FTargetingRequestHandle& TargetingRequestHandle)> CompletionDynamicDelegate; // 0x0030(0x0010)(Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const struct FTargetingRequestHandle& TargetingRequestHandle)> CompletionDynamicDelegate; // 0x0030(0x0010)(Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 };

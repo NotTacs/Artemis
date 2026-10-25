@@ -234,9 +234,9 @@ public:
 	static void GetTargetingResultsActors(const struct FTargetingRequestHandle& TargetingHandle, TArray<class AActor*>* Targets);
 	static struct FTargetingSourceContext GetTargetingSourceContext(const struct FTargetingRequestHandle& TargetingHandle);
 
-	void StartAsyncTargetingRequest(const class UTargetingPreset* TargetingPreset, const struct FTargetingSourceContext& InSourceContext, TDelegate<void(const struct FTargetingRequestHandle& TargetingRequestHandle)> CompletionDynamicDelegate);
+	void StartAsyncTargetingRequest(const class UTargetingPreset* TargetingPreset, const struct FTargetingSourceContext& InSourceContext, TDynamicDelegate<void(const struct FTargetingRequestHandle& TargetingRequestHandle)> CompletionDynamicDelegate);
 
-	void ExecuteTargetingRequest(const class UTargetingPreset* TargetingPreset, const struct FTargetingSourceContext& InSourceContext, TDelegate<void(const struct FTargetingRequestHandle& TargetingRequestHandle)> CompletionDynamicDelegate) const;
+	void ExecuteTargetingRequest(const class UTargetingPreset* TargetingPreset, const struct FTargetingSourceContext& InSourceContext, TDynamicDelegate<void(const struct FTargetingRequestHandle& TargetingRequestHandle)> CompletionDynamicDelegate) const;
 
 public:
 	static class UClass* StaticClass()

@@ -38,6 +38,7 @@ void FortPoiVolume::PostInitializeComponents(AFortPoiVolume* __this)
 	__this->SetRootComponent(BrushComp);
 	BrushComp->K2_SetWorldLocationAndRotation(Location, {}, false, nullptr, true);
 	BrushComp->BuildSimpleBrushCollision();
+	*reinterpret_cast<FBoxSphereBounds*>(__int64(BrushComp) + 0x100) = Bounds;
 
 	BrushComp->RegisterComponent();
 	__this->PoiCollisionComp->K2_AttachToComponent(BrushComp, FName(), EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, false);

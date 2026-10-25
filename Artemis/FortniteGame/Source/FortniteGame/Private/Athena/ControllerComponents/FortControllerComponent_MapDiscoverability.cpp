@@ -2,11 +2,6 @@
 #include "../../../Public/Athena/ControllerComponents/FortControllerComponent_MapDiscoverability.h"
 #include "Engine/Source/Runtime/Engine/Classes/Kismet/MemoryLibrary.h"
 
-namespace Originals
-{
-	static void (*InitializeDiscoverability)(UFortControllerComponent_MapDiscoverability*);
-}
-
 bool FortControllerComponent_MapDiscoverability::ComponentHasAuthority(UFortControllerComponent_MapDiscoverability* __this)
 {
 	AActor* Owner = __this->GetOwner();

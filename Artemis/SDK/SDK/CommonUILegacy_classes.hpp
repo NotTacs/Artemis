@@ -37,8 +37,8 @@ public:
 	void PushActivatablePanel(class UCommonActivatablePanelLegacy* ActivatablePanel, bool bIntroPanel, bool bOutroPanelBelow);
 	void ResumeStartingOperationProcessing();
 	void SetGlobalInputHandlerPriorityFilter(int32 InFilterPriority);
-	bool StartListeningForExistingHeldAction(const struct FDataTableRowHandle& InputActionDataRow, const TDelegate<void()>& CompleteEvent, const TDelegate<void(float HeldPercent)>& ProgressEvent);
-	bool StopListeningForExistingHeldAction(const struct FDataTableRowHandle& InputActionDataRow, const TDelegate<void()>& CompleteEvent, const TDelegate<void(float HeldPercent)>& ProgressEvent);
+	bool StartListeningForExistingHeldAction(const struct FDataTableRowHandle& InputActionDataRow, const TDynamicDelegate<void()>& CompleteEvent, const TDynamicDelegate<void(float HeldPercent)>& ProgressEvent);
+	bool StopListeningForExistingHeldAction(const struct FDataTableRowHandle& InputActionDataRow, const TDynamicDelegate<void()>& CompleteEvent, const TDynamicDelegate<void(float HeldPercent)>& ProgressEvent);
 	void SuspendStartingOperationProcessing();
 
 	int32 GetGlobalInputHandlerPriorityFilter() const;
@@ -103,10 +103,10 @@ public:
 	uint8                                         Pad_35B[0x10D];                                    // 0x035B(0x010D)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
-	void AddInputActionHandler(class UDataTable* DataTable, class FName RowName, TDelegate<void(bool* bPassThrough)> CommitedEvent);
-	void AddInputActionHandlerWithPopup(class UDataTable* DataTable, class FName RowName, TDelegate<void(bool* bPassThrough)> CommitedEvent, class UCommonPopupMenuLegacy* PopupMenu);
-	void AddInputActionHandlerWithProgress(class UDataTable* DataTable, class FName RowName, TDelegate<void(bool* bPassThrough)> CommitedEvent, TDelegate<void(float HeldPercent)> ProgressEvent);
-	void AddInputActionHandlerWithProgressPopup(class UDataTable* DataTable, class FName RowName, TDelegate<void(bool* bPassThrough)> CommitedEvent, TDelegate<void(float HeldPercent)> ProgressEvent, class UCommonPopupMenuLegacy* PopupMenu);
+	void AddInputActionHandler(class UDataTable* DataTable, class FName RowName, TDynamicDelegate<void(bool* bPassThrough)> CommitedEvent);
+	void AddInputActionHandlerWithPopup(class UDataTable* DataTable, class FName RowName, TDynamicDelegate<void(bool* bPassThrough)> CommitedEvent, class UCommonPopupMenuLegacy* PopupMenu);
+	void AddInputActionHandlerWithProgress(class UDataTable* DataTable, class FName RowName, TDynamicDelegate<void(bool* bPassThrough)> CommitedEvent, TDynamicDelegate<void(float HeldPercent)> ProgressEvent);
+	void AddInputActionHandlerWithProgressPopup(class UDataTable* DataTable, class FName RowName, TDynamicDelegate<void(bool* bPassThrough)> CommitedEvent, TDynamicDelegate<void(float HeldPercent)> ProgressEvent, class UCommonPopupMenuLegacy* PopupMenu);
 	void AddInputActionNoHandler(class UDataTable* DataTable, class FName RowName);
 	void BeginIntro();
 	void BeginOutro();
@@ -123,12 +123,12 @@ public:
 	void RemoveInputActionHandler(const struct FDataTableRowHandle& InputActionRow);
 	void SetActionHandlerState(const class UDataTable* DataTable, class FName RowName, EInputActionState State);
 	void SetActionHandlerStateFromHandle(const struct FDataTableRowHandle& InputActionRow, EInputActionState State);
-	void SetActionHandlerStateFromHandleWithDisabledCommitEvent(const struct FDataTableRowHandle& InputActionRow, EInputActionState State, TDelegate<void(bool* bPassThrough)> DisabledCommitEvent);
-	void SetActionHandlerStateWithDisabledCommitEvent(class UDataTable* DataTable, class FName RowName, EInputActionState State, TDelegate<void(bool* bPassThrough)> DisabledCommitEvent);
-	void SetInputActionHandler(const struct FDataTableRowHandle& InputActionRow, TDelegate<void(bool* bPassThrough)> CommitedEvent);
-	void SetInputActionHandlerWithPopupMenu(const struct FDataTableRowHandle& InputActionRow, TDelegate<void(bool* bPassThrough)> CommitedEvent, class UCommonPopupMenuLegacy* PopupMenu);
-	void SetInputActionHandlerWithProgress(const struct FDataTableRowHandle& InputActionRow, TDelegate<void(bool* bPassThrough)> CommitedEvent, TDelegate<void(float HeldPercent)> ProgressEvent);
-	void SetInputActionHandlerWithProgressPopupMenu(const struct FDataTableRowHandle& InputActionRow, TDelegate<void(bool* bPassThrough)> CommitedEvent, TDelegate<void(float HeldPercent)> ProgressEvent, class UCommonPopupMenuLegacy* PopupMenu);
+	void SetActionHandlerStateFromHandleWithDisabledCommitEvent(const struct FDataTableRowHandle& InputActionRow, EInputActionState State, TDynamicDelegate<void(bool* bPassThrough)> DisabledCommitEvent);
+	void SetActionHandlerStateWithDisabledCommitEvent(class UDataTable* DataTable, class FName RowName, EInputActionState State, TDynamicDelegate<void(bool* bPassThrough)> DisabledCommitEvent);
+	void SetInputActionHandler(const struct FDataTableRowHandle& InputActionRow, TDynamicDelegate<void(bool* bPassThrough)> CommitedEvent);
+	void SetInputActionHandlerWithPopupMenu(const struct FDataTableRowHandle& InputActionRow, TDynamicDelegate<void(bool* bPassThrough)> CommitedEvent, class UCommonPopupMenuLegacy* PopupMenu);
+	void SetInputActionHandlerWithProgress(const struct FDataTableRowHandle& InputActionRow, TDynamicDelegate<void(bool* bPassThrough)> CommitedEvent, TDynamicDelegate<void(float HeldPercent)> ProgressEvent);
+	void SetInputActionHandlerWithProgressPopupMenu(const struct FDataTableRowHandle& InputActionRow, TDynamicDelegate<void(bool* bPassThrough)> CommitedEvent, TDynamicDelegate<void(float HeldPercent)> ProgressEvent, class UCommonPopupMenuLegacy* PopupMenu);
 
 	bool GetInputActions(TArray<struct FCommonInputActionHandlerData>* InputActionDataRows) const;
 	bool HasInputActionHandler(const struct FDataTableRowHandle& InputActionRow) const;

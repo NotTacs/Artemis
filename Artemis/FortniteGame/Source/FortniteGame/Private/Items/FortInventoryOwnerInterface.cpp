@@ -1,8 +1,10 @@
 ﻿#include "pch.h"
 #include "../../Public/Items/FortInventoryOwnerInterface.h"
 
-void FortInventoryOwnerInterface::GiveInventoryItem(IFortInventoryOwnerInterface* __this, const FFortItemEntry& ItemEntry)
+void FortInventoryOwnerInterface::GiveInventoryItem(IFortInventoryOwnerInterface* __this, FFortItemEntry& ItemEntry)
 {
+	if (!__this || ItemEntry.Count < 0 || ItemEntry.ItemDefinition == nullptr)
+		return;
 	UObject* Owner = __this->_getUObject();
 	/* THIS BLOCK WILL BE REPLACED WITH GetWorldInventory*/
 	AFortInventory* OwnerInventory = nullptr;
@@ -19,6 +21,7 @@ void FortInventoryOwnerInterface::GiveInventoryItem(IFortInventoryOwnerInterface
 		UE_LOG(LogInventory, Verbose, TEXT("IFortInventoryOwnerInterface::GiveInventoryItem() : Failed to find OwnerInventory."));
 		return;
 	}
+	ItemEntry.ParentInventory = OwnerInventory;
 
 	OwnerInventory->Inventory.ReplicatedEntries.Add(ItemEntry);
 	OwnerInventory->Inventory.MarkArrayDirty();

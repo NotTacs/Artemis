@@ -1396,6 +1396,22 @@ public:
 	bool IsValid() const { return IsWithinBounds(ComparisonIndex); }
 };
 
+/* GetTypeHash(FNameEntryHandle) from UnrealNames.cpp */
+inline uint32 GetTypeHash(FNameEntryId Id)
+{
+	const uint32 Block = Id.ToUnstableInt() >> FNameBlockOffsetBits;
+	const uint32 Offset = Id.ToUnstableInt() & (FNameBlockOffsets - 1);
+
+	return (Block << (32 - FNameMaxBlockBits)) + Block
+		+ (Offset << FNameBlockOffsetBits) + Offset
+		+ (Offset >> 4);
+}
+
+inline uint32 GetTypeHash(const FName& Name)
+{
+	return GetTypeHash(Name.ComparisonIndex) + Name.Number;
+}
+
 static bool IsNamePoolInitialized()
 {
 	return *reinterpret_cast<bool*>(InSDKUtils::GetImageBase() + Offsets::bNamePoolInitialized);
@@ -1513,13 +1529,10 @@ public:
 	int32                                         ObjectSerialNumber;                                // 0x0004(0x0004)(NOT AUTO-GENERATED PROPERTY)
 
 public:
-	/** Copy from an object pointer, allocates the slot's serial number the same way the engine does */
 	FWeakObjectPtr& operator=(const class UObject* Object);
 
-	/** Reset the weak pointer back to the NULL state */
 	void Reset();
 
-	/** Dereference the weak pointer, nullptr if the object is gone, its slot was reused, or it's pending kill/unreachable */
 	class UObject* Get(bool bEvenIfPendingKill = false) const;
 	bool IsValid(bool bEvenIfPendingKill = false) const;
 
@@ -1529,6 +1542,11 @@ public:
 	bool operator==(const class UObject* Other) const;
 	bool operator!=(const class UObject* Other) const;
 };
+
+inline uint32 GetTypeHash(const FWeakObjectPtr& WeakObjectPtr)
+{
+	return uint32(WeakObjectPtr.ObjectIndex ^ WeakObjectPtr.ObjectSerialNumber);
+}
 
 template<typename UEType>
 class TWeakObjectPtr : public FWeakObjectPtr
@@ -1768,20 +1786,24 @@ public:
 	FName                                         FunctionName;                                      // 0x0008(0x0008)(NOT AUTO-GENERATED PROPERTY)
 };
 
-// Predefined struct TDelegate
+// TDelegate is the engine's native delegate (Delegates/Delegate.h), included by SDK.hpp once UObject exists
+
+// Predefined struct TDynamicDelegate
 // 0x0010 (0x0010 - 0x0000)
+// Dumper-8's old TDelegate: single-cast dynamic delegates (FDelegateProperty fields and UFunction params) are an
+// FScriptDelegate (object + function name), not a native TDelegate, even though both are 0x10 bytes
 template<typename FunctionSignature>
-class TDelegate
+class TDynamicDelegate
 {
 public:
-	struct InvalidUseOfTDelegate                  TemplateParamIsNotAFunctionSignature;              // 0x0000(0x0000)(NOT AUTO-GENERATED PROPERTY)
+	struct InvalidUseOfTDynamicDelegate           TemplateParamIsNotAFunctionSignature;              // 0x0000(0x0000)(NOT AUTO-GENERATED PROPERTY)
 	uint8                                         Pad_0[0x10];                                       // 0x0000(0x0010)(Fixing Struct Size After Last Property [ Dumper-8 ])
 };
 
-// Predefined struct TDelegate<Ret(Args...)>
+// Predefined struct TDynamicDelegate<Ret(Args...)>
 // 0x0010 (0x0010 - 0x0000)
 template<typename Ret, typename... Args>
-class TDelegate<Ret(Args...)>
+class TDynamicDelegate<Ret(Args...)>
 {
 public:
 	FScriptDelegate                               BoundFunction;                                     // 0x0000(0x0010)(NOT AUTO-GENERATED PROPERTY)

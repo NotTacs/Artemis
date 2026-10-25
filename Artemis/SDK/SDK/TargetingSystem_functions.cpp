@@ -397,9 +397,9 @@ struct FTargetingSourceContext UTargetingSubsystem::GetTargetingSourceContext(co
 // Parameters:
 // const class UTargetingPreset*           TargetingPreset                                        (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const struct FTargetingSourceContext&   InSourceContext                                        (ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-// TDelegate<void(const struct FTargetingRequestHandle& TargetingRequestHandle)>CompletionDynamicDelegate                              (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(const struct FTargetingRequestHandle& TargetingRequestHandle)>CompletionDynamicDelegate                              (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UTargetingSubsystem::StartAsyncTargetingRequest(const class UTargetingPreset* TargetingPreset, const struct FTargetingSourceContext& InSourceContext, TDelegate<void(const struct FTargetingRequestHandle& TargetingRequestHandle)> CompletionDynamicDelegate)
+void UTargetingSubsystem::StartAsyncTargetingRequest(const class UTargetingPreset* TargetingPreset, const struct FTargetingSourceContext& InSourceContext, TDynamicDelegate<void(const struct FTargetingRequestHandle& TargetingRequestHandle)> CompletionDynamicDelegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -426,9 +426,9 @@ void UTargetingSubsystem::StartAsyncTargetingRequest(const class UTargetingPrese
 // Parameters:
 // const class UTargetingPreset*           TargetingPreset                                        (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const struct FTargetingSourceContext&   InSourceContext                                        (ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-// TDelegate<void(const struct FTargetingRequestHandle& TargetingRequestHandle)>CompletionDynamicDelegate                              (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(const struct FTargetingRequestHandle& TargetingRequestHandle)>CompletionDynamicDelegate                              (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UTargetingSubsystem::ExecuteTargetingRequest(const class UTargetingPreset* TargetingPreset, const struct FTargetingSourceContext& InSourceContext, TDelegate<void(const struct FTargetingRequestHandle& TargetingRequestHandle)> CompletionDynamicDelegate) const
+void UTargetingSubsystem::ExecuteTargetingRequest(const class UTargetingPreset* TargetingPreset, const struct FTargetingSourceContext& InSourceContext, TDynamicDelegate<void(const struct FTargetingRequestHandle& TargetingRequestHandle)> CompletionDynamicDelegate) const
 {
 	static class UFunction* Func = nullptr;
 

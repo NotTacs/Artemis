@@ -19,6 +19,8 @@ private:
 	{
 	public:
 		static inline void (*WaitForMatchAssignmentReady)(UAthenaAIServicePlayerBots* __this, FFlowHandleSharedPtr* FlowHandle);
+		static inline void (*OnPlaylistLoaded)(UAthenaAIServicePlayerBots* __this);
+		static inline void (*OnPlayerBotSpawned)(UAthenaAIServicePlayerBots* __this, AActor* Actor, const int SpawnRequestID, double PawnMMR);
 	};
 
 	static inline UAthenaAIServicePlayerBots* PendingMatchAssignmentService = nullptr;
@@ -30,5 +32,8 @@ public:
 	static void InitializeMMRInfos(UAthenaAIServicePlayerBots* __this);
 	static void WaitForMatchAssignmentReady(UAthenaAIServicePlayerBots* __this, FFlowHandleSharedPtr* FlowHandle);
 	static void TickPendingMatchAssignment();
+	static void PlacePlayerBotsInAircraft(UAthenaAIServicePlayerBots* __this, const TArray<AFortAthenaAircraft*> Aircrafts);
+	static void CachePointsOnNavMesh(UAthenaAIServicePlayerBots* __this, __int64 FlowHandle);
+	static void OnPlayerBotSpawned(UAthenaAIServicePlayerBots* __this, AActor* Actor, const int SpawnRequestID, double PawnMMR);
 	static void LoadModule();
 };

@@ -53,12 +53,75 @@ public:
 	class FString                                 ItemProfile;                                       // 0x0048(0x0010)(BlueprintVisible, BlueprintReadOnly, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
 
+class FMcpProfileMockHandle
+{
+private:
+	int32 Handle;
+
+	static int32 NextHandle;
+
+public:
+	FMcpProfileMockHandle() : Handle(-1) {}
+};
+
 // ScriptStruct McpProfileSys.BaseUrlContext
 // 0x0080 (0x0080 - 0x0000)
 struct alignas(0x10) FBaseUrlContext
 {
 public:
-	uint8                                         Pad_0[0x80];                                       // 0x0000(0x0080)(Fixing Struct Size After Last Property [ Dumper-8 ])
+
+	FBaseUrlContext()
+	{
+		static void (*ConstructInternal)(void*, void*) = decltype(ConstructInternal)(InSDKUtils::GetImageBase() + 0x5083F50);
+		ConstructInternal(nullptr, this);
+	}
+
+	FBaseUrlContext(const TDelegate<void(const struct FMcpQueryResult&)>& InCallback, const wchar_t* InUrlConfig, int32 InCredentials)
+	{
+		static void (*ConstructInternal)(void*, const TDelegate<void(const struct FMcpQueryResult&)>*, const wchar_t*, int32) = decltype(ConstructInternal)(InSDKUtils::GetImageBase() + 0x11FC224);
+		ConstructInternal(this, &InCallback, InUrlConfig, InCredentials);
+	}
+
+	FBaseUrlContext(const FBaseUrlContext& Other)
+		: FBaseUrlContext()
+	{
+		*this = Other;
+	}
+
+	FBaseUrlContext& operator=(const FBaseUrlContext& Other)
+	{
+		static FBaseUrlContext& (*AssignInternal)(FBaseUrlContext*, const FBaseUrlContext*) = decltype(AssignInternal)(InSDKUtils::GetImageBase() + 0x11FC380);
+		return AssignInternal(this, &Other);
+	}
+
+	~FBaseUrlContext()
+	{
+		static void (*DestructInternal)(FBaseUrlContext*) = decltype(DestructInternal)(InSDKUtils::GetImageBase() + 0x11FC748);
+		DestructInternal(this);
+	}
+
+	enum EOverride
+	{
+		UseDefault = 0,
+		OverrideNo = 1,
+		OverrideYes = 2
+	};
+
+	enum EContextCredentials
+	{
+		CXC_Client = 0,
+		CXC_DedicatedServer = 1,
+		CXC_Cheater = 2,
+		CXC_Public = 3,
+	};
+
+	FBaseUrlContext::EOverride LeanResponseOverride;
+	struct TDelegate<void __cdecl(struct FMcpQueryResult const&)> Callback;
+	FString UrlConfig;
+	FBaseUrlContext::EContextCredentials Credentials;
+	bool bImmediateMode;
+	FMcpProfileMockHandle MockToRemove;
+	char CommandQuenePumpOverride[0x40];
 };
 
 // ScriptStruct McpProfileSys.McpAddItemRequest
@@ -108,18 +171,78 @@ public:
 // 0x0000 (0x0080 - 0x0080)
 struct FClientUrlContext final : public FBaseUrlContext
 {
+public:
+	FClientUrlContext(const TDelegate<void(const struct FMcpQueryResult&)>& InCallback = TDelegate<void(const struct FMcpQueryResult&)>())
+		: FBaseUrlContext(InCallback, L"McpClientCommandUrl", CXC_Client)
+	{
+	}
+
+	FClientUrlContext(const FClientUrlContext& Other)
+		: FBaseUrlContext(Other)
+	{
+	}
+
+	FClientUrlContext& operator=(const FClientUrlContext& Other)
+	{
+		FBaseUrlContext::operator=(Other);
+		return *this;
+	}
+
+	~FClientUrlContext()
+	{
+	}
 };
 
 // ScriptStruct McpProfileSys.DedicatedServerUrlContext
 // 0x0000 (0x0080 - 0x0080)
 struct FDedicatedServerUrlContext final : public FBaseUrlContext
 {
+public:
+	FDedicatedServerUrlContext(const TDelegate<void(const struct FMcpQueryResult&)>& InCallback = TDelegate<void(const struct FMcpQueryResult&)>())
+		: FBaseUrlContext(InCallback, L"McpDedicatedServerCommandUrl", CXC_DedicatedServer)
+	{
+	}
+
+	FDedicatedServerUrlContext(const FDedicatedServerUrlContext& Other)
+		: FBaseUrlContext(Other)
+	{
+	}
+
+	FDedicatedServerUrlContext& operator=(const FDedicatedServerUrlContext& Other)
+	{
+		FBaseUrlContext::operator=(Other);
+		return *this;
+	}
+
+	~FDedicatedServerUrlContext()
+	{
+	}
 };
 
 // ScriptStruct McpProfileSys.PublicUrlContext
 // 0x0000 (0x0080 - 0x0080)
 struct FPublicUrlContext final : public FBaseUrlContext
 {
+public:
+	FPublicUrlContext(const TDelegate<void(const struct FMcpQueryResult&)>& InCallback = TDelegate<void(const struct FMcpQueryResult&)>())
+		: FBaseUrlContext(InCallback, L"McpPublicCommandUrl", CXC_Public)
+	{
+	}
+
+	FPublicUrlContext(const FPublicUrlContext& Other)
+		: FBaseUrlContext(Other)
+	{
+	}
+
+	FPublicUrlContext& operator=(const FPublicUrlContext& Other)
+	{
+		FBaseUrlContext::operator=(Other);
+		return *this;
+	}
+
+	~FPublicUrlContext()
+	{
+	}
 };
 
 // ScriptStruct McpProfileSys.ProfileEntry

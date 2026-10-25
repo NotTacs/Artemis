@@ -4,6 +4,6 @@
 class FortInventoryOwnerInterface
 {
 public:
-	static void GiveInventoryItem(IFortInventoryOwnerInterface* __this, const FFortItemEntry& ItemEntry);
+	static void GiveInventoryItem(IFortInventoryOwnerInterface* __this, FFortItemEntry& ItemEntry);
 	static void LoadModule();
 };

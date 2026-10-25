@@ -5955,8 +5955,8 @@ class UInGameAdManager final : public UPlatformInterfaceBase
 public:
 	uint8                                         bShouldPauseWhileAdOpen : 1;                       // 0x0038(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
 	uint8                                         Pad_39[0x7];                                       // 0x0039(0x0007)(Fixing Size After Last Property [ Dumper-8 ])
-	TArray<TDelegate<void()>>                     ClickedBannerDelegates;                            // 0x0040(0x0010)(ZeroConstructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-	TArray<TDelegate<void()>>                     ClosedAdDelegates;                                 // 0x0050(0x0010)(ZeroConstructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+	TArray<TDynamicDelegate<void()>>                     ClickedBannerDelegates;                            // 0x0040(0x0010)(ZeroConstructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+	TArray<TDynamicDelegate<void()>>                     ClosedAdDelegates;                                 // 0x0050(0x0010)(ZeroConstructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
 
 public:
 	static class UClass* StaticClass()
@@ -9649,7 +9649,7 @@ public:
 	uint8                                         Pad_908[0x18];                                     // 0x0908(0x0018)(Fixing Size After Last Property [ Dumper-8 ])
 	TMulticastInlineDelegate<void(const float AverageEnvelopeValue, const float MaxEnvelope, const int32 NumWaveInstances)> OnAudioMultiEnvelopeValue; // 0x0920(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
 	uint8                                         Pad_930[0x18];                                     // 0x0930(0x0018)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void(const TArray<struct FSubtitleCue>& Subtitles, float CueDuration)> OnQueueSubtitles; // 0x0948(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const TArray<struct FSubtitleCue>& Subtitles, float CueDuration)> OnQueueSubtitles; // 0x0948(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	uint8                                         Pad_958[0x10];                                     // 0x0958(0x0010)(Fixing Size After Last Property [ Dumper-8 ])
 	TWeakObjectPtr<class USceneComponent>         AutoAttachParent;                                  // 0x0968(0x0008)(Edit, BlueprintVisible, ExportObject, ZeroConstructor, DisableEditOnTemplate, EditConst, InstancedReference, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class FName                                   AutoAttachSocketName;                              // 0x0970(0x0008)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -9666,7 +9666,7 @@ public:
 	bool GetCookedFFTData(const TArray<float>& FrequenciesToGet, TArray<struct FSoundWaveSpectralData>* OutSoundWaveSpectralData);
 	bool GetCookedFFTDataForAllPlayingSounds(TArray<struct FSoundWaveSpectralDataPerSound>* OutSoundWaveSpectralData);
 	void Play(float StartTime);
-	void PlayQuantized(const class UObject* WorldContextObject, class UQuartzClockHandle*& InClockHandle, struct FQuartzQuantizationBoundary& InQuantizationBoundary, const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& InDelegate, float InStartTime, float InFadeInDuration, float InFadeVolumeLevel, EAudioFaderCurve InFadeCurve);
+	void PlayQuantized(const class UObject* WorldContextObject, class UQuartzClockHandle*& InClockHandle, struct FQuartzQuantizationBoundary& InQuantizationBoundary, const TDynamicDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& InDelegate, float InStartTime, float InFadeInDuration, float InFadeVolumeLevel, EAudioFaderCurve InFadeCurve);
 	void SetAudioBusSendPostEffect(class UAudioBus* AudioBus, float AudioBusSendLevel);
 	void SetAudioBusSendPreEffect(class UAudioBus* AudioBus, float AudioBusSendLevel);
 	void SetLowPassFilterEnabled(bool InLowPassFilterEnabled);
@@ -11541,6 +11541,12 @@ public:
 	uint8                                         Pad_28[0x78];                                      // 0x0028(0x0078)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
+	template<typename T>
+	TMap<FName, T*> GetRowMap()
+	{
+		return *reinterpret_cast<TMap<FName, T*>*>(__int64(this) + 0x30);
+	}
+public:
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"CurveTable">();
@@ -12632,7 +12638,7 @@ class UAnimSingleNodeInstance final : public UAnimInstance
 {
 public:
 	class UAnimationAsset*                        CurrentAsset;                                      // 0x0318(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             PostEvaluateAnimEvent;                             // 0x0320(0x0010)(ZeroConstructor, Transient, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             PostEvaluateAnimEvent;                             // 0x0320(0x0010)(ZeroConstructor, Transient, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 
 public:
 	float GetLength();
@@ -19973,34 +19979,34 @@ public:
 	static bool IsValidSoftObjectReference(const TSoftObjectPtr<class UObject>& SoftObjectReference);
 	static void K2_ClearAndInvalidateTimerHandle(const class UObject* WorldContextObject, struct FTimerHandle& Handle);
 	static void K2_ClearTimer(class UObject* Object, const class FString& FunctionName);
-	static void K2_ClearTimerDelegate(TDelegate<void()> Delegate);
+	static void K2_ClearTimerDelegate(TDynamicDelegate<void()> Delegate);
 	static void K2_ClearTimerHandle(const class UObject* WorldContextObject, const struct FTimerHandle& Handle);
 	static float K2_GetTimerElapsedTime(class UObject* Object, const class FString& FunctionName);
-	static float K2_GetTimerElapsedTimeDelegate(TDelegate<void()> Delegate);
+	static float K2_GetTimerElapsedTimeDelegate(TDynamicDelegate<void()> Delegate);
 	static float K2_GetTimerElapsedTimeHandle(const class UObject* WorldContextObject, const struct FTimerHandle& Handle);
 	static float K2_GetTimerRemainingTime(class UObject* Object, const class FString& FunctionName);
-	static float K2_GetTimerRemainingTimeDelegate(TDelegate<void()> Delegate);
+	static float K2_GetTimerRemainingTimeDelegate(TDynamicDelegate<void()> Delegate);
 	static float K2_GetTimerRemainingTimeHandle(const class UObject* WorldContextObject, const struct FTimerHandle& Handle);
 	static struct FTimerHandle K2_InvalidateTimerHandle(struct FTimerHandle& Handle);
 	static bool K2_IsTimerActive(class UObject* Object, const class FString& FunctionName);
-	static bool K2_IsTimerActiveDelegate(TDelegate<void()> Delegate);
+	static bool K2_IsTimerActiveDelegate(TDynamicDelegate<void()> Delegate);
 	static bool K2_IsTimerActiveHandle(const class UObject* WorldContextObject, const struct FTimerHandle& Handle);
 	static bool K2_IsTimerPaused(class UObject* Object, const class FString& FunctionName);
-	static bool K2_IsTimerPausedDelegate(TDelegate<void()> Delegate);
+	static bool K2_IsTimerPausedDelegate(TDynamicDelegate<void()> Delegate);
 	static bool K2_IsTimerPausedHandle(const class UObject* WorldContextObject, const struct FTimerHandle& Handle);
 	static bool K2_IsValidTimerHandle(const struct FTimerHandle& Handle);
 	static void K2_PauseTimer(class UObject* Object, const class FString& FunctionName);
-	static void K2_PauseTimerDelegate(TDelegate<void()> Delegate);
+	static void K2_PauseTimerDelegate(TDynamicDelegate<void()> Delegate);
 	static void K2_PauseTimerHandle(const class UObject* WorldContextObject, const struct FTimerHandle& Handle);
 	static struct FTimerHandle K2_SetTimer(class UObject* Object, const class FString& FunctionName, float Time, bool bLooping, float InitialStartDelay, float InitialStartDelayVariance);
-	static struct FTimerHandle K2_SetTimerDelegate(TDelegate<void()> Delegate, float Time, bool bLooping, float InitialStartDelay, float InitialStartDelayVariance);
+	static struct FTimerHandle K2_SetTimerDelegate(TDynamicDelegate<void()> Delegate, float Time, bool bLooping, float InitialStartDelay, float InitialStartDelayVariance);
 	static struct FTimerHandle K2_SetTimerForNextTick(class UObject* Object, const class FString& FunctionName);
-	static struct FTimerHandle K2_SetTimerForNextTickDelegate(TDelegate<void()> Delegate);
+	static struct FTimerHandle K2_SetTimerForNextTickDelegate(TDynamicDelegate<void()> Delegate);
 	static bool K2_TimerExists(class UObject* Object, const class FString& FunctionName);
-	static bool K2_TimerExistsDelegate(TDelegate<void()> Delegate);
+	static bool K2_TimerExistsDelegate(TDynamicDelegate<void()> Delegate);
 	static bool K2_TimerExistsHandle(const class UObject* WorldContextObject, const struct FTimerHandle& Handle);
 	static void K2_UnPauseTimer(class UObject* Object, const class FString& FunctionName);
-	static void K2_UnPauseTimerDelegate(TDelegate<void()> Delegate);
+	static void K2_UnPauseTimerDelegate(TDynamicDelegate<void()> Delegate);
 	static void K2_UnPauseTimerHandle(const class UObject* WorldContextObject, const struct FTimerHandle& Handle);
 	static void LaunchURL(const class FString& URL);
 	static bool LineTraceMulti(const class UObject* WorldContextObject, const struct FVector& Start, const struct FVector& End, ETraceTypeQuery TraceChannel, bool bTraceComplex, const TArray<class AActor*>& ActorsToIgnore, EDrawDebugTrace DrawDebugType, TArray<struct FHitResult>* OutHits, bool bIgnoreSelf, const struct FLinearColor& TraceColor, const struct FLinearColor& TraceHitColor, float DrawTime);
@@ -20009,9 +20015,9 @@ public:
 	static bool LineTraceSingle(const class UObject* WorldContextObject, const struct FVector& Start, const struct FVector& End, ETraceTypeQuery TraceChannel, bool bTraceComplex, const TArray<class AActor*>& ActorsToIgnore, EDrawDebugTrace DrawDebugType, struct FHitResult* OutHit, bool bIgnoreSelf, const struct FLinearColor& TraceColor, const struct FLinearColor& TraceHitColor, float DrawTime);
 	static bool LineTraceSingleByProfile(const class UObject* WorldContextObject, const struct FVector& Start, const struct FVector& End, class FName ProfileName, bool bTraceComplex, const TArray<class AActor*>& ActorsToIgnore, EDrawDebugTrace DrawDebugType, struct FHitResult* OutHit, bool bIgnoreSelf, const struct FLinearColor& TraceColor, const struct FLinearColor& TraceHitColor, float DrawTime);
 	static bool LineTraceSingleForObjects(const class UObject* WorldContextObject, const struct FVector& Start, const struct FVector& End, const TArray<EObjectTypeQuery>& ObjectTypes, bool bTraceComplex, const TArray<class AActor*>& ActorsToIgnore, EDrawDebugTrace DrawDebugType, struct FHitResult* OutHit, bool bIgnoreSelf, const struct FLinearColor& TraceColor, const struct FLinearColor& TraceHitColor, float DrawTime);
-	static void LoadAsset(const class UObject* WorldContextObject, TSoftObjectPtr<class UObject> Asset, TDelegate<void(class UObject* Loaded)> OnLoaded, const struct FLatentActionInfo& LatentInfo);
+	static void LoadAsset(const class UObject* WorldContextObject, TSoftObjectPtr<class UObject> Asset, TDynamicDelegate<void(class UObject* Loaded)> OnLoaded, const struct FLatentActionInfo& LatentInfo);
 	static class UObject* LoadAsset_Blocking(TSoftObjectPtr<class UObject> Asset);
-	static void LoadAssetClass(const class UObject* WorldContextObject, TSoftClassPtr<class UClass> AssetClass, TDelegate<void(TSubclassOf<class UObject> Loaded)> OnLoaded, const struct FLatentActionInfo& LatentInfo);
+	static void LoadAssetClass(const class UObject* WorldContextObject, TSoftClassPtr<class UClass> AssetClass, TDynamicDelegate<void(TSubclassOf<class UObject> Loaded)> OnLoaded, const struct FLatentActionInfo& LatentInfo);
 	static class UClass* LoadClassAsset_Blocking(TSoftClassPtr<class UClass> AssetClass);
 	static void LoadInterstitialAd(int32 AdIdIndex);
 	static void LogString(const class FString& InString, bool bPrintToLog);
@@ -28617,9 +28623,9 @@ public:
 	uint8                                         Pad_B8[0x8];                                       // 0x00B8(0x0008)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
-	void AddEnvelopeFollowerDelegate(const class UObject* WorldContextObject, const TDelegate<void(const TArray<float>& Envelope)>& OnSubmixEnvelopeBP);
-	void AddSpectralAnalysisDelegate(const class UObject* WorldContextObject, const TArray<struct FSoundSubmixSpectralAnalysisBandSettings>& InBandSettings, const TDelegate<void(const TArray<float>& Magnitude)>& OnSubmixSpectralAnalysisBP, float UpdateRate, float DecibelNoiseFloor, bool bDoNormalize, bool bDoAutoRange, float AutoRangeAttackTime, float AutoRangeReleaseTime);
-	void RemoveSpectralAnalysisDelegate(const class UObject* WorldContextObject, const TDelegate<void(const TArray<float>& Magnitude)>& OnSubmixSpectralAnalysisBP);
+	void AddEnvelopeFollowerDelegate(const class UObject* WorldContextObject, const TDynamicDelegate<void(const TArray<float>& Envelope)>& OnSubmixEnvelopeBP);
+	void AddSpectralAnalysisDelegate(const class UObject* WorldContextObject, const TArray<struct FSoundSubmixSpectralAnalysisBandSettings>& InBandSettings, const TDynamicDelegate<void(const TArray<float>& Magnitude)>& OnSubmixSpectralAnalysisBP, float UpdateRate, float DecibelNoiseFloor, bool bDoNormalize, bool bDoAutoRange, float AutoRangeAttackTime, float AutoRangeReleaseTime);
+	void RemoveSpectralAnalysisDelegate(const class UObject* WorldContextObject, const TDynamicDelegate<void(const TArray<float>& Magnitude)>& OnSubmixSpectralAnalysisBP);
 	void SetSubmixOutputVolume(const class UObject* WorldContextObject, float InOutputVolume);
 	void StartEnvelopeFollowing(const class UObject* WorldContextObject);
 	void StartRecordingOutput(const class UObject* WorldContextObject, float ExpectedDuration);
@@ -29699,7 +29705,7 @@ public:
 	uint8                                         Pad_30[0x20];                                      // 0x0030(0x0020)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
-	int32 AddDisplayDelegate(const TDelegate<void(class FText* OutText, struct FLinearColor* OutColor)>& Delegate);
+	int32 AddDisplayDelegate(const TDynamicDelegate<void(class FText* OutText, struct FLinearColor* OutColor)>& Delegate);
 	void AddTimedDisplay(const class FText& Text, const struct FLinearColor& Color, float Duration);
 	void RemoveDisplayDelegate(const int32 IndexToRemove);
 

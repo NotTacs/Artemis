@@ -38,7 +38,7 @@ public:
 	bool                                          K2Node_CustomEvent_IsPublic;                       // 0x0059(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	uint8                                         Pad_5A[0x2];                                       // 0x005A(0x0002)(Fixing Size After Last Property [ Dumper-8 ])
 	struct FSlateColor                            K2Node_MakeStruct_SlateColor;                      // 0x005C(0x0014)()
-	TDelegate<void()>                             K2Node_CreateDelegate_OutputDelegate;              // 0x0070(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void()>                             K2Node_CreateDelegate_OutputDelegate;              // 0x0070(0x0010)(ZeroConstructor, NoDestructor)
 	struct FSlateColor                            K2Node_MakeStruct_SlateColor_1;                    // 0x0080(0x0014)()
 };
 

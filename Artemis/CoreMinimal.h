@@ -38,3 +38,6 @@ FORCEINLINE T* NewObject(UObject* Owner, UClass* Class = T::StaticClass())
 {
     return (T*)UGameplayStatics::SpawnObject(Class, Owner);
 }
+
+#include "Engine/Source/Runtime/Core/Public/Delegates/Delegate.h"
+#include "Engine/Restricted/NotForLicensees/Plugins/Online/OnlineSubsystemMcp/Source/Public/McpQueryResult.h"

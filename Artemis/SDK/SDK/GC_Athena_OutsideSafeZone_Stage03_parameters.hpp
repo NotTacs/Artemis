@@ -26,7 +26,7 @@ public:
 	struct FGameplayCueParameters                 K2Node_Event_Parameters;                           // 0x0010(0x00C0)(ConstParm, ContainsInstancedReference)
 	TArray<class UParticleSystemComponent*>       K2Node_Event_ParticleComponents;                   // 0x00D0(0x0010)(ConstParm, ReferenceParm, ContainsInstancedReference)
 	TArray<class UAudioComponent*>                K2Node_Event_AudioComponents;                      // 0x00E0(0x0010)(ConstParm, ReferenceParm, ContainsInstancedReference)
-	TDelegate<void(class FName EventName, float EmitterTime, const struct FVector& Location, const struct FVector& Velocity)> K2Node_CreateDelegate_OutputDelegate; // 0x00F0(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(class FName EventName, float EmitterTime, const struct FVector& Location, const struct FVector& Velocity)> K2Node_CreateDelegate_OutputDelegate; // 0x00F0(0x0010)(ZeroConstructor, NoDestructor)
 	class UParticleSystemComponent*               CallFunc_Array_Get_Item;                           // 0x0100(0x0008)(ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	class FName                                   K2Node_CustomEvent_EventName;                      // 0x0108(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	float                                         K2Node_CustomEvent_EmitterTime;                    // 0x0110(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)

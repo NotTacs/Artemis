@@ -8,6 +8,7 @@
 
 // Package: GameplayTags
 
+#include "pch.h"
 #include "Basic.hpp"
 
 #include "GameplayTags_classes.hpp"

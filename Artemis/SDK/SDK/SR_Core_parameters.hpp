@@ -74,8 +74,8 @@ public:
 	bool                                          CallFunc_BooleanAND_ReturnValue;                   // 0x0013(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	bool                                          CallFunc_BooleanAND_ReturnValue_1;                 // 0x0014(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	uint8                                         Pad_15[0x3];                                       // 0x0015(0x0003)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void(class UStreamingRadioPlayerComponent* Component, const struct FAthenaRadioStation& AffectedSource)> K2Node_CreateDelegate_OutputDelegate; // 0x0018(0x0010)(ZeroConstructor, NoDestructor)
-	TDelegate<void(class AFortWeapon* NewWeapon, class AFortWeapon* PrevWeapon)> K2Node_CreateDelegate_OutputDelegate_1; // 0x0028(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(class UStreamingRadioPlayerComponent* Component, const struct FAthenaRadioStation& AffectedSource)> K2Node_CreateDelegate_OutputDelegate; // 0x0018(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(class AFortWeapon* NewWeapon, class AFortWeapon* PrevWeapon)> K2Node_CreateDelegate_OutputDelegate_1; // 0x0028(0x0010)(ZeroConstructor, NoDestructor)
 };
 
 // Function SR_Core.SR_Core_C.HandleWeaponStateUpdated
@@ -85,7 +85,7 @@ struct SR_Core_C_HandleWeaponStateUpdated final
 public:
 	class AFortWeapon*                            NewWeapon;                                         // 0x0000(0x0008)(BlueprintVisible, BlueprintReadOnly, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	class AFortWeapon*                            PrevWeapon;                                        // 0x0008(0x0008)(BlueprintVisible, BlueprintReadOnly, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	TDelegate<void(bool bIsTargeting)>            K2Node_CreateDelegate_OutputDelegate;              // 0x0010(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(bool bIsTargeting)>            K2Node_CreateDelegate_OutputDelegate;              // 0x0010(0x0010)(ZeroConstructor, NoDestructor)
 };
 
 // Function SR_Core.SR_Core_C.OnPawnEnterSeat

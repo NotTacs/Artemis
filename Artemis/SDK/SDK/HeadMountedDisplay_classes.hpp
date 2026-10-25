@@ -63,8 +63,8 @@ public:
 	static void SetSpectatorScreenTexture(class UTexture* InTexture);
 	static void SetTrackingOrigin(EHMDTrackingOrigin Origin);
 	static void SetWorldToMetersScale(class UObject* WorldContext, float NewScale);
-	static void SetXRDisconnectDelegate(const TDelegate<void(const class FString& OutReason)>& InDisconnectedDelegate);
-	static void SetXRTimedInputActionDelegate(const class FName& ActionName, const TDelegate<void(const float Value, const struct FTimespan& Time)>& InDelegate);
+	static void SetXRDisconnectDelegate(const TDynamicDelegate<void(const class FString& OutReason)>& InDisconnectedDelegate);
+	static void SetXRTimedInputActionDelegate(const class FName& ActionName, const TDynamicDelegate<void(const float Value, const struct FTimespan& Time)>& InDelegate);
 	static void UpdateExternalTrackingHMDPosition(const struct FTransform& ExternalTrackingTransform);
 
 public:

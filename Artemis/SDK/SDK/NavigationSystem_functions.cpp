@@ -8,6 +8,7 @@
 
 // Package: NavigationSystem
 
+#include "pch.h"
 #include "Basic.hpp"
 
 #include "NavigationSystem_classes.hpp"

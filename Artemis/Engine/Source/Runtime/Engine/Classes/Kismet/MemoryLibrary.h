@@ -51,6 +51,7 @@ public:
     static void Rel32Swap_Jnz(uintptr_t Target, void* Detour);
     static void Rel32Swap_Jmp(uintptr_t Target, void* Detour);
     static void Rel32Swap_Lea(uintptr_t Target, void* Detour);
+    static bool PatchBytesWithCall(uintptr_t Address, const std::vector<uint8_t>& Expected, const std::vector<uint8_t>& Prefix, void* Detour);
 
     template<typename T>
     static void Set(uintptr_t Address, T Value)
@@ -214,6 +215,42 @@ inline void FMemoryLibrary::Rel32Swap_Jmp(uintptr_t Target, void* Detour)
     VirtualProtect(Impl + 1, sizeof(int), PAGE_EXECUTE_READWRITE, &OldProtect);
     memcpy(Impl + 1, &Offset, sizeof(int));
     VirtualProtect(Impl + 1, sizeof(int), OldProtect, &OldProtect);
+}
+
+inline bool FMemoryLibrary::PatchBytesWithCall(uintptr_t Address, const std::vector<uint8_t>& Expected, const std::vector<uint8_t>& Prefix, void* Detour)
+{
+    auto Impl = reinterpret_cast<uint8_t*>(Address + InSDKUtils::GetImageBase());
+    const size_t Size = Expected.size();
+
+    if (Prefix.size() + 6 > Size || memcmp(Impl, Expected.data(), Size) != 0)
+    {
+        return false;
+    }
+
+    auto NearPage = AllocateNearbyPage(Impl);
+
+    if (!NearPage)
+    {
+        return false;
+    }
+
+    memcpy(NearPage, &Detour, sizeof(Detour));
+
+    std::vector<uint8_t> Patch(Prefix);
+    uint8_t* CallEnd = Impl + Prefix.size() + 6;
+    const int32_t Disp = static_cast<int32_t>(NearPage - CallEnd);
+    Patch.push_back(0xFF);
+    Patch.push_back(0x15);
+    Patch.insert(Patch.end(), reinterpret_cast<const uint8_t*>(&Disp), reinterpret_cast<const uint8_t*>(&Disp) + 4);
+    Patch.resize(Size, 0x90);
+
+    DWORD OldProtect;
+    VirtualProtect(Impl, Size, PAGE_EXECUTE_READWRITE, &OldProtect);
+    memcpy(Impl, Patch.data(), Size);
+    VirtualProtect(Impl, Size, OldProtect, &OldProtect);
+    FlushInstructionCache(GetCurrentProcess(), Impl, Size);
+
+    return true;
 }
 
 inline void FMemoryLibrary::Rel32Swap_Lea(uintptr_t Target, void* Detour)

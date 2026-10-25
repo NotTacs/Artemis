@@ -5790,7 +5790,7 @@ public:
 	void SetNoCameraCollision(bool bValue);
 	void SetNoPhysicsCollision(bool bValue);
 	void SetParentActorToAttachTo(class ABuildingSMActor* InParentActorToAttachTo);
-	void SetResourcesEarnedOverrideDelegate(TDelegate<void(class AController* InstigatorController, class ABuildingSMActor* BuildingSMActor, float ResourcesEarned, bool bJustHitWeakspot, float* ModifiedResourcesEarned)> InOnResourcesEarnedOverrideDelegate);
+	void SetResourcesEarnedOverrideDelegate(TDynamicDelegate<void(class AController* InstigatorController, class ABuildingSMActor* BuildingSMActor, float ResourcesEarned, bool bJustHitWeakspot, float* ModifiedResourcesEarned)> InOnResourcesEarnedOverrideDelegate);
 	void SetResourceType(EFortResourceType NewResourceType);
 	void SetTextureData(const TArray<class UTexture2D*>& InTextures);
 	void StartBounceAnimation(const float StartTime, const float Radius, const struct FVector& Normal, const struct FVector& Center, EFortBounceType InBounceType, const bool bLocalInstigator);
@@ -8668,6 +8668,12 @@ public:
 	float GetMaxDurability(int32 ItemLevel) const;
 
 public:
+	bool ServerExecute(class UFortItem* Item, class AFortPlayerController* Instigator)
+	{
+		bool (*ServerExecuteOriginal)(void*, class UFortItem* Item, class AFortPlayerController* Instigator) = decltype(ServerExecuteOriginal)(VTable[0xA6]);
+		return ServerExecuteOriginal(this, Item, Instigator);
+	}
+public:
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"FortWorldItemDefinition">();
@@ -10889,7 +10895,7 @@ public:
 	struct FDateTime                              LinkCodeLockExpirationTime;                        // 0x03A0(0x0008)(Net, ZeroConstructor, Transient, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 
 public:
-	void CheckIslandModeration(const struct FCreativeLoadedLinkData& LinkData, const TDelegate<void(bool bValidIsland)>& OnIslandModerationCheckComplete);
+	void CheckIslandModeration(const struct FCreativeLoadedLinkData& LinkData, const TDynamicDelegate<void(bool bValidIsland)>& OnIslandModerationCheckComplete);
 	void ExpireLinkCodeLock();
 	bool LinkRequiresCreativeContent();
 	void OnLinkCodeLockExpired();
@@ -13085,15 +13091,15 @@ public:
 	void SetSelectedIndex(int32 Value);
 	EIndexNavigationResult TryMoveDelta(int32 InDelta);
 
-	void AddOnNavigationChangedDelegate(const TDelegate<void(class UObject* Source)>& InDelegate) const;
-	void AddOnNumItemsChangedDelegate(const TDelegate<void(class UObject* Source)>& InDelegate) const;
-	void AddOnSelectedIndexChangedDelegate(const TDelegate<void(class UObject* Source)>& InDelegate) const;
+	void AddOnNavigationChangedDelegate(const TDynamicDelegate<void(class UObject* Source)>& InDelegate) const;
+	void AddOnNumItemsChangedDelegate(const TDynamicDelegate<void(class UObject* Source)>& InDelegate) const;
+	void AddOnSelectedIndexChangedDelegate(const TDynamicDelegate<void(class UObject* Source)>& InDelegate) const;
 	EIndexNavigationResult CanMoveDelta(int32 InDelta) const;
 	int32 GetNumItems() const;
 	int32 GetSelectedIndex() const;
-	void RemoveOnNavigationChangedDelegate(const TDelegate<void(class UObject* Source)>& InDelegate) const;
-	void RemoveOnNumItemsChangedDelegate(const TDelegate<void(class UObject* Source)>& InDelegate) const;
-	void RemoveOnSelectedIndexChangedDelegate(const TDelegate<void(class UObject* Source)>& InDelegate) const;
+	void RemoveOnNavigationChangedDelegate(const TDynamicDelegate<void(class UObject* Source)>& InDelegate) const;
+	void RemoveOnNumItemsChangedDelegate(const TDynamicDelegate<void(class UObject* Source)>& InDelegate) const;
+	void RemoveOnSelectedIndexChangedDelegate(const TDynamicDelegate<void(class UObject* Source)>& InDelegate) const;
 
 public:
 	static class UClass* StaticClass()
@@ -13255,9 +13261,9 @@ public:
 	uint8                                         Pad_28[0x28];                                      // 0x0028(0x0028)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
-	static void AsyncSphereOverlapActors(class AActor* ContextActor, const struct FVector& Location, const float Radius, const TArray<class AActor*>& ActorsToIgnore, TDelegate<void(bool* ShouldCancel)> ShouldCancelProcess, TDelegate<void(class AActor* HitActor)> ProcessHitActorFunction, TDelegate<void(bool WasCancelled)> CompletionFunction, ECollisionChannel TraceChannel);
+	static void AsyncSphereOverlapActors(class AActor* ContextActor, const struct FVector& Location, const float Radius, const TArray<class AActor*>& ActorsToIgnore, TDynamicDelegate<void(bool* ShouldCancel)> ShouldCancelProcess, TDynamicDelegate<void(class AActor* HitActor)> ProcessHitActorFunction, TDynamicDelegate<void(bool WasCancelled)> CompletionFunction, ECollisionChannel TraceChannel);
 
-	void ThrottledAsyncSphereOverlapActors(class AActor* ContextActor, const struct FVector& Location, const float Radius, const bool bCheckLineOfSight, const TArray<class AActor*>& ActorsToIgnore, TDelegate<void(bool* ShouldCancel)> ShouldCancelProcess, TDelegate<void(class AActor* HitActor)> ProcessHitActorFunction, TDelegate<void(bool WasCancelled)> CompletionFunction, const TArray<EObjectTypeQuery>& ObjectTypes, ECollisionChannel TraceChannel);
+	void ThrottledAsyncSphereOverlapActors(class AActor* ContextActor, const struct FVector& Location, const float Radius, const bool bCheckLineOfSight, const TArray<class AActor*>& ActorsToIgnore, TDynamicDelegate<void(bool* ShouldCancel)> ShouldCancelProcess, TDynamicDelegate<void(class AActor* HitActor)> ProcessHitActorFunction, TDynamicDelegate<void(bool WasCancelled)> CompletionFunction, const TArray<EObjectTypeQuery>& ObjectTypes, ECollisionChannel TraceChannel);
 
 public:
 	static class UClass* StaticClass()
@@ -16625,6 +16631,12 @@ public:
 	bool IsAnAthenaGameParticipant() const;
 
 public:
+	void EnterAircraft(class AFortAthenaAircraft* Aircraft)
+	{
+		static void (*EnterAircraftOriginal)(void*, void*) = decltype(EnterAircraftOriginal)(InSDKUtils::GetImageBase() + 0x5ce165c);
+		EnterAircraftOriginal(this, Aircraft);
+	}
+public:
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"FortAthenaAIBotController">();
@@ -18159,10 +18171,10 @@ public:
 	uint8                                         Pad_28[0x28];                                      // 0x0028(0x0028)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
-	static void AsyncTrace_Immediate(class UObject* WorldContextObject, const struct FVector& StartLocation, const struct FVector& EndLocation, const TArray<class AActor*>& ActorsToIgnore, ECollisionChannel CollisionChannel, TDelegate<void(bool Succeeded, const class AActor* ActorHit, const struct FHitResult& HitResult)> CompletionFunction);
+	static void AsyncTrace_Immediate(class UObject* WorldContextObject, const struct FVector& StartLocation, const struct FVector& EndLocation, const TArray<class AActor*>& ActorsToIgnore, ECollisionChannel CollisionChannel, TDynamicDelegate<void(bool Succeeded, const class AActor* ActorHit, const struct FHitResult& HitResult)> CompletionFunction);
 
-	void ThrottledAsyncTrace(class UObject* WorldContextObject, const struct FVector& StartLocation, const struct FVector& EndLocation, const TArray<class AActor*>& ActorsToIgnore, ECollisionChannel CollisionChannel, TDelegate<void(bool Succeeded, const class AActor* ActorHit, const struct FHitResult& HitResult)> CompletionFunction);
-	void ThrottledAsyncTrace_SourceTarget(class UObject* WorldContextObject, const bool bUseLocalCameraAsSource, const class AActor* SourceActor, const struct FVector& SourceOffset, const class AActor* TargetActor, const struct FVector& TargetOffset, const TArray<class AActor*>& ActorsToIgnore, ECollisionChannel CollisionChannel, TDelegate<void(bool Succeeded, const class AActor* ActorHit, const struct FHitResult& HitResult)> CompletionFunction);
+	void ThrottledAsyncTrace(class UObject* WorldContextObject, const struct FVector& StartLocation, const struct FVector& EndLocation, const TArray<class AActor*>& ActorsToIgnore, ECollisionChannel CollisionChannel, TDynamicDelegate<void(bool Succeeded, const class AActor* ActorHit, const struct FHitResult& HitResult)> CompletionFunction);
+	void ThrottledAsyncTrace_SourceTarget(class UObject* WorldContextObject, const bool bUseLocalCameraAsSource, const class AActor* SourceActor, const struct FVector& SourceOffset, const class AActor* TargetActor, const struct FVector& TargetOffset, const TArray<class AActor*>& ActorsToIgnore, ECollisionChannel CollisionChannel, TDynamicDelegate<void(bool Succeeded, const class AActor* ActorHit, const struct FHitResult& HitResult)> CompletionFunction);
 
 public:
 	static class UClass* StaticClass()
@@ -19602,7 +19614,10 @@ public:
 	TSubclassOf<class UFortAthenaAISpawnerData>   DefaultBotAISpawnerData;                           // 0x0A18(0x0008)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 	uint8                                         Pad_A20[0x10];                                     // 0x0A20(0x0010)(Fixing Size After Last Property [ Dumper-8 ])
 	TSoftObjectPtr<class UEnvQuery>               EQSMapSampling;                                    // 0x0A30(0x0028)(Edit, DisableEditOnInstance, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_A58[0x30];                                     // 0x0A58(0x0030)(Fixing Size After Last Property [ Dumper-8 ])
+	FTimerHandle                                  AttemptToStartBaseQueryingTimerHandle;
+	FTimerHandle                                  WaitForEQSMapSamplingTimerHandle;
+	TArray<struct FVector>                        MapSamplingResults;
+	TArray<struct FVector>                        ReservedSpawningLocations;
 	class UAthenaAIPopulationTracker*             CachedAIPopulationTracker;                         // 0x0A88(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 	TArray<struct FFortServerBotInfo>             PlayerBots;                                        // 0x0A90(0x0010)(ZeroConstructor, Transient, NativeAccessSpecifierPrivate)
 	TArray<struct FFortServerBotInfo>             NonAthenaParticipantBots;                          // 0x0AA0(0x0010)(ZeroConstructor, Transient, NativeAccessSpecifierPrivate)
@@ -24676,7 +24691,7 @@ public:
 
 public:
 	static bool IsInitialNavigationLockActive(class UObject* WorldContextObject);
-	static void RegisterNavGenerationObserver(class USceneComponent* Component, TDelegate<void(class USceneComponent* Component)> Event);
+	static void RegisterNavGenerationObserver(class USceneComponent* Component, TDynamicDelegate<void(class USceneComponent* Component)> Event);
 	static void UnregisterNavGenerationObserver(class USceneComponent* Component);
 
 public:
@@ -25735,7 +25750,7 @@ public:
 	void OnRep_MaxSignalInStorm(const struct FFortGameplayAttributeData& OldValue);
 	void OnRep_Shield(const struct FFortGameplayAttributeData& OldValue);
 	void OnRep_SignalInStorm(const struct FFortGameplayAttributeData& OldValue);
-	void SetDamageDoneOverrideDelegate(TDelegate<void(class UFortHealthSet* HealthSet, float RawDamageDone, float* DamageDone, float* HealthModification)> InOnDamageDoneOverrideDelegate);
+	void SetDamageDoneOverrideDelegate(TDynamicDelegate<void(class UFortHealthSet* HealthSet, float RawDamageDone, float* DamageDone, float* HealthModification)> InOnDamageDoneOverrideDelegate);
 
 public:
 	static class UClass* StaticClass()
@@ -44506,8 +44521,8 @@ public:
 class UAudioAnalysisSubmixAnalyzer final : public UObject
 {
 public:
-	TDelegate<void(const TArray<float>& Envelope)> OnSubmixEnvelopeDelegate;                         // 0x0028(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
-	TDelegate<void(const TArray<float>& Magnitude)> OnSubmixSpectralAnalysisDelegate;                // 0x0038(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const TArray<float>& Envelope)> OnSubmixEnvelopeDelegate;                         // 0x0028(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const TArray<float>& Magnitude)> OnSubmixSpectralAnalysisDelegate;                // 0x0038(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	class USoundSubmix*                           Submix;                                            // 0x0048(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 	struct FFortSubmixAnalyzerData                AnalyzerData;                                      // 0x0050(0x0048)(NativeAccessSpecifierPrivate)
 	class UFortAudioAnalysisSubsystem*            OwningSubsystem;                                   // 0x0098(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
@@ -49930,7 +49945,7 @@ class IFortUICameraFrameTargetInterface final
 public:
 	struct FFortUICameraFrameTargetSettings GetZoomedInCameraFramingSettings();
 	struct FFortUICameraFrameTargetSettings GetZoomedOutCameraFramingSettings();
-	void SetFrameTargetSettingsChangedDelegate(const TDelegate<void(TScriptInterface<class IFortUICameraFrameTargetInterface> Object)>& Delegate);
+	void SetFrameTargetSettingsChangedDelegate(const TDynamicDelegate<void(TScriptInterface<class IFortUICameraFrameTargetInterface> Object)>& Delegate);
 
 public:
 	static class UClass* StaticClass()
@@ -51011,7 +51026,7 @@ public:
 
 public:
 	void ApplyPlayerAbilityRestriction();
-	void BindDelegateOnGameplayVoteUpdated(EFortVoteType VoteType, TDelegate<void(EFortVoteType VoteType, EFortVoteStatus VoteStatus, int32 VoteResult, const TArray<struct FVoter>& Voters)> Delegate);
+	void BindDelegateOnGameplayVoteUpdated(EFortVoteType VoteType, TDynamicDelegate<void(EFortVoteType VoteType, EFortVoteStatus VoteStatus, int32 VoteResult, const TArray<struct FVoter>& Voters)> Delegate);
 	class AFortInGameMapManager* GetUIMapManager();
 	void GloballyBlockAbilitiesWithTags(const struct FGameplayTagContainer& TagsToBlock);
 	void GloballyUnblockAbilitiesWithTags(const struct FGameplayTagContainer& TagsToUnblock);
@@ -51057,7 +51072,7 @@ public:
 	void SetMissionRewardOverrideTag(const class FText& MissionRewardOverrideTag);
 	void SetWorldLootLevel(const int32 NewLootLevel);
 	void SetZoneCompletionResult(EFortCompletionResult NewCompletionResult);
-	void UnbindDelegateOnGameplayVoteUpdated(EFortVoteType VoteType, TDelegate<void(EFortVoteType VoteType, EFortVoteStatus VoteStatus, int32 VoteResult, const TArray<struct FVoter>& Voters)> Delegate);
+	void UnbindDelegateOnGameplayVoteUpdated(EFortVoteType VoteType, TDynamicDelegate<void(EFortVoteType VoteType, EFortVoteStatus VoteStatus, int32 VoteResult, const TArray<struct FVoter>& Voters)> Delegate);
 	void UnregisterGameplayModifier(const struct FActiveGameplayModifierHandle& InHandleToUnregister);
 
 	void GetActiveModifiers(TArray<class UFortGameplayModifierItemDefinition*>* OutActiveModifiers) const;
@@ -54124,6 +54139,14 @@ public:
 
 public:
 	int32 CountReadyPlayers(bool bCheckLTMReady);
+public:
+	struct TArray<struct FItemAndCount> GetStartingItems(bool bInitialSpawn, AController* Controller)
+	{
+		TArray<FItemAndCount> Result;
+		reinterpret_cast<TArray<FItemAndCount>* (*)(AFortGameModeAthena*, TArray<FItemAndCount>*, bool, AController*)>(
+			InSDKUtils::GetImageBase() + 0x5F934F0)(this, &Result, bInitialSpawn, Controller);
+		return Result;
+	}
 public:
 	static class UClass* StaticClass()
 	{
@@ -62632,7 +62655,7 @@ class AFortBodyPartOverridePreviewActor final : public AActor
 public:
 	uint8                                         Pad_220[0x8];                                      // 0x0220(0x0008)(Fixing Size After Last Property [ Dumper-8 ])
 	class UAthenaCharacterPartItemDefinition*     MyCosmeticItem;                                    // 0x0228(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	TDelegate<void(TScriptInterface<class IFortUICameraFrameTargetInterface> Object)> OnSettingsChangedDelegate; // 0x0230(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, Protected, NativeAccessSpecifierProtected)
+	TDynamicDelegate<void(TScriptInterface<class IFortUICameraFrameTargetInterface> Object)> OnSettingsChangedDelegate; // 0x0230(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, Protected, NativeAccessSpecifierProtected)
 
 public:
 	void ApplyMyCosmeticItemToHero(class AFortPlayerPawn* PawnToModify, class AFortPlayerController* FortPC);
@@ -62781,7 +62804,7 @@ public:
 	class UAthenaPickaxeItemDefinition*           CosmeticPickaxeItemDefinition;                     // 0x0238(0x0008)(BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	TArray<struct FMcpVariantChannelInfo>         PreviewVariantChannels;                            // 0x0240(0x0010)(ZeroConstructor, Protected, NativeAccessSpecifierProtected)
 	class AFortWeapon*                            WeaponActor;                                       // 0x0250(0x0008)(BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	TDelegate<void(TScriptInterface<class IFortUICameraFrameTargetInterface> Object)> OnSettingsChangedDelegate; // 0x0258(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, Protected, NativeAccessSpecifierProtected)
+	TDynamicDelegate<void(TScriptInterface<class IFortUICameraFrameTargetInterface> Object)> OnSettingsChangedDelegate; // 0x0258(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, Protected, NativeAccessSpecifierProtected)
 	uint8                                         Pad_268[0x10];                                     // 0x0268(0x0010)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
@@ -63913,7 +63936,7 @@ public:
 	class UAthenaCharmItemDefinition*             MyCosmeticItem;                                    // 0x0230(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	EFortCustomCharmType                          CharmSlot;                                         // 0x0238(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	uint8                                         Pad_239[0x3];                                      // 0x0239(0x0003)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void(TScriptInterface<class IFortUICameraFrameTargetInterface> Object)> OnSettingsChangedDelegate; // 0x023C(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, Protected, NativeAccessSpecifierProtected)
+	TDynamicDelegate<void(TScriptInterface<class IFortUICameraFrameTargetInterface> Object)> OnSettingsChangedDelegate; // 0x023C(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, Protected, NativeAccessSpecifierProtected)
 	uint8                                         Pad_24C[0x4];                                      // 0x024C(0x0004)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
@@ -67910,7 +67933,7 @@ public:
 class UContainerSearchedDelegateHolder final : public UFortMissionEventDelegateHolder
 {
 public:
-	TDelegate<void(class ABuildingContainer* SearchedContainer, class AFortPawn* SearcherPawn)> OnContainerSearchedDelegate; // 0x0028(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
+	TDynamicDelegate<void(class ABuildingContainer* SearchedContainer, class AFortPawn* SearcherPawn)> OnContainerSearchedDelegate; // 0x0028(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
 
 public:
 	static class UClass* StaticClass()
@@ -69209,7 +69232,7 @@ public:
 	uint8                                         Pad_28[0x60];                                      // 0x0028(0x0060)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
-	void RequestThrottleObject(class UObject* InWorldContextObject, class UObject* InThrottleObject, int32 InThrottleBucketID, TDelegate<void(bool Succeeded)> InThrottleCompleteFunction);
+	void RequestThrottleObject(class UObject* InWorldContextObject, class UObject* InThrottleObject, int32 InThrottleBucketID, TDynamicDelegate<void(bool Succeeded)> InThrottleCompleteFunction);
 
 public:
 	static class UClass* StaticClass()
@@ -71890,7 +71913,7 @@ public:
 	void OnUpdateDirectionalLightForTimeOfDay(const struct FLinearColor& AboutToApplyDirectionalLightColor);
 	void OnWeatherEnd(int32 WeatherEventIndex);
 	void OnWeatherStart(int32 WeatherEventIndex);
-	void RegisterForDayPhaseChangedEvent(TDelegate<void(EFortDayPhase CurrentDayPhase, EFortDayPhase PreviousDayPhase, bool bAtCreation)> DelegateSignature);
+	void RegisterForDayPhaseChangedEvent(TDynamicDelegate<void(EFortDayPhase CurrentDayPhase, EFortDayPhase PreviousDayPhase, bool bAtCreation)> DelegateSignature);
 	void RemoveLightAndFogPhaseSettingOverride(EFortDayPhase DayPhase, float BlendOutLength);
 	void RemoveLightAndFogPhaseSettingOverrideMulticast(EFortDayPhase DayPhase, float BlendOutLength);
 	void SetDayPhase(const class FString& DayPhase);
@@ -72004,16 +72027,16 @@ public:
 	uint8                                         Pad_7DB[0x5];                                      // 0x07DB(0x0005)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
-	void BindDelegateOnToggleGroupFullyActive(const struct FGameplayTag& ToggleGroup, TDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)> Delegate);
-	void BindDelegateOnToggleGroupFullyInactive(const struct FGameplayTag& ToggleGroup, TDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)> Delegate);
-	void BindDelegateOnToggleGroupMemberActiveStateChange(const struct FGameplayTag& ToggleGroup, TDelegate<void(class UFortCurieToggleComponent* ToggleComponent, bool bActive)> Delegate);
+	void BindDelegateOnToggleGroupFullyActive(const struct FGameplayTag& ToggleGroup, TDynamicDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)> Delegate);
+	void BindDelegateOnToggleGroupFullyInactive(const struct FGameplayTag& ToggleGroup, TDynamicDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)> Delegate);
+	void BindDelegateOnToggleGroupMemberActiveStateChange(const struct FGameplayTag& ToggleGroup, TDynamicDelegate<void(class UFortCurieToggleComponent* ToggleComponent, bool bActive)> Delegate);
 	void InternalPhysicsComponentAwakeChanged(class UPrimitiveComponent* SimulatingComponent, const bool bIsAwake);
 	void OnRep_ValidStateIdentifiers();
 	void OnToggleGroupComponentActivated(class UActorComponent* InComponent, bool bReset);
 	void OnToggleGroupComponentDeactivated(class UActorComponent* InComponent);
-	void UnbindDelegateOnToggleGroupFullyActive(const struct FGameplayTag& ToggleGroup, TDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)> Delegate);
-	void UnbindDelegateOnToggleGroupFullyInactive(const struct FGameplayTag& ToggleGroup, TDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)> Delegate);
-	void UnbindDelegateOnToggleGroupMemberActiveStateChange(const struct FGameplayTag& ToggleGroup, TDelegate<void(class UFortCurieToggleComponent* ToggleComponent, bool bActive)> Delegate);
+	void UnbindDelegateOnToggleGroupFullyActive(const struct FGameplayTag& ToggleGroup, TDynamicDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)> Delegate);
+	void UnbindDelegateOnToggleGroupFullyInactive(const struct FGameplayTag& ToggleGroup, TDynamicDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)> Delegate);
+	void UnbindDelegateOnToggleGroupMemberActiveStateChange(const struct FGameplayTag& ToggleGroup, TDynamicDelegate<void(class UFortCurieToggleComponent* ToggleComponent, bool bActive)> Delegate);
 
 public:
 	static class UClass* StaticClass()
@@ -77531,7 +77554,7 @@ class UFortFallbackCameraFrameTargetProxy final : public UObject
 {
 public:
 	uint8                                         Pad_28[0x18];                                      // 0x0028(0x0018)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void(TScriptInterface<class IFortUICameraFrameTargetInterface> Object)> OnSettingsChangedDelegate; // 0x0040(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
+	TDynamicDelegate<void(TScriptInterface<class IFortUICameraFrameTargetInterface> Object)> OnSettingsChangedDelegate; // 0x0040(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
 
 public:
 	void SetItemToRepresent(const class UFortItem* ItemToRepresent, const class USceneComponent* ComponentToView);
@@ -81685,8 +81708,8 @@ public:
 	void OnWaveCompleted(int32 Tier, int32 Wave, EFortCompletionResult Result);
 	void ProvideAllPotentialBadges(const TArray<struct FGameplayTag>& BadgeTags);
 	void RecordResourceActorSpawn(class AActor* SpawnedActor);
-	void RegisterForBuildingHarvestedByPlayerEvent(TDelegate<void(class ABuildingSMActor* HarvestedBuilding, class AFortPlayerPawn* HarvesterPawn)> Delegate, const struct FGameplayTagQuery& HarvestedBuildingRequirements);
-	void RegisterForContainerSearchedEvent(TDelegate<void(class ABuildingContainer* SearchedContainer, class AFortPawn* SearcherPawn)> Delegate, const struct FGameplayTagQuery& ContainerRequirements);
+	void RegisterForBuildingHarvestedByPlayerEvent(TDynamicDelegate<void(class ABuildingSMActor* HarvestedBuilding, class AFortPlayerPawn* HarvesterPawn)> Delegate, const struct FGameplayTagQuery& HarvestedBuildingRequirements);
+	void RegisterForContainerSearchedEvent(TDynamicDelegate<void(class ABuildingContainer* SearchedContainer, class AFortPawn* SearcherPawn)> Delegate, const struct FGameplayTagQuery& ContainerRequirements);
 	void RemoveGoalFromEncounterAssignment(const struct FFortAIAssignmentIdentifier& AssignmentIdentifier, const class UFortAIEncounterInfo*& Encounter, const struct FFortAIGoalInfo& GoalInfo);
 	void RemoveGoalsFromEncounterAssignment(const struct FFortAIAssignmentIdentifier& AssignmentIdentifier, const class UFortAIEncounterInfo*& Encounter, const TArray<struct FFortAIGoalInfo>& GoalInfos);
 	bool RemoveParticipantAccount(struct FUniqueNetIdRepl* AbandoningPlayerId);
@@ -82678,8 +82701,8 @@ public:
 	bool AddDataAccumulation(const struct FFortGameplayDataTrackerAccumulation& Accumulation);
 	void HandlePlaylistLoaded(class FName PlaylistName, const struct FGameplayTagContainer& PlaylistContextTags);
 	void OnRep_EventValues();
-	bool RegisterForAccumulationRangeEvents(const struct FGameplayTag& AccumulationTag, const struct FGameplayTag& RangeTag, TDelegate<void(bool bIsInRange, const struct FGameplayTag& AccumulationTag, const struct FGameplayTag& RangeTag)> Delegate);
-	bool RegisterForEventValueRange(const struct FGameplayTag& Event, const struct FFortGameplayDataTrackedRange& Range, TDelegate<void(bool bIsInRange, const struct FGameplayTag& AccumulationTag, const struct FGameplayTag& RangeTag)> Delegate);
+	bool RegisterForAccumulationRangeEvents(const struct FGameplayTag& AccumulationTag, const struct FGameplayTag& RangeTag, TDynamicDelegate<void(bool bIsInRange, const struct FGameplayTag& AccumulationTag, const struct FGameplayTag& RangeTag)> Delegate);
+	bool RegisterForEventValueRange(const struct FGameplayTag& Event, const struct FFortGameplayDataTrackedRange& Range, TDynamicDelegate<void(bool bIsInRange, const struct FGameplayTag& AccumulationTag, const struct FGameplayTag& RangeTag)> Delegate);
 	void TriggerEvent(const struct FGameplayTag& EventTag, float Value);
 
 	float GetAccumulationValue(const struct FGameplayTag& AccumulationTag) const;
@@ -85021,7 +85044,7 @@ public:
 	struct FGiftBoxInfo                           GiftBoxInfo;                                       // 0x0108(0x0048)(BlueprintVisible, BlueprintReadOnly, NativeAccessSpecifierPublic)
 
 public:
-	void FilterUserMessageForProfanity(int32 ControllerId, TDelegate<void(bool bSuccess, const class FString& SanitizedMsg)> OnTextFiltered);
+	void FilterUserMessageForProfanity(int32 ControllerId, TDynamicDelegate<void(bool bSuccess, const class FString& SanitizedMsg)> OnTextFiltered);
 
 	class FText FormatTextUsingParams(const class FText& FormatString) const;
 	class UFortGiftBoxItemDefinition* GetGiftBoxDefinition() const;
@@ -91311,8 +91334,8 @@ public:
 	uint8                                         Pad_30[0x10];                                      // 0x0030(0x0010)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
-	void DownloadThumbnail(const struct FCreativeLoadedLinkData& LinkData, const TDelegate<void(bool bSuccess, class UTexture2DDynamic* InThumbnailTexture)>& Callback);
-	void QueryLinkDataByCode(const class FString& LinkCode, const TDelegate<void(bool bSuccess, const class FString& ErrorMessage, const struct FCreativeLoadedLinkData& LinkData)>& Callback, bool bCalledByModerator);
+	void DownloadThumbnail(const struct FCreativeLoadedLinkData& LinkData, const TDynamicDelegate<void(bool bSuccess, class UTexture2DDynamic* InThumbnailTexture)>& Callback);
+	void QueryLinkDataByCode(const class FString& LinkCode, const TDynamicDelegate<void(bool bSuccess, const class FString& ErrorMessage, const struct FCreativeLoadedLinkData& LinkData)>& Callback, bool bCalledByModerator);
 
 	TArray<struct FCreativeIslandDescriptionTag> GetIslandDescriptionTags(const struct FCreativeLoadedLinkData& LinkData) const;
 	class FText GetLinkIntroduction(const struct FCreativeLoadedLinkData& LinkData) const;
@@ -92786,7 +92809,7 @@ public:
 	TMulticastInlineDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems)> OnRealMoneyPurchaseComplete; // 0x0210(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, BlueprintCallable, NativeAccessSpecifierPublic)
 	uint8                                         Pad_220[0x88];                                     // 0x0220(0x0088)(Fixing Size After Last Property [ Dumper-8 ])
 	TArray<struct FFriendCode>                    CachedFriendCodes;                                 // 0x02A8(0x0010)(BlueprintVisible, BlueprintReadOnly, ZeroConstructor, Transient, Protected, NativeAccessSpecifierProtected)
-	TArray<TDelegate<void(bool bSuccess, const TArray<struct FFriendCode>& FriendCodes)>> PendingFriendCodeOnCompleteDelegates; // 0x02B8(0x0010)(ZeroConstructor, Transient, ContainsInstancedReference, Protected, NativeAccessSpecifierProtected)
+	TArray<TDynamicDelegate<void(bool bSuccess, const TArray<struct FFriendCode>& FriendCodes)>> PendingFriendCodeOnCompleteDelegates; // 0x02B8(0x0010)(ZeroConstructor, Transient, ContainsInstancedReference, Protected, NativeAccessSpecifierProtected)
 	uint8                                         Pad_2C8[0x10];                                     // 0x02C8(0x0010)(Fixing Size After Last Property [ Dumper-8 ])
 	double                                        MinTimeBetweenFriendCodeRequestsSeconds;           // 0x02D8(0x0008)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class FText                                   FriendCodeMessageBody;                             // 0x02E0(0x0018)(Edit, Config, Protected, NativeAccessSpecifierProtected)
@@ -92794,12 +92817,12 @@ public:
 	uint8                                         Pad_308[0x60];                                     // 0x0308(0x0060)(Fixing Size After Last Property [ Dumper-8 ])
 	TArray<class UFortGiftBoxItem*>               RequestedGiftBoxesToDisplay;                       // 0x0368(0x0010)(ZeroConstructor, Transient, NativeAccessSpecifierPrivate)
 	uint8                                         Pad_378[0x70];                                     // 0x0378(0x0070)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void(class UWidget* WebWidget, const class FString& OfferId)> DisplayPurchaseWidget;   // 0x03E8(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
-	TDelegate<void()>                             DismissPurchaseWidget;                             // 0x03F8(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
-	TDelegate<void(class UWidget* WebWidget)>     DisplayLoginWidget;                                // 0x0408(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
-	TDelegate<void()>                             DismissLoginWidget;                                // 0x0418(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
-	TDelegate<void(class UWidget* WebWidget)>     DisplayAccountCreationWidget;                      // 0x0428(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
-	TDelegate<void()>                             DismissAccountCreationWidget;                      // 0x0438(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
+	TDynamicDelegate<void(class UWidget* WebWidget, const class FString& OfferId)> DisplayPurchaseWidget;   // 0x03E8(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
+	TDynamicDelegate<void()>                             DismissPurchaseWidget;                             // 0x03F8(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
+	TDynamicDelegate<void(class UWidget* WebWidget)>     DisplayLoginWidget;                                // 0x0408(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
+	TDynamicDelegate<void()>                             DismissLoginWidget;                                // 0x0418(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
+	TDynamicDelegate<void(class UWidget* WebWidget)>     DisplayAccountCreationWidget;                      // 0x0428(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
+	TDynamicDelegate<void()>                             DismissAccountCreationWidget;                      // 0x0438(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
 	uint8                                         Pad_448[0x10];                                     // 0x0448(0x0010)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
@@ -92808,15 +92831,15 @@ public:
 	bool AreMissionRewardsAvailable();
 	void CancelEpicPurchasingDisplay();
 	EOfferPurchaseError CanPurchaseOffer(const class FString& OfferId, const int32 PriceIndex, int32 Quantity);
-	void CheckAffiliateName(const class FString& AffiliateName, TDelegate<void(bool bSuccess, bool bWasValidAffiliateName, const class FString& AffilateNameChecked)> OnCheckAffiliateNameComplete);
+	void CheckAffiliateName(const class FString& AffiliateName, TDynamicDelegate<void(bool bSuccess, bool bWasValidAffiliateName, const class FString& AffilateNameChecked)> OnCheckAffiliateNameComplete);
 	void ClaimAllResourceCollectors();
 	void ClaimItemCacheReward(class UFortItem* ItemCache);
 	void ClaimResourceCollectors(const TArray<class UFortCollectedResourceItem*>& CollectorTypes);
 	void CollectExpedition(const class UFortExpeditionItem* Expedition);
 	void ConvertItem(const class UFortItem* ItemToConvert, int32 RecipeIndex);
 	bool DoesPlatformSupportFriendCodes();
-	void DownloadEULA(const TDelegate<void(bool bSuccessful, class FText EULAText, const class FString& Key)> OnCompleteDelegate);
-	void DownloadEULAWithKey(const TDelegate<void(bool bSuccessful, class FText EULAText, const class FString& Key)> OnCompleteDelegate, const class FString& Key);
+	void DownloadEULA(const TDynamicDelegate<void(bool bSuccessful, class FText EULAText, const class FString& Key)> OnCompleteDelegate);
+	void DownloadEULAWithKey(const TDynamicDelegate<void(bool bSuccessful, class FText EULAText, const class FString& Key)> OnCompleteDelegate, const class FString& Key);
 	void GetAllResourceCollectors(TArray<class UFortCollectedResourceItem*>* ResourceCollectorsOwned);
 	class FText GetFriendCodeDescription(const struct FFriendCode& FriendCode);
 	class FText GetFriendCodeDisplayName(const struct FFriendCode& FriendCode);
@@ -92825,29 +92848,29 @@ public:
 	void GrantPendingMissionAlertRewards();
 	bool IsAllowedConversionIndex(const class UFortItem* ItemToConvert, int32 RecipeIndex);
 	bool IsOfferCompletelyFree(const class FString& OfferId, const int32 PriceIndex, int32 Quantity);
-	void IssueFriendCode(const TDelegate<void(bool bSuccess, const struct FFriendCode& FriendCode)>& OnCompleteDelegate);
+	void IssueFriendCode(const TDynamicDelegate<void(bool bSuccess, const struct FFriendCode& FriendCode)>& OnCompleteDelegate);
 	void MarkItemSeen(class UFortAccountItem* ItemToMarkSeen);
 	void OpenMissionRewards();
 	void PromoteItem(const class UFortItem* ItemToPromote);
-	void PurchaseBattlePassOffer(const TArray<class FString>& OfferIdList, const TDelegate<void(bool bSuccess, const TArray<class FString>& OfferTemplateIdList)>& Callback);
-	EOfferPurchaseError PurchaseMultipleOffers(const TMap<class FString, int32>& OfferIdToQuantityMap, const TDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const TArray<class FString>& OfferIdList)>& Callback, int32 IndexInSection, int32 ColumnIndexInSection, int32 InnerRowIndexInSection, int32 SectionIndex);
-	EOfferPurchaseError PurchaseOffer(const class FString& OfferId, const int32 PriceIndex, const TDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)>& Callback, int32 Quantity, int32 IndexInSection, bool bIsIncarousel, int32 IndexIncarousel, int32 LengthOfCarousel, int32 ColumnIndexInSection, int32 InnerRowIndexInSection, int32 SectionIndex);
-	void PurchaseRealMoneyCatalogEntry(const class FString& OfferId, const TDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems)>& Callback, int32 PriceIndex, int32 Quantity);
-	void QueryUnredeemedFriendCodes(const TDelegate<void(bool bSuccess, const TArray<struct FFriendCode>& FriendCodes)>& OnCompleteDelegate);
-	void ReadPrivacySettings(const TDelegate<void(bool bSuccess, const struct FMcpPrivacySettings& Settings)>& OnComplete);
+	void PurchaseBattlePassOffer(const TArray<class FString>& OfferIdList, const TDynamicDelegate<void(bool bSuccess, const TArray<class FString>& OfferTemplateIdList)>& Callback);
+	EOfferPurchaseError PurchaseMultipleOffers(const TMap<class FString, int32>& OfferIdToQuantityMap, const TDynamicDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const TArray<class FString>& OfferIdList)>& Callback, int32 IndexInSection, int32 ColumnIndexInSection, int32 InnerRowIndexInSection, int32 SectionIndex);
+	EOfferPurchaseError PurchaseOffer(const class FString& OfferId, const int32 PriceIndex, const TDynamicDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)>& Callback, int32 Quantity, int32 IndexInSection, bool bIsIncarousel, int32 IndexIncarousel, int32 LengthOfCarousel, int32 ColumnIndexInSection, int32 InnerRowIndexInSection, int32 SectionIndex);
+	void PurchaseRealMoneyCatalogEntry(const class FString& OfferId, const TDynamicDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems)>& Callback, int32 PriceIndex, int32 Quantity);
+	void QueryUnredeemedFriendCodes(const TDynamicDelegate<void(bool bSuccess, const TArray<struct FFriendCode>& FriendCodes)>& OnCompleteDelegate);
+	void ReadPrivacySettings(const TDynamicDelegate<void(bool bSuccess, const struct FMcpPrivacySettings& Settings)>& OnComplete);
 	void RecycleItem(const class UFortItem* ItemToRecycle);
 	void RecycleItemBatch(const TArray<class UFortItem*>& ItemsToRecycle);
 	void RefundItem(const class UFortAccountItem* ItemToConvert);
-	void RegisterForEpicPurchasingDisplay(const TDelegate<void(class UWidget* WebWidget, const class FString& OfferId)>& DisplayCallback, const TDelegate<void()>& DismissCallback);
+	void RegisterForEpicPurchasingDisplay(const TDynamicDelegate<void(class UWidget* WebWidget, const class FString& OfferId)>& DisplayCallback, const TDynamicDelegate<void()>& DismissCallback);
 	void RemoveGiftBox(const class UFortGiftBoxItem* GiftBoxToRemove);
-	void SendFriendCodePlatformMessage(const struct FFriendCode& FriendCode, const TDelegate<void(bool bMessageSent)>& OnCompleteDelegate);
-	void SetAffiliateName(const class FString& Name_0, TDelegate<void(bool bSuccess)> OnAffilateNameSetAcknowledged);
-	void SetBansViewed(TDelegate<void(bool bSuccess)> OnBanAcknowledged);
+	void SendFriendCodePlatformMessage(const struct FFriendCode& FriendCode, const TDynamicDelegate<void(bool bMessageSent)>& OnCompleteDelegate);
+	void SetAffiliateName(const class FString& Name_0, TDynamicDelegate<void(bool bSuccess)> OnAffilateNameSetAcknowledged);
+	void SetBansViewed(TDynamicDelegate<void(bool bSuccess)> OnBanAcknowledged);
 	void SetItemFavoriteStatus(class UFortAccountItem* Item, bool bFavorite, bool ShouldDeferMarking);
 	bool ShouldApplyEUText();
 	bool StartExpedition(const class UFortExpeditionItem* Expedition, const float SuccessChance, const class FName& SquadId, const float SquadRating, const TArray<class UFortItem*>& SlottedSquadItems, const TArray<int32>& SlotIndices, const TArray<float>& ItemRatingMods, float GlobalMod);
 	void TransmogItem(const class UFortConversionControlItemDefinition* ControlKeyItem, const TArray<class UFortItem*>& ItemsToSacrifice);
-	void UpdatePrivacySettings(const struct FMcpPrivacySettings& NewSettings, const TDelegate<void(bool bSuccess)>& OnComplete);
+	void UpdatePrivacySettings(const struct FMcpPrivacySettings& NewSettings, const TDynamicDelegate<void(bool bSuccess)>& OnComplete);
 	void UpgradeItemRarity(const class UFortItem* ItemToUpgrade);
 
 	EOfferPurchaseError CanGiftOffer(const class FString& OfferId, const TArray<class FString>& ReceiverAccountIds, const class FString& GiftWrapTemplateId, const class FString& UserMessageToRecipients, const int32 PriceIndex) const;
@@ -92908,7 +92931,7 @@ public:
 	bool IsUserCurrentlyBanned(const struct FMcpBanInfo& BanInfo) const;
 	bool IsUserOnlyCompetitiveBanned(const struct FMcpBanInfo& BanInfo) const;
 	bool IsValid(const class FString& OfferId) const;
-	EOfferPurchaseError PurchaseOfferAsGift(const class FString& OfferId, int32 Quantity, int32 PriceIndex, const TArray<class FString>& ReceiverAccountIds, const class FString& GiftWrapTemplateId, const class FString& UserMessageToRecipients, const TDelegate<void(bool bSuccess, const TArray<class FString>& IneligableAccounts, const TArray<class FString>& ErrorCodes)>& OnComplete, int32 ExpectedTotalPrice) const;
+	EOfferPurchaseError PurchaseOfferAsGift(const class FString& OfferId, int32 Quantity, int32 PriceIndex, const TArray<class FString>& ReceiverAccountIds, const class FString& GiftWrapTemplateId, const class FString& UserMessageToRecipients, const TDynamicDelegate<void(bool bSuccess, const TArray<class FString>& IneligableAccounts, const TArray<class FString>& ErrorCodes)>& OnComplete, int32 ExpectedTotalPrice) const;
 
 public:
 	static class UClass* StaticClass()
@@ -94042,7 +94065,7 @@ public:
 	void ServerEventLogMinigameState(EFortMinigameState NewState, int32 Duration);
 	void ServerEventLogRoundEnded(class AFortPlayerController* InstigatorPC, EFortMinigameEnd EndMethod, EFortMinigameState NextState);
 	void ServerEventLogScoreChanged(EFortQuestObjectiveStatEvent Type, class UObject* TargetObject, class AFortPlayerController* PlayerController, const struct FGameplayTagContainer& TargetTags, const struct FGameplayTagContainer& SourceTags, const struct FGameplayTagContainer& ContextTags, int32 Count);
-	bool SetClassSlotForPlayer(class AFortPlayerState* PlayerState, uint8 NewClassSlot, TDelegate<void(class AFortPlayerState* PlayerState, uint8 ClassSlotIndex, uint8 OldClassSlotIndex)> OnComplete, bool bRespawnPlayer, bool bResetCurrentVitals, bool bClearAllItems, float ClassSwitchDelay);
+	bool SetClassSlotForPlayer(class AFortPlayerState* PlayerState, uint8 NewClassSlot, TDynamicDelegate<void(class AFortPlayerState* PlayerState, uint8 ClassSlotIndex, uint8 OldClassSlotIndex)> OnComplete, bool bRespawnPlayer, bool bResetCurrentVitals, bool bClearAllItems, float ClassSwitchDelay);
 	void SetClassSlotInventory(uint8 ClassSlotIndex, const TArray<struct FItemAndCount>& InventoryItems);
 	void SetClassSlotName(uint8 ClassSlotIndex, const class FString& ClassName);
 	void SetInitTeamSizeWeightForTeam(uint8 TeamIndex, int32 TeamSizeWeight);
@@ -94914,7 +94937,7 @@ public:
 class UBuildingSMActorHarvestedDelegateHolder final : public UFortMissionEventDelegateHolder
 {
 public:
-	TDelegate<void(class ABuildingSMActor* HarvestedBuilding, class AFortPlayerPawn* HarvesterPawn)> OnBuildingSMActorHarvestedDelegate; // 0x0028(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
+	TDynamicDelegate<void(class ABuildingSMActor* HarvestedBuilding, class AFortPlayerPawn* HarvesterPawn)> OnBuildingSMActorHarvestedDelegate; // 0x0028(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
 
 public:
 	static class UClass* StaticClass()
@@ -112124,7 +112147,7 @@ class UFortWeakPointComponent final : public USceneComponent
 public:
 	uint8                                         Pad_1F0[0x8];                                      // 0x01F0(0x0008)(Fixing Size After Last Property [ Dumper-8 ])
 	TMulticastInlineDelegate<void(const struct FVector& HitLocation, const struct FVector& HitNormal)> OnWeakpointHit; // 0x01F8(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
-	TDelegate<void(const class UFortWeakPointComponent* WeakPointComponent, const struct FBuildingWeakSpotData& WeakSpotData)> ShouldKillWeakSpotDynamic; // 0x0208(0x0010)(BlueprintVisible, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const class UFortWeakPointComponent* WeakPointComponent, const struct FBuildingWeakSpotData& WeakSpotData)> ShouldKillWeakSpotDynamic; // 0x0208(0x0010)(BlueprintVisible, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	uint8                                         Pad_218[0x18];                                     // 0x0218(0x0018)(Fixing Size After Last Property [ Dumper-8 ])
 	EPhysicalSurface                              PrimarySurfaceType;                                // 0x0230(0x0001)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	uint8                                         Pad_231[0xB];                                      // 0x0231(0x000B)(Fixing Size After Last Property [ Dumper-8 ])
@@ -113476,8 +113499,8 @@ public:
 	struct FScalableFloat                         StepTime;                                          // 0x01A8(0x0028)(Edit, DisableEditOnInstance, Protected, NativeAccessSpecifierProtected)
 	uint8                                         Pad_1D0[0x8];                                      // 0x01D0(0x0008)(Fixing Size After Last Property [ Dumper-8 ])
 	class FString                                 PlayerGroupIdentifier;                             // 0x01D8(0x0010)(Edit, ZeroConstructor, DisableEditOnInstance, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	TDelegate<void(class AActor* IndicatedActor)> OnActorAdded;                                      // 0x01E8(0x0010)(BlueprintVisible, ZeroConstructor, InstancedReference, NoDestructor, Protected, NativeAccessSpecifierProtected)
-	TDelegate<void(class AActor* IndicatedActor)> OnActorRemoved;                                    // 0x01F8(0x0010)(BlueprintVisible, ZeroConstructor, InstancedReference, NoDestructor, Protected, NativeAccessSpecifierProtected)
+	TDynamicDelegate<void(class AActor* IndicatedActor)> OnActorAdded;                                      // 0x01E8(0x0010)(BlueprintVisible, ZeroConstructor, InstancedReference, NoDestructor, Protected, NativeAccessSpecifierProtected)
+	TDynamicDelegate<void(class AActor* IndicatedActor)> OnActorRemoved;                                    // 0x01F8(0x0010)(BlueprintVisible, ZeroConstructor, InstancedReference, NoDestructor, Protected, NativeAccessSpecifierProtected)
 	class AFortPlayerControllerAthena*            IndicatingController;                              // 0x0208(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	uint8                                         Pad_210[0x10];                                     // 0x0210(0x0010)(Fixing Struct Size After Last Property [ Dumper-8 ])
 

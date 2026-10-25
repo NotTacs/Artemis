@@ -12,6 +12,9 @@
 #include <windows.h>
 #include <stdexcept>
 #include <iostream>
+#include <type_traits>
+#include <utility>
+#include <new>
 #include "UtfN.hpp"
 
 namespace UC
@@ -168,6 +171,49 @@ namespace UC
 		}
 	};
 
+
+	inline uint32 HashCombine(uint32 A, uint32 C)
+	{
+		uint32 B = 0x9e3779b9;
+		A += B;
+
+		A -= B; A -= C; A ^= (C >> 13);
+		B -= C; B -= A; B ^= (A << 8);
+		C -= A; C -= B; C ^= (B >> 13);
+		A -= B; A -= C; A ^= (C >> 12);
+		B -= C; B -= A; B ^= (A << 16);
+		C -= A; C -= B; C ^= (B >> 5);
+		A -= B; A -= C; A ^= (C >> 3);
+		B -= C; B -= A; B ^= (A << 10);
+		C -= A; C -= B; C ^= (B >> 15);
+
+		return C;
+	}
+
+	inline uint32 PointerHash(const void* Key, uint32 C = 0)
+	{
+		const uint64 PtrInt = reinterpret_cast<uint64>(Key) >> 4;
+		return HashCombine(static_cast<uint32>(PtrInt), C);
+	}
+
+	inline uint32 GetTypeHash(const uint8 A) { return A; }
+	inline uint32 GetTypeHash(const int8 A) { return A; }
+	inline uint32 GetTypeHash(const uint16 A) { return A; }
+	inline uint32 GetTypeHash(const int16 A) { return A; }
+	inline uint32 GetTypeHash(const int32 A) { return A; }
+	inline uint32 GetTypeHash(const uint32 A) { return A; }
+	inline uint32 GetTypeHash(const uint64 A) { return (uint32)A + ((uint32)(A >> 32) * 23); }
+	inline uint32 GetTypeHash(const int64 A) { return (uint32)A + ((uint32)(A >> 32) * 23); }
+	inline uint32 GetTypeHash(const float Value) { return *reinterpret_cast<const uint32*>(&Value); }
+	inline uint32 GetTypeHash(const double Value) { return GetTypeHash(*reinterpret_cast<const uint64*>(&Value)); }
+	inline uint32 GetTypeHash(const void* A) { return PointerHash(A); }
+
+	template<typename T>
+	inline uint32 GetTypeHash(T* A) { return PointerHash(A); }
+
+	template<typename EnumType>
+	inline std::enable_if_t<std::is_enum_v<EnumType>, uint32> GetTypeHash(EnumType E) { return GetTypeHash(static_cast<std::underlying_type_t<EnumType>>(E)); }
+
 	template<typename ArrayElementType>
 	class TArray;
 
@@ -266,8 +312,31 @@ namespace UC
 
 			public:
 				inline const ElementType* GetAllocation() const { return SecondaryData ? SecondaryData : reinterpret_cast<const ElementType*>(&InlineData); }
+				inline       ElementType* GetAllocation()       { return SecondaryData ? SecondaryData : reinterpret_cast<ElementType*>(&InlineData); }
 
 				inline uint32 GetNumInlineBytes() const { return NumInlineElements; }
+
+				inline void ResizeAllocation(int32 PreviousNumElements, int32 NumElements)
+				{
+					if (NumElements <= static_cast<int32>(NumInlineElements))
+					{
+						if (SecondaryData)
+						{
+							memcpy(&InlineData, SecondaryData, PreviousNumElements * ElementSize);
+							FMemory::Free(SecondaryData);
+							SecondaryData = nullptr;
+						}
+					}
+					else if (!SecondaryData)
+					{
+						SecondaryData = static_cast<ElementType*>(FMemory::Realloc(nullptr, NumElements * ElementSize, ElementAlign));
+						memcpy(SecondaryData, &InlineData, PreviousNumElements * ElementSize);
+					}
+					else
+					{
+						SecondaryData = static_cast<ElementType*>(FMemory::Realloc(SecondaryData, NumElements * ElementSize, ElementAlign));
+					}
+				}
 			};
 		};
 
@@ -315,6 +384,36 @@ namespace UC
 
 			inline bool operator==(const FBitArray& Other) const { return NumBits == Other.NumBits && GetData() == Other.GetData(); }
 			inline bool operator!=(const FBitArray& Other) const { return NumBits != Other.NumBits || GetData() != Other.GetData(); }
+
+		public:
+			inline void SetBit(int32 Index, bool bValue)
+			{
+				VerifyIndex(Index);
+
+				uint32& Word = reinterpret_cast<uint32*>(Data.GetAllocation())[Index / NumBitsPerDWORD];
+				const uint32 Mask = 1u << (Index & (NumBitsPerDWORD - 1));
+				Word = bValue ? (Word | Mask) : (Word & ~Mask);
+			}
+
+			inline int32 AddBit(bool bValue)
+			{
+				const int32 Index = NumBits;
+
+				if (NumBits + 1 > MaxBits)
+				{
+					const int32 OldMaxDWORDs = MaxBits / NumBitsPerDWORD;
+					const int32 NewMaxDWORDs = OldMaxDWORDs * 2 > 4 ? OldMaxDWORDs * 2 : 4;
+
+					Data.ResizeAllocation(OldMaxDWORDs, NewMaxDWORDs);
+					memset(reinterpret_cast<uint32*>(Data.GetAllocation()) + OldMaxDWORDs, 0, (NewMaxDWORDs - OldMaxDWORDs) * sizeof(uint32));
+					MaxBits = NewMaxDWORDs * NumBitsPerDWORD;
+				}
+
+				NumBits++;
+				SetBit(Index, bValue);
+
+				return Index;
+			}
 
 		public:
 			friend Iterators::FSetBitIterator begin(const FBitArray& Array);
@@ -421,11 +520,33 @@ namespace UC
 		{
 
 			ResizeTo((NumElements + 1));
-			Data[NumElements] = Element;
+			new (&Data[NumElements]) ArrayElementType(Element);
 			NumElements++;
 
 			return true;
 		}
+
+
+		inline ArrayElementType& AddImproper(const ArrayElementType& Element)
+		{
+			ResizeTo((NumElements + 1));
+			Data[NumElements] = Element;
+			NumElements++;
+
+			return Data[NumElements - 1];
+		}
+
+		inline bool Contains(const ArrayElementType& Element)
+		{
+			for (int i = 0; i < Num(); i++)
+			{
+				if (Data[i] == Element)
+					return true;
+			}
+
+			return false;
+		}
+
 		inline bool Remove(int32 Index)
 		{
 			if (!IsValidIndex(Index))
@@ -693,8 +814,40 @@ namespace UC
 		const ContainerImpl::FBitArray& GetAllocationFlags() const { return AllocationFlags; }
 
 	public:
+		inline int32 AddUninitialized()
+		{
+			int32 Index;
+
+			if (NumFreeIndices > 0)
+			{
+				Index = FirstFreeIndex;
+				FirstFreeIndex = Data.GetUnsafe(FirstFreeIndex).NextFreeIndex;
+				--NumFreeIndices;
+
+				if (NumFreeIndices > 0)
+					Data.GetUnsafe(FirstFreeIndex).PrevFreeIndex = -1;
+			}
+			else
+			{
+				Index = Data.NumElements;
+
+				if (Data.NumElements + 1 > Data.MaxElements)
+					Data.ResizeTo(Data.NumElements + 3 * Data.NumElements / 8 + 16);
+
+				Data.NumElements++;
+				AllocationFlags.AddBit(false);
+			}
+
+			AllocationFlags.SetBit(Index, true);
+
+			return Index;
+		}
+
+		inline void* GetElementMemory(int32 Index) { return &Data.GetUnsafe(Index).ElementData; }
+
+	public:
 		inline       SparseArrayElementType& operator[](int32 Index)       { VerifyIndex(Index); return *reinterpret_cast<SparseArrayElementType*>(&Data.GetUnsafe(Index).ElementData); }
-		inline const SparseArrayElementType& operator[](int32 Index) const { VerifyIndex(Index); return *reinterpret_cast<SparseArrayElementType*>(&Data.GetUnsafe(Index).ElementData); }
+		inline const SparseArrayElementType& operator[](int32 Index) const { VerifyIndex(Index); return *reinterpret_cast<const SparseArrayElementType*>(&Data.GetUnsafe(Index).ElementData); }
 
 		inline bool operator==(const TSparseArray<SparseArrayElementType>& Other) const { return Data == Other.Data; }
 		inline bool operator!=(const TSparseArray<SparseArrayElementType>& Other) const { return Data != Other.Data; }
@@ -1011,6 +1164,97 @@ namespace UC
 	public:
 		const ContainerImpl::FBitArray& GetAllocationFlags() const { return Elements.GetAllocationFlags(); }
 
+	private:
+		template<typename KeyElementType, typename ValueElementType>
+		friend class TMap;
+
+		inline int32& GetTypedHash(uint32 KeyHash) { return Hash.GetAllocation()[KeyHash & (HashSize - 1)]; }
+
+		inline void LinkElement(int32 ElementId, uint32 KeyHash)
+		{
+			SetDataType& Element = Elements[ElementId];
+			Element.HashIndex = KeyHash & (HashSize - 1);
+			Element.HashNextId = GetTypedHash(Element.HashIndex);
+			GetTypedHash(Element.HashIndex) = ElementId;
+		}
+
+		static inline int32 GetNumberOfHashBuckets(int32 NumHashedElements)
+		{
+			if (NumHashedElements >= DEFAULT_MIN_NUMBER_OF_HASHED_ELEMENTS)
+				return RoundUpToPowerOfTwo(NumHashedElements / DEFAULT_NUMBER_OF_ELEMENTS_PER_HASH_BUCKET + DEFAULT_BASE_NUMBER_OF_HASH_BUCKETS);
+
+			return 1;
+		}
+
+		template<typename GetKeyHashType>
+		inline void Rehash(GetKeyHashType&& GetKeyHash)
+		{
+			Hash.ResizeAllocation(0, 0);
+
+			if (HashSize <= 0)
+				return;
+
+			Hash.ResizeAllocation(0, HashSize);
+
+			for (int32 HashIndex = 0; HashIndex < HashSize; HashIndex++)
+				Hash.GetAllocation()[HashIndex] = -1;
+
+			for (int32 Index = 0; Index < Elements.NumAllocated(); Index++)
+			{
+				if (Elements.IsValidIndex(Index))
+					LinkElement(Index, GetKeyHash(Elements[Index].Value));
+			}
+		}
+
+		/* Returns true if the hash was rebuilt (which also links every element, including a just-added one). */
+		template<typename GetKeyHashType>
+		inline bool ConditionalRehash(int32 NumHashedElements, GetKeyHashType&& GetKeyHash)
+		{
+			const int32 DesiredHashSize = GetNumberOfHashBuckets(NumHashedElements);
+
+			if (NumHashedElements > 0 && (!HashSize || HashSize < DesiredHashSize))
+			{
+				HashSize = DesiredHashSize;
+				Rehash(GetKeyHash);
+				return true;
+			}
+
+			return false;
+		}
+
+		template<typename KeyType, typename GetKeyType>
+		inline int32 FindIdByHash(uint32 KeyHash, const KeyType& Key, GetKeyType&& GetKey) const
+		{
+			if (Elements.Num() <= 0 || HashSize <= 0)
+				return -1;
+
+			auto* MutableThis = const_cast<TSet*>(this);
+
+			for (int32 ElementId = MutableThis->GetTypedHash(KeyHash); ElementId != -1; ElementId = Elements[ElementId].HashNextId)
+			{
+				if (GetKey(Elements[ElementId].Value) == Key)
+					return ElementId;
+			}
+
+			return -1;
+		}
+
+		template<typename GetKeyHashType>
+		inline int32 AddByHash(uint32 KeyHash, const SetElementType& Value, GetKeyHashType&& GetKeyHash)
+		{
+			const int32 ElementId = Elements.AddUninitialized();
+
+			SetDataType* Element = static_cast<SetDataType*>(Elements.GetElementMemory(ElementId));
+			new (&Element->Value) SetElementType(Value);
+			Element->HashNextId = -1;
+			Element->HashIndex = 0;
+
+			if (!ConditionalRehash(Elements.Num(), GetKeyHash))
+				LinkElement(ElementId, KeyHash);
+
+			return ElementId;
+		}
+
 	public:
 		inline       SetElementType& operator[] (int32 Index)       { return Elements[Index].Value; }
 		inline const SetElementType& operator[] (int32 Index) const { return Elements[Index].Value; }
@@ -1047,6 +1291,49 @@ namespace UC
 
 	public:
 		const ContainerImpl::FBitArray& GetAllocationFlags() const { return Elements.GetAllocationFlags(); }
+
+	private:
+		/* Unqualified so class-type keys pick up their GetTypeHash through ADL (FName, FWeakObjectPtr, ...). */
+		static inline uint32 GetKeyHash(const KeyElementType& Key) { return GetTypeHash(Key); }
+		static inline uint32 GetElementKeyHash(const ElementType& Element) { return GetKeyHash(Element.Key()); }
+		static inline const KeyElementType& GetElementKey(const ElementType& Element) { return Element.Key(); }
+
+	public:
+		inline ValueElementType* Find(const KeyElementType& Key)
+		{
+			const int32 ElementId = Elements.FindIdByHash(GetKeyHash(Key), Key, GetElementKey);
+			return ElementId != -1 ? &Elements[ElementId].Value() : nullptr;
+		}
+
+		inline const ValueElementType* Find(const KeyElementType& Key) const
+		{
+			return const_cast<TMap*>(this)->Find(Key);
+		}
+
+		inline bool Contains(const KeyElementType& Key) const { return Find(Key) != nullptr; }
+
+		inline ValueElementType& Add(const KeyElementType& Key, const ValueElementType& Value)
+		{
+			const uint32 KeyHash = GetKeyHash(Key);
+			const int32 ExistingId = Elements.FindIdByHash(KeyHash, Key, GetElementKey);
+
+			if (ExistingId != -1)
+			{
+				Elements[ExistingId].Value() = Value;
+				return Elements[ExistingId].Value();
+			}
+
+			const int32 ElementId = Elements.AddByHash(KeyHash, ElementType(Key, Value), GetElementKeyHash);
+			return Elements[ElementId].Value();
+		}
+
+		inline ValueElementType& FindOrAdd(const KeyElementType& Key)
+		{
+			if (ValueElementType* Existing = Find(Key))
+				return *Existing;
+
+			return Elements[Elements.AddByHash(GetKeyHash(Key), ElementType(Key, ValueElementType{}), GetElementKeyHash)].Value();
+		}
 
 	public:
 		inline decltype(auto) Find(const KeyElementType& Key, bool(*Equals)(const KeyElementType& LeftKey, const KeyElementType& RightKey))

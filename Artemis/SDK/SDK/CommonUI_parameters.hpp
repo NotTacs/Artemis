@@ -1008,7 +1008,7 @@ struct CommonLoadGuard_BP_GuardAndLoadAsset final
 {
 public:
 	TSoftObjectPtr<class UObject>                 InLazyAsset;                                       // 0x0000(0x0028)(ConstParm, Parm, OutParm, ReferenceParm, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void(class UObject* Object)>        OnAssetLoaded;                                     // 0x0028(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(class UObject* Object)>        OnAssetLoaded;                                     // 0x0028(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function CommonUI.CommonLoadGuard.SetIsLoading

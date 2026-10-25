@@ -143,7 +143,7 @@ public:
 	bool                                          Temp_bool_Variable_5;                              // 0x0150(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	uint8                                         Pad_151[0x7];                                      // 0x0151(0x0007)(Fixing Size After Last Property [ Dumper-8 ])
 	struct FFormatArgumentData                    K2Node_MakeStruct_FormatArgumentData;              // 0x0158(0x0040)(HasGetValueTypeHash)
-	TDelegate<void(bool bSuccess)>                K2Node_CreateDelegate_OutputDelegate;              // 0x0198(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(bool bSuccess)>                K2Node_CreateDelegate_OutputDelegate;              // 0x0198(0x0010)(ZeroConstructor, NoDestructor)
 	class FText                                   K2Node_Select_Default;                             // 0x01A8(0x0018)()
 	class FText                                   K2Node_Select_Default_1;                           // 0x01C0(0x0018)()
 	struct FTimespan                              CallFunc_GetBanDuration_ReturnValue;               // 0x01D8(0x0008)(ZeroConstructor, NoDestructor, HasGetValueTypeHash)
@@ -208,7 +208,7 @@ public:
 	int32                                         CallFunc_Add_IntInt_ReturnValue;                   // 0x0014(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	bool                                          CallFunc_BooleanOR_ReturnValue;                    // 0x0018(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	uint8                                         Pad_19[0x3];                                       // 0x0019(0x0003)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void(bool bSuccess)>                K2Node_CreateDelegate_OutputDelegate;              // 0x001C(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(bool bSuccess)>                K2Node_CreateDelegate_OutputDelegate;              // 0x001C(0x0010)(ZeroConstructor, NoDestructor)
 };
 
 // Function PlayerBannedModal.PlayerBannedModal_C.OnBanAck

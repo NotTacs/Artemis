@@ -65,7 +65,7 @@ public:
 	class UAnimInstance*                          CallFunc_GetAnimInstance_ReturnValue;              // 0x0028(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	class UAnimationAsset*                        K2Node_Select_Default;                             // 0x0030(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	class UAnimationAsset*                        K2Node_Select_Default_1;                           // 0x0038(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	TDelegate<void(class UAnimMontage* Montage, bool bInterrupted)> K2Node_CreateDelegate_OutputDelegate; // 0x0040(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(class UAnimMontage* Montage, bool bInterrupted)> K2Node_CreateDelegate_OutputDelegate; // 0x0040(0x0010)(ZeroConstructor, NoDestructor)
 };
 
 // Function BP_TeleportationDrone.BP_TeleportationDrone_C.ReceiveTick

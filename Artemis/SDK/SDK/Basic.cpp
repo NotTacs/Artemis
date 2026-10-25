@@ -68,8 +68,6 @@ UFunction* BasicFilesImpleUtils::FindFunctionByFName(const FName* Name)
 
 
 // Predefined Function
-// FUObjectArray::AllocateSerialNumber, inlined into every TWeakObjectPtr assignment in the game.
-// MasterSerialNumber is GUObjectArray + 0xB0 (0xB3C9B18), ObjObjects (Offsets::GObjects) is GUObjectArray + 0x10.
 
 static int32 AllocateSerialNumber(FUObjectItem* ObjectItem)
 {
@@ -120,7 +118,6 @@ void FWeakObjectPtr::Reset()
 
 
 // Predefined Function
-// Same checks as the game's inlined TWeakObjectPtr::Get (e.g. sub_C93068): serial set, index in range, serial match, flags
 
 class UObject* FWeakObjectPtr::Get(bool bEvenIfPendingKill) const
 {

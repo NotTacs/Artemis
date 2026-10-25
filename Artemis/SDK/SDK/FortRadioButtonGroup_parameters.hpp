@@ -45,7 +45,7 @@ public:
 	uint8                                         Pad_64[0x4];                                       // 0x0064(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
 	class UCommonButtonLegacy*                    K2Node_CustomEvent_AssociatedButton;               // 0x0068(0x0008)(ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	int32                                         K2Node_CustomEvent_ButtonIndex;                    // 0x0070(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	TDelegate<void(class UCommonButtonLegacy* AssociatedButton, int32 ButtonIndex)> K2Node_CreateDelegate_OutputDelegate; // 0x0074(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(class UCommonButtonLegacy* AssociatedButton, int32 ButtonIndex)> K2Node_CreateDelegate_OutputDelegate; // 0x0074(0x0010)(ZeroConstructor, NoDestructor)
 	uint8                                         Pad_84[0x4];                                       // 0x0084(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
 	class UCommonButtonGroupLegacy*               CallFunc_SpawnObject_ReturnValue;                  // 0x0088(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	bool                                          CallFunc_Greater_FloatFloat_ReturnValue_1;         // 0x0090(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)

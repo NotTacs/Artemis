@@ -3521,9 +3521,9 @@ void ULoadGuardSlot::SetVerticalAlignment(EVerticalAlignment InVerticalAlignment
 // (Final, Native, Private, HasOutParams, BlueprintCallable)
 // Parameters:
 // const TSoftObjectPtr<class UObject>&    InLazyAsset                                            (ConstParm, Parm, OutParm, ReferenceParm, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(class UObject* Object)>&OnAssetLoaded                                          (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(class UObject* Object)>&OnAssetLoaded                                          (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UCommonLoadGuard::BP_GuardAndLoadAsset(const TSoftObjectPtr<class UObject>& InLazyAsset, const TDelegate<void(class UObject* Object)>& OnAssetLoaded)
+void UCommonLoadGuard::BP_GuardAndLoadAsset(const TSoftObjectPtr<class UObject>& InLazyAsset, const TDynamicDelegate<void(class UObject* Object)>& OnAssetLoaded)
 {
 	static class UFunction* Func = nullptr;
 

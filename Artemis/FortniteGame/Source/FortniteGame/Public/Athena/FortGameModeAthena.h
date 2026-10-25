@@ -8,12 +8,16 @@ private:
 	class Originals
 	{
 	public:
+		static inline void (*StartNewSafeZonePhase)(AFortGameModeAthena* __this, int32 NewSafeZonePhase);
 		static inline void (*FinishWorldInitialization)(AFortGameModeAthena* __this, AFortWorldManager* WorldManager);
+		static inline void (*FinishRestartPlayer)(AFortGameModeAthena* __this, AController* NewPlayer, const FRotator& StartRotation);
 	};
 public:
 	static void FinishWorldInitialization(AFortGameModeAthena* __this, AFortWorldManager* WorldManager);
 	static void OnGivenMatchAssignment(AFortGameModeAthena* __this, bool bSuccess, TSharedPtr<FJsonObject>& MatchOptions);
 	static bool ReadyToStartMatch_Implementation(AFortGameModeAthena* __this);
 	static APawn* SpawnDefaultPawnFor_Implementation(AFortGameModeAthena* __this, AFortPlayerControllerAthena* NewPlayer, AActor* StartSpot);
+	static void StartNewSafeZonePhase(AFortGameModeAthena* __this, int32 NewSafeZonePhase);
+	static void FinishRestartPlayer(AFortGameModeAthena* __this, AController* NewPlayer, const FRotator& StartRotation);
 	static void LoadModule();
 };

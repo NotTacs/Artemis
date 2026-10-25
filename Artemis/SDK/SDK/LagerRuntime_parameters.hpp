@@ -201,7 +201,7 @@ struct FortAthenaLivingWorldManager_TrySpawnEvent final
 public:
 	struct FDataTableRowHandle                    EventEntry;                                        // 0x0000(0x0010)(Parm, NoDestructor, NativeAccessSpecifierPublic)
 	struct FTransform                             SpawnLocation;                                     // 0x0010(0x0030)(ConstParm, Parm, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
-	TDelegate<void(const TArray<class AActor*>& SpawnedActors, bool bSuccess)> OnRequestFinished;    // 0x0040(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const TArray<class AActor*>& SpawnedActors, bool bSuccess)> OnRequestFinished;    // 0x0040(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 	bool                                          ReturnValue;                                       // 0x0050(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_51[0xF];                                       // 0x0051(0x000F)(Fixing Struct Size After Last Property [ Dumper-8 ])
 };

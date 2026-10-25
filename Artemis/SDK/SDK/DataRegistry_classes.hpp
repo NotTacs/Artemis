@@ -196,7 +196,7 @@ public:
 	uint8                                         Pad_30[0x98];                                      // 0x0030(0x0098)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
-	static bool AcquireItemBP(const struct FDataRegistryId& ItemId, TDelegate<void(const struct FDataRegistryId& ItemId, const struct FDataRegistryLookup& ResolvedLookup, EDataRegistryAcquireStatus Status)> AcquireCallback);
+	static bool AcquireItemBP(const struct FDataRegistryId& ItemId, TDynamicDelegate<void(const struct FDataRegistryId& ItemId, const struct FDataRegistryLookup& ResolvedLookup, EDataRegistryAcquireStatus Status)> AcquireCallback);
 	static class FString Conv_DataRegistryIdToString(const struct FDataRegistryId& DataRegistryId);
 	static class FString Conv_DataRegistryTypeToString(const struct FDataRegistryType& DataRegistryType);
 	static bool EqualEqual_DataRegistryId(const struct FDataRegistryId& A, const struct FDataRegistryId& B);

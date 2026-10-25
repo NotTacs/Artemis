@@ -11,7 +11,7 @@
  * Declares a delegate that can only bind to one native function at a time
  */
 #define FUNC_DECLARE_DELEGATE( DelegateName, ReturnType, ... ) \
-	typedef UE::Delegates::TDelegate<ReturnType(__VA_ARGS__)> DelegateName;
+	typedef TDelegate<ReturnType(__VA_ARGS__)> DelegateName;
 
 /** Declares a broadcast delegate that can bind to multiple native functions simultaneously */
 #define FUNC_DECLARE_MULTICAST_DELEGATE( MulticastDelegateName, ReturnType, ... ) \

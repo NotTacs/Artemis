@@ -2616,7 +2616,7 @@ public:
 	void OnUpdateStatus();
 	void PurchaseAmountLeft();
 	void PurchaseAmountRight();
-	void PurchaseOffer(const TDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)>& Callback, int32 Quantity);
+	void PurchaseOffer(const TDynamicDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)>& Callback, int32 Quantity);
 	void RefreshOfferInfo();
 	void RefreshUndoState(class UFortStoreFrontOfferInfo* OfferPurchased);
 	void SendRealMoneyPurchase(int32 PriceIndex, int32 Quantity);
@@ -5091,7 +5091,7 @@ public:
 	int32 GetStackSize();
 	void NavigationToIndex(int32 Index_0);
 	void PopNavigation();
-	void PushNavigation(const class FText& DisplayName, class UObject* ObjectData, class FName IdData, int32 IntData, const TDelegate<void(const struct FUINavigationData& Data)>& OnNavigateTo, const TDelegate<void(const struct FUINavigationData& Data)>& OnNavigateFrom);
+	void PushNavigation(const class FText& DisplayName, class UObject* ObjectData, class FName IdData, int32 IntData, const TDynamicDelegate<void(const struct FUINavigationData& Data)>& OnNavigateTo, const TDynamicDelegate<void(const struct FUINavigationData& Data)>& OnNavigateFrom);
 
 public:
 	static class UClass* StaticClass()
@@ -13758,7 +13758,7 @@ public:
 	void OnVariantChanged(const struct FGameplayTag& VariantChannel, const struct FGameplayTag& VariantTag, const class FString& VariantCustomData, bool IsOwned);
 	void PurchaseAmountLeft();
 	void PurchaseAmountRight();
-	void PurchaseOffer(const TDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)>& Callback, int32 Quantity);
+	void PurchaseOffer(const TDynamicDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)>& Callback, int32 Quantity);
 	void RefreshOfferInfo();
 	void RefreshUndoState(class UFortStoreFrontOfferInfo* OfferPurchased);
 	void RegisterItemRewardInteraction(class UFortAthenaReward* InItemReward);
@@ -20996,7 +20996,7 @@ public:
 	EGridSortKind                                 SortKind;                                          // 0x0268(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	bool                                          bReversed;                                         // 0x0269(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_26A[0x2];                                      // 0x026A(0x0002)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void(class UObject* Data)>          GetSortKeyFor;                                     // 0x026C(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(class UObject* Data)>          GetSortKeyFor;                                     // 0x026C(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	uint8                                         Pad_27C[0x14];                                     // 0x027C(0x0014)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
@@ -21188,7 +21188,7 @@ public:
 	uint8                                         Pad_30[0x50];                                      // 0x0030(0x0050)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
-	void RegisterForAttributeChanged(class UWidget* Widget, class UAbilitySystemComponent* ASC, const struct FGameplayAttribute& Attribute, TDelegate<void()> Callback);
+	void RegisterForAttributeChanged(class UWidget* Widget, class UAbilitySystemComponent* ASC, const struct FGameplayAttribute& Attribute, TDynamicDelegate<void()> Callback);
 	void RemoveDelegatesFromWidget(class UWidget* Widget);
 
 	bool HasMatchingGameplayTag(const struct FGameplayTag& TagToCheck) const;
@@ -28002,7 +28002,7 @@ public:
 	uint8                                         Pad_290[0x8];                                      // 0x0290(0x0008)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
-	void AddInputActionHandler(class UDataTable* DataTable, class FName RowName, TDelegate<void(bool* bPassThrough)> CommittedEvent);
+	void AddInputActionHandler(class UDataTable* DataTable, class FName RowName, TDynamicDelegate<void(bool* bPassThrough)> CommittedEvent);
 	void Init(class UFortRewardNotificationWidget* MainWidget);
 	void InspectItem(class UFortItem* ItemToInspect, int32 QuantityOverride);
 	void IsPrimaryActionEnabled(bool* bEnabled);
@@ -34407,7 +34407,7 @@ public:
 	uint8                                         Pad_28[0x38];                                      // 0x0028(0x0038)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
-	void SetTimespanSource(const TDelegate<void(struct FTimespan* Result)>& Value);
+	void SetTimespanSource(const TDynamicDelegate<void(struct FTimespan* Result)>& Value);
 	void StartTimer(float Delay, bool bTickImmediately);
 	void StopTimer();
 	void TickManually();
@@ -34808,10 +34808,10 @@ public:
 	EFortLegacySlateWidget                        ContainedWidgetType;                               // 0x0110(0x0001)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, ExposeOnSpawn, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	uint8                                         Pad_111[0x3];                                      // 0x0111(0x0003)(Fixing Size After Last Property [ Dumper-8 ])
 	float                                         DPIScaleFactor;                                    // 0x0114(0x0004)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, ExposeOnSpawn, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	TDelegate<void()>                             OnClose;                                           // 0x0118(0x0010)(ZeroConstructor, Transient, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
+	TDynamicDelegate<void()>                             OnClose;                                           // 0x0118(0x0010)(ZeroConstructor, Transient, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
 
 public:
-	void SetOnCloseHandler(const TDelegate<void()>& OnCloseHandler);
+	void SetOnCloseHandler(const TDynamicDelegate<void()>& OnCloseHandler);
 	void UpdateSlateWidget(EFortLegacySlateWidget SlateWidgetType);
 
 public:
@@ -37395,7 +37395,7 @@ public:
 public:
 	void OnAffiliateUpdated(const class FString& AffiliateName);
 	void OnUpdateOtherPlatformMTXMessage(bool HasOtherPlatformCurrency, const class FText& CurrencyMessageLocText);
-	void PopulatePrerollOffers(const TDelegate<void(bool bSuccess)>& Callback);
+	void PopulatePrerollOffers(const TDynamicDelegate<void(bool bSuccess)>& Callback);
 
 public:
 	static class UClass* StaticClass()
@@ -38554,8 +38554,8 @@ public:
 class IFortGlobalActionDetailsDataSource final
 {
 public:
-	void AddOnChangeDelegate(const TDelegate<void(class UObject* Source)>& InDelegate);
-	void RemoveOnChangeDelegate(const TDelegate<void(class UObject* Source)>& InDelegate);
+	void AddOnChangeDelegate(const TDynamicDelegate<void(class UObject* Source)>& InDelegate);
+	void RemoveOnChangeDelegate(const TDynamicDelegate<void(class UObject* Source)>& InDelegate);
 
 	struct FFortGlobalActionDetails GetValue() const;
 
@@ -38626,7 +38626,7 @@ public:
 	static void CheckFlag(const class FString& FlagName, EFlagStatus* OutStatus);
 	static void DrawAttention(class UWidget* BaseWidget);
 
-	void BindToFeatureStateAndInitialize(EFortUIFeature Feature, TDelegate<void(EFortUIFeature ChangedFeature, EFortUIFeatureState NewState, EFortUIFeatureStateReason StateReason)> Delegate);
+	void BindToFeatureStateAndInitialize(EFortUIFeature Feature, TDynamicDelegate<void(EFortUIFeature ChangedFeature, EFortUIFeatureState NewState, EFortUIFeatureStateReason StateReason)> Delegate);
 	bool CanMatchmake(ESubGame SubGame, class FText* DenialReason);
 	void ClearLastMissionReports();
 	void ClearRatingWidgetInfo();
@@ -38650,7 +38650,7 @@ public:
 	void Logout();
 	void QuitGame();
 	void RefreshHUDForRespawn();
-	void RegisterInputAction(const class UUserWidget* UserWidget, const struct FDataTableRowHandle& InputActionRow, TDelegate<void(bool* bPassThrough)> CommitedEvent, int32 InFilterPriority);
+	void RegisterInputAction(const class UUserWidget* UserWidget, const struct FDataTableRowHandle& InputActionRow, TDynamicDelegate<void(bool* bPassThrough)> CommitedEvent, int32 InFilterPriority);
 	void RegisterScriptedAction(TSubclassOf<class AFortScriptedAction> ScriptedAction);
 	void RegisterScriptedActions(const TArray<TSubclassOf<class AFortScriptedAction>>& ScriptedActions);
 	void ReturnToSubGameSelect();
@@ -38664,11 +38664,11 @@ public:
 	void SetHideStwItemRefundHelp(bool bInHideHelp);
 	void SetInputMode(EFortInputMode InMode);
 	void SetRatingWidgetFeedbackTitle(const class FText& Title);
-	void ShowConsoleAccountPicker(const int32 ControllerIndex, const TDelegate<void(const int32 ControllerIndex, const bool bUserSwitched)>& CompletionDelegate);
-	bool ShowCreativeContentDownloadDialog(const TDelegate<void()>& OnSubGameContentReadyCallback, const TDelegate<void()>& OnSubGameContentCanceledCallback);
+	void ShowConsoleAccountPicker(const int32 ControllerIndex, const TDynamicDelegate<void(const int32 ControllerIndex, const bool bUserSwitched)>& CompletionDelegate);
+	bool ShowCreativeContentDownloadDialog(const TDynamicDelegate<void()>& OnSubGameContentReadyCallback, const TDynamicDelegate<void()>& OnSubGameContentCanceledCallback);
 	bool ShowWebURL(const class FString& URL, const EFortUrlType URLType);
 	void TetherChanged(bool bIsTethered);
-	void UnbindToFeatureState(EFortUIFeature Feature, TDelegate<void(EFortUIFeature ChangedFeature, EFortUIFeatureState NewState, EFortUIFeatureStateReason StateReason)> Delegate);
+	void UnbindToFeatureState(EFortUIFeature Feature, TDynamicDelegate<void(EFortUIFeature ChangedFeature, EFortUIFeatureState NewState, EFortUIFeatureStateReason StateReason)> Delegate);
 	void UnregisterInputAction(const class UUserWidget* UserWidget, const struct FDataTableRowHandle& InputActionRow);
 	void UnregisterScriptedAction(TSubclassOf<class AFortScriptedAction> ScriptedAction);
 	void UnregisterScriptedActions(const TArray<TSubclassOf<class AFortScriptedAction>>& ScriptedActions);
@@ -38846,7 +38846,7 @@ public:
 	class UFortGridPickerGrid*                    GridWidget;                                        // 0x0298(0x0008)(Edit, ExportObject, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	bool                                          bCloseOnTileClicked;                               // 0x02A0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_2A1[0x3];                                      // 0x02A1(0x0003)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void()>                             GridWidgetDelegate;                                // 0x02A4(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             GridWidgetDelegate;                                // 0x02A4(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	uint8                                         Pad_2B4[0x4];                                      // 0x02B4(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
 	TMulticastInlineDelegate<void(bool IsOpen)>   OnGridPickerOpenChanged;                           // 0x02B8(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
 	uint8                                         Pad_2C8[0x18];                                     // 0x02C8(0x0018)(Fixing Struct Size After Last Property [ Dumper-8 ])
@@ -39222,8 +39222,8 @@ public:
 class IFortTimespanDataSource final
 {
 public:
-	void AddOnChangeDelegate(const TDelegate<void(class UObject* Source)>& InDelegate);
-	void RemoveOnChangeDelegate(const TDelegate<void(class UObject* Source)>& InDelegate);
+	void AddOnChangeDelegate(const TDynamicDelegate<void(class UObject* Source)>& InDelegate);
+	void RemoveOnChangeDelegate(const TDynamicDelegate<void(class UObject* Source)>& InDelegate);
 
 	struct FTimespan GetValue() const;
 
@@ -40296,7 +40296,7 @@ public:
 class UFortItemWidget final : public UFortBaseButton
 {
 public:
-	TDelegate<void(class UFortItem** ItemToCompare)> OnGetItemToCompareDelegate;                     // 0x0A08(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, Protected, NativeAccessSpecifierProtected)
+	TDynamicDelegate<void(class UFortItem** ItemToCompare)> OnGetItemToCompareDelegate;                     // 0x0A08(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, Protected, NativeAccessSpecifierProtected)
 	class FName                                   CooldownMaterialParameterName;                     // 0x0A18(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class UMaterialInstanceDynamic*               CooldownMaterial;                                  // 0x0A20(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	int32                                         LastCooldownTimeInSeconds;                         // 0x0A28(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
@@ -40315,7 +40315,7 @@ public:
 	void OnFortItemUpdated(bool bItemChanged, bool bAmmoChanged, bool bIngredientsChanged);
 	void SetCooldownMaterial(class UMaterialInstanceDynamic* NewCooldownMaterial);
 	void SetItem(const class UFortItem* InItem, int32 QuantityOverride_0);
-	void SetOnGetItemToCompareDelegate(TDelegate<void(class UFortItem** ItemToCompare)> InDelegate);
+	void SetOnGetItemToCompareDelegate(TDynamicDelegate<void(class UFortItem** ItemToCompare)> InDelegate);
 
 	class FText GetDescription() const;
 	class FText GetDisplayName() const;
@@ -49829,10 +49829,10 @@ class UFortUIBlueprintFunctionLibrary final : public UBlueprintFunctionLibrary
 public:
 	static bool AreModalsActive(class AFortPlayerController* LocalPlayerController);
 	static bool AreModalsConfirmationsErrorsActive(class AFortPlayerController* LocalPlayerController);
-	static void BindToOnEndSpokenDialog(class UUserWidget* Context, const TDelegate<void()>& Delegate);
-	static void BindToOnShouldBlockSubtitlePortraitChanged(class UUserWidget* Context, const TDelegate<void(bool bShouldBlockSubtitlePortrait)>& Delegate);
-	static void BindToOnShouldCloseTalkingHead(class UUserWidget* Context, const TDelegate<void()>& Delegate);
-	static void BindToOnShouldOpenTalkingHead(class UUserWidget* Context, const TDelegate<void(class UTexture2D* Image, class FText Title, class FText Subtitle, EFortAnnouncementDisplayPreference DisplayPreference)>& Delegate);
+	static void BindToOnEndSpokenDialog(class UUserWidget* Context, const TDynamicDelegate<void()>& Delegate);
+	static void BindToOnShouldBlockSubtitlePortraitChanged(class UUserWidget* Context, const TDynamicDelegate<void(bool bShouldBlockSubtitlePortrait)>& Delegate);
+	static void BindToOnShouldCloseTalkingHead(class UUserWidget* Context, const TDynamicDelegate<void()>& Delegate);
+	static void BindToOnShouldOpenTalkingHead(class UUserWidget* Context, const TDynamicDelegate<void(class UTexture2D* Image, class FText Title, class FText Subtitle, EFortAnnouncementDisplayPreference DisplayPreference)>& Delegate);
 	static void CenterWidget(class UUserWidget* Context, class UWidget* ToCenter);
 	static void DrawWidgetToRenderTarget(class UUserWidget* Widget, class UTextureRenderTarget2D* RenderTarget);
 	static void EndWaitForConfirmationDialog(class UObject* WorldContextObject, struct FFortDialogExternalLatentActionHandle& Handle);
@@ -50235,7 +50235,7 @@ public:
 public:
 	class UFortUINotification* GetNextNotification();
 	void QueueNotification(class UFortUINotification* Notification, bool bShowImmediately);
-	void RegisterToReceiveNotifications(const TDelegate<void()>& NotificationDelegate);
+	void RegisterToReceiveNotifications(const TDynamicDelegate<void()>& NotificationDelegate);
 	void RemoveNotification(const class UFortUINotification* InNotificationDescription);
 	void UnregisterToReceiveNotifications();
 

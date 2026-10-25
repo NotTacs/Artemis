@@ -294,7 +294,7 @@ public:
 	bool                                          CallFunc_LessEqual_IntInt_ReturnValue_4;           // 0x01A8(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	bool                                          CallFunc_IsValid_ReturnValue_23;                   // 0x01A9(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	uint8                                         Pad_1AA[0x2];                                      // 0x01AA(0x0002)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void(class AActor* DestroyedActor)> K2Node_CreateDelegate_OutputDelegate;              // 0x01AC(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(class AActor* DestroyedActor)> K2Node_CreateDelegate_OutputDelegate;              // 0x01AC(0x0010)(ZeroConstructor, NoDestructor)
 	float                                         CallFunc_MakeLiteralFloat_ReturnValue_6;           // 0x01BC(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	TArray<class UMaterialInterface*>             K2Node_MakeArray_Array_6;                          // 0x01C0(0x0010)(ReferenceParm)
 	int32                                         CallFunc_Array_Add_ReturnValue_4;                  // 0x01D0(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)

@@ -66,20 +66,76 @@ UFunction* BasicFilesImpleUtils::FindFunctionByFName(const FName* Name)
 	return nullptr;
 }
 
-
-// Predefined Function
-
-class UObject* FWeakObjectPtr::Get() const
+static int32 AllocateSerialNumber(FUObjectItem* ObjectItem)
 {
-	return UObject::GObjects->GetByIndex(ObjectIndex);
+	constexpr uintptr_t MasterSerialNumber = 0xB3C9B18;
+
+	volatile long* SerialNumberPtr = reinterpret_cast<volatile long*>(&ObjectItem->SerialNumber);
+	int32 SerialNumber = *SerialNumberPtr;
+	if (!SerialNumber)
+	{
+		SerialNumber = _InterlockedIncrement(reinterpret_cast<volatile long*>(InSDKUtils::GetImageBase() + MasterSerialNumber));
+
+		int32 ValueWas = _InterlockedCompareExchange(SerialNumberPtr, SerialNumber, 0);
+		if (ValueWas != 0)
+		{
+			// someone else got it first, use their value
+			SerialNumber = ValueWas;
+		}
+	}
+	return SerialNumber;
 }
 
+FWeakObjectPtr& FWeakObjectPtr::operator=(const class UObject* Object)
+{
+	FUObjectItem* ObjectItem = Object ? UObject::GObjects->GetItemByIndex(Object->Index) : nullptr;
+	if (ObjectItem)
+	{
+		ObjectIndex = Object->Index;
+		ObjectSerialNumber = AllocateSerialNumber(ObjectItem);
+	}
+	else
+	{
+		Reset();
+	}
+	return *this;
+}
+
+void FWeakObjectPtr::Reset()
+{
+	ObjectIndex = -1;
+	ObjectSerialNumber = 0;
+}
+
+class UObject* FWeakObjectPtr::Get(bool bEvenIfPendingKill) const
+{
+	if (ObjectSerialNumber == 0 || ObjectIndex < 0)
+		return nullptr;
+
+	FUObjectItem* ObjectItem = UObject::GObjects->GetItemByIndex(ObjectIndex);
+	if (!ObjectItem || ObjectItem->SerialNumber != ObjectSerialNumber)
+		return nullptr;
+
+	const int32 InvalidFlags = bEvenIfPendingKill
+		? int32(EInternalObjectFlags::Unreachable)
+		: int32(EInternalObjectFlags::Unreachable) | int32(EInternalObjectFlags::PendingKill);
+
+	if (ObjectItem->Flags & InvalidFlags)
+		return nullptr;
+
+	return ObjectItem->Object;
+}
+
+bool FWeakObjectPtr::IsValid(bool bEvenIfPendingKill) const
+{
+	return Get(bEvenIfPendingKill) != nullptr;
+}
 
 // Predefined Function
 
 class UObject* FWeakObjectPtr::operator->() const
 {
-	return UObject::GObjects->GetByIndex(ObjectIndex);
+	return Get();
 }
 
 

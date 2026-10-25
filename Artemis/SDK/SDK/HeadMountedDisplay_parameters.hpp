@@ -438,7 +438,7 @@ public:
 struct HeadMountedDisplayFunctionLibrary_SetXRDisconnectDelegate final
 {
 public:
-	TDelegate<void(const class FString& OutReason)> InDisconnectedDelegate;                          // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const class FString& OutReason)> InDisconnectedDelegate;                          // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function HeadMountedDisplay.HeadMountedDisplayFunctionLibrary.SetXRTimedInputActionDelegate
@@ -447,7 +447,7 @@ struct HeadMountedDisplayFunctionLibrary_SetXRTimedInputActionDelegate final
 {
 public:
 	class FName                                   ActionName;                                        // 0x0000(0x0008)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void(const float Value, const struct FTimespan& Time)> InDelegate;                     // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const float Value, const struct FTimespan& Time)> InDelegate;                     // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function HeadMountedDisplay.HeadMountedDisplayFunctionLibrary.UpdateExternalTrackingHMDPosition

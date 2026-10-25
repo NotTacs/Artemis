@@ -871,7 +871,7 @@ public:
 class UCommonCustomNavigation final : public UBorder
 {
 public:
-	TDelegate<void(EUINavigation NavigationType)> OnNavigationEvent;                                 // 0x0290(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(EUINavigation NavigationType)> OnNavigationEvent;                                 // 0x0290(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 
 public:
 	static class UClass* StaticClass()
@@ -1112,7 +1112,7 @@ public:
 	uint8                                         Pad_230[0x30];                                     // 0x0230(0x0030)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
-	void BP_GuardAndLoadAsset(const TSoftObjectPtr<class UObject>& InLazyAsset, const TDelegate<void(class UObject* Object)>& OnAssetLoaded);
+	void BP_GuardAndLoadAsset(const TSoftObjectPtr<class UObject>& InLazyAsset, const TDynamicDelegate<void(class UObject* Object)>& OnAssetLoaded);
 	void SetIsLoading(bool bInIsLoading);
 	void SetLoadingText(const class FText& InLoadingText);
 

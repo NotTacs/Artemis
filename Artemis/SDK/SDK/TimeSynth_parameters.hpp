@@ -21,7 +21,7 @@ struct TimeSynthComponent_AddQuantizationEventDelegate final
 public:
 	ETimeSynthEventQuantization                   QuantizationType;                                  // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_1[0x3];                                        // 0x0001(0x0003)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void(ETimeSynthEventQuantization QuantizationType, int32 NumBars, float Beat)> OnQuantizationEvent; // 0x0004(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(ETimeSynthEventQuantization QuantizationType, int32 NumBars, float Beat)> OnQuantizationEvent; // 0x0004(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function TimeSynth.TimeSynthComponent.HasActiveClips

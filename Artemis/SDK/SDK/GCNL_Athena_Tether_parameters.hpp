@@ -113,7 +113,7 @@ public:
 	bool                                          CallFunc_BooleanOR_ReturnValue_2;                  // 0x045D(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	bool                                          CallFunc_EqualEqual_ByteByte_ReturnValue_3;        // 0x045E(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	bool                                          CallFunc_BooleanAND_ReturnValue;                   // 0x045F(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	TDelegate<void()>                             K2Node_CreateDelegate_OutputDelegate;              // 0x0460(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void()>                             K2Node_CreateDelegate_OutputDelegate;              // 0x0460(0x0010)(ZeroConstructor, NoDestructor)
 	struct FTimerHandle                           CallFunc_K2_SetTimerDelegate_ReturnValue;          // 0x0470(0x0008)(NoDestructor, HasGetValueTypeHash)
 	float                                         CallFunc_FClamp_ReturnValue_1;                     // 0x0478(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	float                                         CallFunc_Add_FloatFloat_ReturnValue_1;             // 0x047C(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)

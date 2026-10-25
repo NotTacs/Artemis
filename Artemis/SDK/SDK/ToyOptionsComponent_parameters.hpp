@@ -59,7 +59,7 @@ public:
 	class APlayerController*                      K2Node_CustomEvent_InteractingPlayer;              // 0x0010(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	TSoftClassPtr<class UClass>                   K2Node_CustomEvent_WidgetClass;                    // 0x0018(0x0028)(HasGetValueTypeHash)
 	TSubclassOf<class UObject>                    CallFunc_Conv_SoftClassReferenceToClass_ReturnValue; // 0x0040(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash)
-	TDelegate<void(TSubclassOf<class UObject> Loaded)> K2Node_CreateDelegate_OutputDelegate;         // 0x0048(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(TSubclassOf<class UObject> Loaded)> K2Node_CreateDelegate_OutputDelegate;         // 0x0048(0x0010)(ZeroConstructor, NoDestructor)
 	bool                                          CallFunc_IsValidClass_ReturnValue;                 // 0x0058(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	uint8                                         Pad_59[0x7];                                       // 0x0059(0x0007)(Fixing Size After Last Property [ Dumper-8 ])
 	class UClass*                                 K2Node_ClassDynamicCast_AsUser_Widget;             // 0x0060(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)

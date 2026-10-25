@@ -70,8 +70,8 @@ struct BP_TimeSynthController_Base_C_ExecuteUbergraph_BP_TimeSynthController_Bas
 {
 public:
 	int32                                         EntryPoint;                                        // 0x0000(0x0004)(BlueprintVisible, BlueprintReadOnly, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	TDelegate<void(ETimeSynthEventQuantization QuantizationType, int32 NumBars, float Beat)> K2Node_CreateDelegate_OutputDelegate; // 0x0004(0x0010)(ZeroConstructor, NoDestructor)
-	TDelegate<void(ETimeSynthEventQuantization QuantizationType, int32 NumBars, float Beat)> K2Node_CreateDelegate_OutputDelegate_1; // 0x0014(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(ETimeSynthEventQuantization QuantizationType, int32 NumBars, float Beat)> K2Node_CreateDelegate_OutputDelegate; // 0x0004(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(ETimeSynthEventQuantization QuantizationType, int32 NumBars, float Beat)> K2Node_CreateDelegate_OutputDelegate_1; // 0x0014(0x0010)(ZeroConstructor, NoDestructor)
 	int32                                         K2Node_CustomEvent_Index;                          // 0x0024(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	float                                         K2Node_CustomEvent_Volume_Multiplier;              // 0x0028(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	float                                         CallFunc_MapRangeClamped_ReturnValue;              // 0x002C(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)

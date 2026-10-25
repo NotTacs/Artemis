@@ -431,9 +431,9 @@ class FString UAudioMixerBlueprintLibrary::Conv_AudioOutputDeviceInfoToString(co
 // (Final, Native, Static, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(const TArray<struct FAudioOutputDeviceInfo>& AvailableDevices)>&OnObtainDevicesEvent                                   (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(const TArray<struct FAudioOutputDeviceInfo>& AvailableDevices)>&OnObtainDevicesEvent                                   (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UAudioMixerBlueprintLibrary::GetAvailableAudioOutputDevices(const class UObject* WorldContextObject, const TDelegate<void(const TArray<struct FAudioOutputDeviceInfo>& AvailableDevices)>& OnObtainDevicesEvent)
+void UAudioMixerBlueprintLibrary::GetAvailableAudioOutputDevices(const class UObject* WorldContextObject, const TDynamicDelegate<void(const TArray<struct FAudioOutputDeviceInfo>& AvailableDevices)>& OnObtainDevicesEvent)
 {
 	static class UFunction* Func = nullptr;
 
@@ -458,9 +458,9 @@ void UAudioMixerBlueprintLibrary::GetAvailableAudioOutputDevices(const class UOb
 // (Final, Native, Static, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(const class FString& CurrentDevice)>&OnObtainCurrentDeviceEvent                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(const class FString& CurrentDevice)>&OnObtainCurrentDeviceEvent                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UAudioMixerBlueprintLibrary::GetCurrentAudioOutputDeviceName(const class UObject* WorldContextObject, const TDelegate<void(const class FString& CurrentDevice)>& OnObtainCurrentDeviceEvent)
+void UAudioMixerBlueprintLibrary::GetCurrentAudioOutputDeviceName(const class UObject* WorldContextObject, const TDynamicDelegate<void(const class FString& CurrentDevice)>& OnObtainCurrentDeviceEvent)
 {
 	static class UFunction* Func = nullptr;
 
@@ -769,9 +769,9 @@ void UAudioMixerBlueprintLibrary::PrimeSoundCueForPlayback(class USoundCue* Soun
 // (Final, Native, Static, Public, BlueprintCallable)
 // Parameters:
 // class USoundWave*                       SoundWave                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(const class USoundWave* LoadedSoundWave, const bool WasCancelled)>OnLoadCompletion                                       (ConstParm, Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(const class USoundWave* LoadedSoundWave, const bool WasCancelled)>OnLoadCompletion                                       (ConstParm, Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UAudioMixerBlueprintLibrary::PrimeSoundForPlayback(class USoundWave* SoundWave, const TDelegate<void(const class USoundWave* LoadedSoundWave, const bool WasCancelled)> OnLoadCompletion)
+void UAudioMixerBlueprintLibrary::PrimeSoundForPlayback(class USoundWave* SoundWave, const TDynamicDelegate<void(const class USoundWave* LoadedSoundWave, const bool WasCancelled)> OnLoadCompletion)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1305,9 +1305,9 @@ class USoundWave* UAudioMixerBlueprintLibrary::StopRecordingOutput(const class U
 // Parameters:
 // const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const class FString&                    NewDeviceId                                            (Parm, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(const struct FSwapAudioOutputResult& SwapResult)>&OnCompletedDeviceSwap                                  (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(const struct FSwapAudioOutputResult& SwapResult)>&OnCompletedDeviceSwap                                  (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UAudioMixerBlueprintLibrary::SwapAudioOutputDevice(const class UObject* WorldContextObject, const class FString& NewDeviceId, const TDelegate<void(const struct FSwapAudioOutputResult& SwapResult)>& OnCompletedDeviceSwap)
+void UAudioMixerBlueprintLibrary::SwapAudioOutputDevice(const class UObject* WorldContextObject, const class FString& NewDeviceId, const TDynamicDelegate<void(const struct FSwapAudioOutputResult& SwapResult)>& OnCompletedDeviceSwap)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1506,9 +1506,9 @@ void UQuartzClockHandle::PauseClock(const class UObject* WorldContextObject, cla
 // (Final, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UQuartzClockHandle::ResetTransport(const class UObject* WorldContextObject, const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& InDelegate)
+void UQuartzClockHandle::ResetTransport(const class UObject* WorldContextObject, const TDynamicDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& InDelegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1534,10 +1534,10 @@ void UQuartzClockHandle::ResetTransport(const class UObject* WorldContextObject,
 // Parameters:
 // const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const struct FQuartzQuantizationBoundary&InQuantizationBoundary                                 (Parm, NativeAccessSpecifierPublic)
-// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 // class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UQuartzClockHandle::ResetTransportQuantized(const class UObject* WorldContextObject, const struct FQuartzQuantizationBoundary& InQuantizationBoundary, const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& InDelegate, class UQuartzClockHandle** ClockHandle)
+void UQuartzClockHandle::ResetTransportQuantized(const class UObject* WorldContextObject, const struct FQuartzQuantizationBoundary& InQuantizationBoundary, const TDynamicDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& InDelegate, class UQuartzClockHandle** ClockHandle)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1596,11 +1596,11 @@ void UQuartzClockHandle::ResumeClock(const class UObject* WorldContextObject, cl
 // Parameters:
 // const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const struct FQuartzQuantizationBoundary&QuantizationBoundary                                   (ConstParm, Parm, OutParm, ReferenceParm, AdvancedDisplay, NativeAccessSpecifierPublic)
-// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
 // class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   BeatsPerMinute                                         (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UQuartzClockHandle::SetBeatsPerMinute(const class UObject* WorldContextObject, const struct FQuartzQuantizationBoundary& QuantizationBoundary, const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& Delegate, class UQuartzClockHandle** ClockHandle, float BeatsPerMinute)
+void UQuartzClockHandle::SetBeatsPerMinute(const class UObject* WorldContextObject, const struct FQuartzQuantizationBoundary& QuantizationBoundary, const TDynamicDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& Delegate, class UQuartzClockHandle** ClockHandle, float BeatsPerMinute)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1631,11 +1631,11 @@ void UQuartzClockHandle::SetBeatsPerMinute(const class UObject* WorldContextObje
 // Parameters:
 // const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const struct FQuartzQuantizationBoundary&QuantizationBoundary                                   (ConstParm, Parm, OutParm, ReferenceParm, AdvancedDisplay, NativeAccessSpecifierPublic)
-// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
 // class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   MillisecondsPerTick                                    (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UQuartzClockHandle::SetMillisecondsPerTick(const class UObject* WorldContextObject, const struct FQuartzQuantizationBoundary& QuantizationBoundary, const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& Delegate, class UQuartzClockHandle** ClockHandle, float MillisecondsPerTick)
+void UQuartzClockHandle::SetMillisecondsPerTick(const class UObject* WorldContextObject, const struct FQuartzQuantizationBoundary& QuantizationBoundary, const TDynamicDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& Delegate, class UQuartzClockHandle** ClockHandle, float MillisecondsPerTick)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1666,11 +1666,11 @@ void UQuartzClockHandle::SetMillisecondsPerTick(const class UObject* WorldContex
 // Parameters:
 // const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const struct FQuartzQuantizationBoundary&QuantizationBoundary                                   (ConstParm, Parm, OutParm, ReferenceParm, AdvancedDisplay, NativeAccessSpecifierPublic)
-// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
 // class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   SecondsPerTick                                         (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UQuartzClockHandle::SetSecondsPerTick(const class UObject* WorldContextObject, const struct FQuartzQuantizationBoundary& QuantizationBoundary, const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& Delegate, class UQuartzClockHandle** ClockHandle, float SecondsPerTick)
+void UQuartzClockHandle::SetSecondsPerTick(const class UObject* WorldContextObject, const struct FQuartzQuantizationBoundary& QuantizationBoundary, const TDynamicDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& Delegate, class UQuartzClockHandle** ClockHandle, float SecondsPerTick)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1701,11 +1701,11 @@ void UQuartzClockHandle::SetSecondsPerTick(const class UObject* WorldContextObje
 // Parameters:
 // const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const struct FQuartzQuantizationBoundary&QuantizationBoundary                                   (ConstParm, Parm, OutParm, ReferenceParm, AdvancedDisplay, NativeAccessSpecifierPublic)
-// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
 // class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   ThirtySecondsNotesPerMinute                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UQuartzClockHandle::SetThirtySecondNotesPerMinute(const class UObject* WorldContextObject, const struct FQuartzQuantizationBoundary& QuantizationBoundary, const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& Delegate, class UQuartzClockHandle** ClockHandle, float ThirtySecondsNotesPerMinute)
+void UQuartzClockHandle::SetThirtySecondNotesPerMinute(const class UObject* WorldContextObject, const struct FQuartzQuantizationBoundary& QuantizationBoundary, const TDynamicDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& Delegate, class UQuartzClockHandle** ClockHandle, float ThirtySecondsNotesPerMinute)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1736,11 +1736,11 @@ void UQuartzClockHandle::SetThirtySecondNotesPerMinute(const class UObject* Worl
 // Parameters:
 // const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const struct FQuartzQuantizationBoundary&QuantizationBoundary                                   (ConstParm, Parm, OutParm, ReferenceParm, AdvancedDisplay, NativeAccessSpecifierPublic)
-// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
 // class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   TicksPerSecond                                         (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UQuartzClockHandle::SetTicksPerSecond(const class UObject* WorldContextObject, const struct FQuartzQuantizationBoundary& QuantizationBoundary, const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& Delegate, class UQuartzClockHandle** ClockHandle, float TicksPerSecond)
+void UQuartzClockHandle::SetTicksPerSecond(const class UObject* WorldContextObject, const struct FQuartzQuantizationBoundary& QuantizationBoundary, const TDynamicDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& Delegate, class UQuartzClockHandle** ClockHandle, float TicksPerSecond)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1801,9 +1801,9 @@ void UQuartzClockHandle::StartClock(const class UObject* WorldContextObject, cla
 // const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             OtherClockName                                         (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const struct FQuartzQuantizationBoundary&InQuantizationBoundary                                 (Parm, NativeAccessSpecifierPublic)
-// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UQuartzClockHandle::StartOtherClock(const class UObject* WorldContextObject, class FName OtherClockName, const struct FQuartzQuantizationBoundary& InQuantizationBoundary, const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& InDelegate)
+void UQuartzClockHandle::StartOtherClock(const class UObject* WorldContextObject, class FName OtherClockName, const struct FQuartzQuantizationBoundary& InQuantizationBoundary, const TDynamicDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& InDelegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1861,10 +1861,10 @@ void UQuartzClockHandle::StopClock(const class UObject* WorldContextObject, bool
 // (Final, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(class FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction)>&OnQuantizationEvent                                    (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(class FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction)>&OnQuantizationEvent                                    (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 // class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UQuartzClockHandle::SubscribeToAllQuantizationEvents(const class UObject* WorldContextObject, const TDelegate<void(class FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction)>& OnQuantizationEvent, class UQuartzClockHandle** ClockHandle)
+void UQuartzClockHandle::SubscribeToAllQuantizationEvents(const class UObject* WorldContextObject, const TDynamicDelegate<void(class FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction)>& OnQuantizationEvent, class UQuartzClockHandle** ClockHandle)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1893,10 +1893,10 @@ void UQuartzClockHandle::SubscribeToAllQuantizationEvents(const class UObject* W
 // Parameters:
 // const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // EQuartzCommandQuantization              InQuantizationBoundary                                 (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(class FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction)>&OnQuantizationEvent                                    (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(class FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction)>&OnQuantizationEvent                                    (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 // class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UQuartzClockHandle::SubscribeToQuantizationEvent(const class UObject* WorldContextObject, EQuartzCommandQuantization InQuantizationBoundary, const TDelegate<void(class FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction)>& OnQuantizationEvent, class UQuartzClockHandle** ClockHandle)
+void UQuartzClockHandle::SubscribeToQuantizationEvent(const class UObject* WorldContextObject, EQuartzCommandQuantization InQuantizationBoundary, const TDynamicDelegate<void(class FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction)>& OnQuantizationEvent, class UQuartzClockHandle** ClockHandle)
 {
 	static class UFunction* Func = nullptr;
 

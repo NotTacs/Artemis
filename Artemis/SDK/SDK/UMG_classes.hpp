@@ -45,12 +45,12 @@ class UWidget : public UVisual
 {
 public:
 	class UPanelSlot*                             Slot;                                              // 0x0028(0x0008)(Edit, BlueprintVisible, ExportObject, BlueprintReadOnly, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, TextExportTransient, PersistentInstance, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             bIsEnabledDelegate;                                // 0x0030(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             bIsEnabledDelegate;                                // 0x0030(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	class FText                                   ToolTipText;                                       // 0x0040(0x0018)(Edit, BlueprintVisible, BlueprintReadOnly, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             ToolTipTextDelegate;                               // 0x0058(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             ToolTipTextDelegate;                               // 0x0058(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	class UWidget*                                ToolTipWidget;                                     // 0x0068(0x0008)(Edit, BlueprintVisible, ExportObject, BlueprintReadOnly, ZeroConstructor, EditConst, InstancedReference, IsPlainOldData, NoDestructor, AdvancedDisplay, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             ToolTipWidgetDelegate;                             // 0x0070(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             VisibilityDelegate;                                // 0x0080(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             ToolTipWidgetDelegate;                             // 0x0070(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             VisibilityDelegate;                                // 0x0080(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	struct FWidgetTransform                       RenderTransform;                                   // 0x0090(0x001C)(Edit, BlueprintVisible, BlueprintReadOnly, NoDestructor, NativeAccessSpecifierPublic)
 	struct FVector2D                              RenderTransformPivot;                              // 0x00AC(0x0008)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         bIsVariable : 1;                                   // 0x00B4(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
@@ -83,8 +83,8 @@ public:
 	void SetKeyboardFocus();
 	void SetNavigationRule(EUINavigation Direction, EUINavigationRule Rule, class FName WidgetToFocus);
 	void SetNavigationRuleBase(EUINavigation Direction, EUINavigationRule Rule);
-	void SetNavigationRuleCustom(EUINavigation Direction, TDelegate<void(EUINavigation Navigation)> InCustomDelegate);
-	void SetNavigationRuleCustomBoundary(EUINavigation Direction, TDelegate<void(EUINavigation Navigation)> InCustomDelegate);
+	void SetNavigationRuleCustom(EUINavigation Direction, TDynamicDelegate<void(EUINavigation Navigation)> InCustomDelegate);
+	void SetNavigationRuleCustomBoundary(EUINavigation Direction, TDynamicDelegate<void(EUINavigation Navigation)> InCustomDelegate);
 	void SetNavigationRuleExplicit(EUINavigation Direction, class UWidget* InWidget);
 	void SetRenderOpacity(float InOpacity);
 	void SetRenderScale(const struct FVector2D& Scale);
@@ -177,7 +177,7 @@ class USlider : public UWidget
 {
 public:
 	float                                         Value;                                             // 0x0100(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             ValueDelegate;                                     // 0x0104(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             ValueDelegate;                                     // 0x0104(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	float                                         MinValue;                                          // 0x0114(0x0004)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	float                                         MaxValue;                                          // 0x0118(0x0004)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_11C[0x4];                                      // 0x011C(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
@@ -493,12 +493,12 @@ public:
 	class FString                                 DisplayLabel;                                      // 0x0080(0x0010)(ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 
 public:
-	void BindToAnimationFinished(class UUserWidget* Widget, TDelegate<void()> Delegate);
-	void BindToAnimationStarted(class UUserWidget* Widget, TDelegate<void()> Delegate);
+	void BindToAnimationFinished(class UUserWidget* Widget, TDynamicDelegate<void()> Delegate);
+	void BindToAnimationStarted(class UUserWidget* Widget, TDynamicDelegate<void()> Delegate);
 	void UnbindAllFromAnimationFinished(class UUserWidget* Widget);
 	void UnbindAllFromAnimationStarted(class UUserWidget* Widget);
-	void UnbindFromAnimationFinished(class UUserWidget* Widget, TDelegate<void()> Delegate);
-	void UnbindFromAnimationStarted(class UUserWidget* Widget, TDelegate<void()> Delegate);
+	void UnbindFromAnimationFinished(class UUserWidget* Widget, TDynamicDelegate<void()> Delegate);
+	void UnbindFromAnimationStarted(class UUserWidget* Widget, TDynamicDelegate<void()> Delegate);
 
 	float GetEndTime() const;
 	float GetStartTime() const;
@@ -549,9 +549,9 @@ class UUserWidget : public UWidget
 public:
 	uint8                                         Pad_100[0x8];                                      // 0x0100(0x0008)(Fixing Size After Last Property [ Dumper-8 ])
 	struct FLinearColor                           ColorAndOpacity;                                   // 0x0108(0x0010)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             ColorAndOpacityDelegate;                           // 0x0118(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             ColorAndOpacityDelegate;                           // 0x0118(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	struct FSlateColor                            ForegroundColor;                                   // 0x0128(0x0014)(Edit, BlueprintVisible, BlueprintReadOnly, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             ForegroundColorDelegate;                           // 0x013C(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             ForegroundColorDelegate;                           // 0x013C(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	uint8                                         Pad_14C[0x4];                                      // 0x014C(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
 	TMulticastInlineDelegate<void(ESlateVisibility InVisibility)> OnVisibilityChanged;               // 0x0150(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
 	uint8                                         Pad_160[0x18];                                     // 0x0160(0x0018)(Fixing Size After Last Property [ Dumper-8 ])
@@ -577,15 +577,15 @@ public:
 public:
 	bool AddToPlayerScreen(int32 ZOrder);
 	void AddToViewport(int32 ZOrder);
-	void BindToAnimationEvent(class UWidgetAnimation* Animation, TDelegate<void()> Delegate, EWidgetAnimationEvent AnimationEvent, class FName UserTag);
-	void BindToAnimationFinished(class UWidgetAnimation* Animation, TDelegate<void()> Delegate);
-	void BindToAnimationStarted(class UWidgetAnimation* Animation, TDelegate<void()> Delegate);
+	void BindToAnimationEvent(class UWidgetAnimation* Animation, TDynamicDelegate<void()> Delegate, EWidgetAnimationEvent AnimationEvent, class FName UserTag);
+	void BindToAnimationFinished(class UWidgetAnimation* Animation, TDynamicDelegate<void()> Delegate);
+	void BindToAnimationStarted(class UWidgetAnimation* Animation, TDynamicDelegate<void()> Delegate);
 	void CancelLatentActions();
 	void Construct();
 	void Destruct();
 	void FlushAnimations();
 	bool IsAnimationPlayingForward(const class UWidgetAnimation* InAnimation);
-	void ListenForInputAction(class FName ActionName, EInputEvent EventType, bool bConsume, TDelegate<void()> Callback);
+	void ListenForInputAction(class FName ActionName, EInputEvent EventType, bool bConsume, TDynamicDelegate<void()> Callback);
 	void OnAddedToFocusPath(const struct FFocusEvent& InFocusEvent);
 	struct FEventReply OnAnalogValueChanged(const struct FGeometry& MyGeometry, const struct FAnalogInputEvent& InAnalogInputEvent);
 	void OnAnimationFinished(const class UWidgetAnimation* Animation);
@@ -650,8 +650,8 @@ public:
 	void Tick(const struct FGeometry& MyGeometry, float InDeltaTime);
 	void UnbindAllFromAnimationFinished(class UWidgetAnimation* Animation);
 	void UnbindAllFromAnimationStarted(class UWidgetAnimation* Animation);
-	void UnbindFromAnimationFinished(class UWidgetAnimation* Animation, TDelegate<void()> Delegate);
-	void UnbindFromAnimationStarted(class UWidgetAnimation* Animation, TDelegate<void()> Delegate);
+	void UnbindFromAnimationFinished(class UWidgetAnimation* Animation, TDynamicDelegate<void()> Delegate);
+	void UnbindFromAnimationStarted(class UWidgetAnimation* Animation, TDynamicDelegate<void()> Delegate);
 	void UnregisterInputComponent();
 
 	struct FVector2D GetAlignmentInViewport() const;
@@ -894,20 +894,20 @@ public:
 	uint8                                         bShowEffectWhenDisabled : 1;                       // 0x011A(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (Edit, BlueprintVisible, BlueprintReadOnly, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic))
 	uint8                                         Pad_11B[0x1];                                      // 0x011B(0x0001)(Fixing Size After Last Property [ Dumper-8 ])
 	struct FLinearColor                           ContentColorAndOpacity;                            // 0x011C(0x0010)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             ContentColorAndOpacityDelegate;                    // 0x012C(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             ContentColorAndOpacityDelegate;                    // 0x012C(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	struct FMargin                                Padding;                                           // 0x013C(0x0010)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
 	uint8                                         Pad_14C[0x4];                                      // 0x014C(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
 	struct FSlateBrush                            Background;                                        // 0x0150(0x00B0)(Edit, BlueprintVisible, BlueprintReadOnly, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             BackgroundDelegate;                                // 0x0200(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             BackgroundDelegate;                                // 0x0200(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	struct FLinearColor                           BrushColor;                                        // 0x0210(0x0010)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             BrushColorDelegate;                                // 0x0220(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             BrushColorDelegate;                                // 0x0220(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	struct FVector2D                              DesiredSizeScale;                                  // 0x0230(0x0008)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	bool                                          bFlipForRightToLeftFlowDirection;                  // 0x0238(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_239[0x3];                                      // 0x0239(0x0003)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void(const struct FGeometry& MyGeometry, const struct FPointerEvent& MouseEvent)> OnMouseButtonDownEvent; // 0x023C(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
-	TDelegate<void(const struct FGeometry& MyGeometry, const struct FPointerEvent& MouseEvent)> OnMouseButtonUpEvent; // 0x024C(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
-	TDelegate<void(const struct FGeometry& MyGeometry, const struct FPointerEvent& MouseEvent)> OnMouseMoveEvent; // 0x025C(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
-	TDelegate<void(const struct FGeometry& MyGeometry, const struct FPointerEvent& MouseEvent)> OnMouseDoubleClickEvent; // 0x026C(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const struct FGeometry& MyGeometry, const struct FPointerEvent& MouseEvent)> OnMouseButtonDownEvent; // 0x023C(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const struct FGeometry& MyGeometry, const struct FPointerEvent& MouseEvent)> OnMouseButtonUpEvent; // 0x024C(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const struct FGeometry& MyGeometry, const struct FPointerEvent& MouseEvent)> OnMouseMoveEvent; // 0x025C(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const struct FGeometry& MyGeometry, const struct FPointerEvent& MouseEvent)> OnMouseDoubleClickEvent; // 0x026C(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	uint8                                         Pad_27C[0x14];                                     // 0x027C(0x0014)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
@@ -1022,16 +1022,16 @@ class alignas(0x10) UTextBlock : public UTextLayoutWidget
 {
 public:
 	class FText                                   Text;                                              // 0x0120(0x0018)(Edit, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             TextDelegate;                                      // 0x0138(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             TextDelegate;                                      // 0x0138(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	struct FSlateColor                            ColorAndOpacity;                                   // 0x0148(0x0014)(Edit, BlueprintVisible, BlueprintReadOnly, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             ColorAndOpacityDelegate;                           // 0x015C(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             ColorAndOpacityDelegate;                           // 0x015C(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	uint8                                         Pad_16C[0x4];                                      // 0x016C(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
 	struct FSlateFontInfo                         Font;                                              // 0x0170(0x0058)(Edit, BlueprintVisible, BlueprintReadOnly, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_1C8[0x8];                                      // 0x01C8(0x0008)(Fixing Size After Last Property [ Dumper-8 ])
 	struct FSlateBrush                            StrikeBrush;                                       // 0x01D0(0x00B0)(Edit, BlueprintVisible, BlueprintReadOnly, NativeAccessSpecifierPublic)
 	struct FVector2D                              ShadowOffset;                                      // 0x0280(0x0008)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	struct FLinearColor                           ShadowColorAndOpacity;                             // 0x0288(0x0010)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             ShadowColorAndOpacityDelegate;                     // 0x0298(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             ShadowColorAndOpacityDelegate;                     // 0x0298(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	float                                         MinDesiredWidth;                                   // 0x02A8(0x0004)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	bool                                          bWrapWithInvalidationPanel;                        // 0x02AC(0x0001)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	bool                                          bAutoWrapText;                                     // 0x02AD(0x0001)(ZeroConstructor, Deprecated, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -1190,12 +1190,12 @@ class UImage : public UWidget
 {
 public:
 	struct FSlateBrush                            Brush;                                             // 0x0100(0x00B0)(Edit, BlueprintVisible, BlueprintReadOnly, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             BrushDelegate;                                     // 0x01B0(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             BrushDelegate;                                     // 0x01B0(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	struct FLinearColor                           ColorAndOpacity;                                   // 0x01C0(0x0010)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             ColorAndOpacityDelegate;                           // 0x01D0(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             ColorAndOpacityDelegate;                           // 0x01D0(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	bool                                          bFlipForRightToLeftFlowDirection;                  // 0x01E0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_1E1[0x3];                                      // 0x01E1(0x0003)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void(const struct FGeometry& MyGeometry, const struct FPointerEvent& MouseEvent)> OnMouseButtonDownEvent; // 0x01E4(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const struct FGeometry& MyGeometry, const struct FPointerEvent& MouseEvent)> OnMouseButtonDownEvent; // 0x01E4(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	uint8                                         Pad_1F4[0x3C];                                     // 0x01F4(0x003C)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
@@ -1232,7 +1232,7 @@ class UMultiLineEditableTextBox final : public UTextLayoutWidget
 public:
 	class FText                                   Text;                                              // 0x0120(0x0018)(Edit, NativeAccessSpecifierPublic)
 	class FText                                   HintText;                                          // 0x0138(0x0018)(Edit, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             HintTextDelegate;                                  // 0x0150(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             HintTextDelegate;                                  // 0x0150(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	struct FEditableTextBoxStyle                  WidgetStyle;                                       // 0x0160(0x0A00)(Edit, BlueprintVisible, NativeAccessSpecifierPublic)
 	struct FTextBlockStyle                        TextStyle;                                         // 0x0B60(0x02E0)(Edit, BlueprintVisible, NativeAccessSpecifierPublic)
 	bool                                          bIsReadOnly;                                       // 0x0E40(0x0001)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -1542,7 +1542,7 @@ class alignas(0x10) UTreeView : public UListView
 {
 public:
 	uint8                                         Pad_A80[0x10];                                     // 0x0A80(0x0010)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void(class UObject* Item, TArray<class UObject*>* Children)> BP_OnGetItemChildren;     // 0x0A90(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
+	TDynamicDelegate<void(class UObject* Item, TArray<class UObject*>* Children)> BP_OnGetItemChildren;     // 0x0A90(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
 	TMulticastInlineDelegate<void(class UObject* Item, bool bIsExpanded)> BP_OnItemExpansionChanged; // 0x0AA0(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPrivate)
 	uint8                                         Pad_AB0[0x28];                                     // 0x0AB0(0x0028)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
@@ -1935,7 +1935,7 @@ class UCheckBox final : public UContentWidget
 public:
 	ECheckBoxState                                CheckedState;                                      // 0x0118(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_119[0x3];                                      // 0x0119(0x0003)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void()>                             CheckedStateDelegate;                              // 0x011C(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             CheckedStateDelegate;                              // 0x011C(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	uint8                                         Pad_12C[0x4];                                      // 0x012C(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
 	struct FCheckBoxStyle                         WidgetStyle;                                       // 0x0130(0x0950)(Edit, BlueprintVisible, NativeAccessSpecifierPublic)
 	class USlateWidgetStyleAsset*                 Style;                                             // 0x0A80(0x0008)(ZeroConstructor, Deprecated, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -1988,7 +1988,7 @@ class UComboBox final : public UWidget
 {
 public:
 	TArray<class UObject*>                        Items;                                             // 0x0100(0x0010)(Edit, BlueprintVisible, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPublic)
-	TDelegate<void(class UObject* Item)>          OnGenerateWidgetEvent;                             // 0x0110(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(class UObject* Item)>          OnGenerateWidgetEvent;                             // 0x0110(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	bool                                          bIsFocusable;                                      // 0x0120(0x0001)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_121[0x17];                                     // 0x0121(0x0017)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
@@ -2020,8 +2020,8 @@ public:
 	bool                                          bEnableGamepadNavigationMode;                      // 0x10C9(0x0001)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	bool                                          bIsFocusable;                                      // 0x10CA(0x0001)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_10CB[0x1];                                     // 0x10CB(0x0001)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void(class FName Item)>             OnGenerateContentWidget;                           // 0x10CC(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
-	TDelegate<void(class FName Item)>             OnGenerateItemWidget;                              // 0x10DC(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(class FName Item)>             OnGenerateContentWidget;                           // 0x10CC(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(class FName Item)>             OnGenerateItemWidget;                              // 0x10DC(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	uint8                                         Pad_10EC[0x4];                                     // 0x10EC(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
 	TMulticastInlineDelegate<void(class FName SelectedItem, ESelectInfo SelectionType)> OnSelectionChanged; // 0x10F0(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
 	TMulticastInlineDelegate<void()>              OnOpening;                                         // 0x1100(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
@@ -2066,7 +2066,7 @@ public:
 	struct FSlateColor                            ForegroundColor;                                   // 0x1110(0x0014)(Edit, BlueprintVisible, BlueprintReadOnly, NativeAccessSpecifierPublic)
 	bool                                          bIsFocusable;                                      // 0x1124(0x0001)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_1125[0x3];                                     // 0x1125(0x0003)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void(const class FString& Item)>    OnGenerateWidgetEvent;                             // 0x1128(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const class FString& Item)>    OnGenerateWidgetEvent;                             // 0x1128(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	TMulticastInlineDelegate<void(const class FString& SelectedItem, ESelectInfo SelectionType)> OnSelectionChanged; // 0x1138(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
 	TMulticastInlineDelegate<void()>              OnOpening;                                         // 0x1148(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
 	uint8                                         Pad_1158[0x58];                                    // 0x1158(0x0058)(Fixing Struct Size After Last Property [ Dumper-8 ])
@@ -2129,9 +2129,9 @@ class alignas(0x10) UEditableText : public UWidget
 {
 public:
 	class FText                                   Text;                                              // 0x0100(0x0018)(Edit, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             TextDelegate;                                      // 0x0118(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             TextDelegate;                                      // 0x0118(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	class FText                                   HintText;                                          // 0x0128(0x0018)(Edit, BlueprintVisible, BlueprintReadOnly, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             HintTextDelegate;                                  // 0x0140(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             HintTextDelegate;                                  // 0x0140(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	struct FEditableTextStyle                     WidgetStyle;                                       // 0x0150(0x0290)(Edit, BlueprintVisible, NativeAccessSpecifierPublic)
 	class USlateWidgetStyleAsset*                 Style;                                             // 0x03E0(0x0008)(ZeroConstructor, Deprecated, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class USlateBrushAsset*                       BackgroundImageSelected;                           // 0x03E8(0x0008)(ZeroConstructor, Deprecated, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -2189,12 +2189,12 @@ class UEditableTextBox final : public UWidget
 {
 public:
 	class FText                                   Text;                                              // 0x0100(0x0018)(Edit, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             TextDelegate;                                      // 0x0118(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             TextDelegate;                                      // 0x0118(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	uint8                                         Pad_128[0x8];                                      // 0x0128(0x0008)(Fixing Size After Last Property [ Dumper-8 ])
 	struct FEditableTextBoxStyle                  WidgetStyle;                                       // 0x0130(0x0A00)(Edit, BlueprintVisible, NativeAccessSpecifierPublic)
 	class USlateWidgetStyleAsset*                 Style;                                             // 0x0B30(0x0008)(ZeroConstructor, Deprecated, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class FText                                   HintText;                                          // 0x0B38(0x0018)(Edit, BlueprintVisible, BlueprintReadOnly, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             HintTextDelegate;                                  // 0x0B50(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             HintTextDelegate;                                  // 0x0B50(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	struct FSlateFontInfo                         Font;                                              // 0x0B60(0x0058)(Deprecated, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	struct FLinearColor                           ForegroundColor;                                   // 0x0BB8(0x0010)(ZeroConstructor, Deprecated, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	struct FLinearColor                           BackgroundColor;                                   // 0x0BC8(0x0010)(ZeroConstructor, Deprecated, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -2370,8 +2370,8 @@ class UMenuAnchor final : public UContentWidget
 {
 public:
 	TSubclassOf<class UUserWidget>                MenuClass;                                         // 0x0118(0x0008)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             OnGetMenuContentEvent;                             // 0x0120(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             OnGetUserMenuContentEvent;                         // 0x0130(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             OnGetMenuContentEvent;                             // 0x0120(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             OnGetUserMenuContentEvent;                         // 0x0130(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	EMenuPlacement                                Placement;                                         // 0x0140(0x0001)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	bool                                          bFitInWindow;                                      // 0x0141(0x0001)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	bool                                          ShouldDeferPaintingAfterWindowContent;             // 0x0142(0x0001)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -2539,7 +2539,7 @@ class UMultiLineEditableText final : public UTextLayoutWidget
 public:
 	class FText                                   Text;                                              // 0x0120(0x0018)(Edit, NativeAccessSpecifierPublic)
 	class FText                                   HintText;                                          // 0x0138(0x0018)(Edit, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             HintTextDelegate;                                  // 0x0150(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             HintTextDelegate;                                  // 0x0150(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	struct FTextBlockStyle                        WidgetStyle;                                       // 0x0160(0x02E0)(Edit, BlueprintVisible, NativeAccessSpecifierPublic)
 	bool                                          bIsReadOnly;                                       // 0x0440(0x0001)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_441[0x7];                                      // 0x0441(0x0007)(Fixing Size After Last Property [ Dumper-8 ])
@@ -2652,9 +2652,9 @@ public:
 	bool                                          bIsMarquee;                                        // 0x0356(0x0001)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_357[0x1];                                      // 0x0357(0x0001)(Fixing Size After Last Property [ Dumper-8 ])
 	struct FVector2D                              BorderPadding;                                     // 0x0358(0x0008)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             PercentDelegate;                                   // 0x0360(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             PercentDelegate;                                   // 0x0360(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	struct FLinearColor                           FillColorAndOpacity;                               // 0x0370(0x0010)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             FillColorAndOpacityDelegate;                       // 0x0380(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             FillColorAndOpacityDelegate;                       // 0x0380(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	uint8                                         Pad_390[0x10];                                     // 0x0390(0x0010)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
@@ -2993,9 +2993,9 @@ public:
 	ESlateAccessibleBehavior                      AccessibleSummaryBehavior;                         // 0x002A(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_2B[0x5];                                       // 0x002B(0x0005)(Fixing Size After Last Property [ Dumper-8 ])
 	class FText                                   AccessibleText;                                    // 0x0030(0x0018)(NativeAccessSpecifierPublic)
-	TDelegate<void()>                             AccessibleTextDelegate;                            // 0x0048(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             AccessibleTextDelegate;                            // 0x0048(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	class FText                                   AccessibleSummaryText;                             // 0x0058(0x0018)(NativeAccessSpecifierPublic)
-	TDelegate<void()>                             AccessibleSummaryTextDelegate;                     // 0x0070(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             AccessibleSummaryTextDelegate;                     // 0x0070(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 
 public:
 	static class UClass* StaticClass()
@@ -3036,7 +3036,7 @@ class USpinBox final : public UWidget
 {
 public:
 	float                                         Value;                                             // 0x0100(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             ValueDelegate;                                     // 0x0104(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             ValueDelegate;                                     // 0x0104(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	uint8                                         Pad_114[0xC];                                      // 0x0114(0x000C)(Fixing Size After Last Property [ Dumper-8 ])
 	struct FSpinBoxStyle                          WidgetStyle;                                       // 0x0120(0x0520)(Edit, BlueprintVisible, NativeAccessSpecifierPublic)
 	class USlateWidgetStyleAsset*                 Style;                                             // 0x0640(0x0008)(ZeroConstructor, Deprecated, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -3512,7 +3512,7 @@ public:
 	static struct FEventReply SetMousePosition(struct FEventReply& Reply, const struct FVector2D& NewMousePosition);
 	static struct FEventReply SetUserFocus(struct FEventReply& Reply, class UWidget* FocusWidget, bool bInAllUsers);
 	static void SetWindowTitleBarCloseButtonActive(bool bActive);
-	static void SetWindowTitleBarOnCloseClickedDelegate(TDelegate<void()> Delegate);
+	static void SetWindowTitleBarOnCloseClickedDelegate(TDynamicDelegate<void()> Delegate);
 	static void SetWindowTitleBarState(class UWidget* TitleBarContent, EWindowTitleBarMode Mode, bool bTitleBarDragEnabled, bool bWindowButtonsVisible, bool bTitleBarVisible);
 	static struct FEventReply Unhandled();
 	static struct FEventReply UnlockMouse(struct FEventReply& Reply);

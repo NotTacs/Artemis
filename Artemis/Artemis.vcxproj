@@ -152,6 +152,13 @@
     <ClInclude Include="Engine\Restricted\NotForLicensees\Plugins\OnlineGameplayFramework\Source\McpProfileSys\Public\McpProfileGroup.h" />
     <ClInclude Include="Engine\Source\Runtime\CoreUObject\Public\UObject\Object.h" />
     <ClInclude Include="Engine\Source\Runtime\Core\Public\CoreGlobals.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Delegates\Delegate.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Delegates\DelegateBase.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Delegates\DelegateCombinations.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Delegates\DelegateInstanceInterface.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Delegates\DelegateInstancesImpl.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Delegates\IDelegateInstance.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Delegates\MulticastDelegateBase.h" />
     <ClInclude Include="Engine\Source\Runtime\Core\Public\Logging\LogCategory.h" />
     <ClInclude Include="Engine\Source\Runtime\Core\Public\Logging\LogMacros.h" />
     <ClInclude Include="Engine\Source\Runtime\Core\Public\Logging\LogVerbosity.h" />
@@ -176,13 +183,18 @@
     <ClInclude Include="Engine\Source\Runtime\Json\Public\Dom\JsonValue.h" />
     <ClInclude Include="Engine\Source\Runtime\Json\Public\Serialization\JsonTypes.h" />
     <ClInclude Include="FortniteGame\Source\FortniteAI\Public\AI\Navigation\AthenaNavSystem.h" />
+    <ClInclude Include="FortniteGame\Source\FortniteAI\Public\Athena\AI\FortAthenaAISpawnerDataComponent_AIBotCosmeticBase.h" />
     <ClInclude Include="FortniteGame\Source\FortniteAI\Public\Athena\AI\Systems\AthenaAIServicePlayerBots.h" />
+    <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Athena\ControllerComponents\FortControllerComponent_MapDiscoverability.h" />
     <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Athena\FortGameModeAthena.h" />
+    <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Athena\FortGameStateAthena.h" />
     <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Athena\FortPlayerControllerAthena.h" />
+    <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Athena\FortPoiVolume.h" />
     <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Components\FortControllerComponent_Aircraft.h" />
     <ClInclude Include="FortniteGame\Source\FortniteGame\Public\FortGameInstance.h" />
     <ClInclude Include="FortniteGame\Source\FortniteGame\Public\FortGameSessionDedicated.h" />
     <ClInclude Include="CoreMinimal.h" />
+    <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Items\FortInventoryOwnerInterface.h" />
     <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Lobby\FortGameModeEmptyDedicated.h" />
     <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Online\FortGameSessionDedicatedAthena.h" />
     <ClInclude Include="pch.h" />
@@ -197,6 +209,7 @@
     <ClCompile Include="Engine\Plugins\Runtime\GameplayAbilities\Source\GameplayAbilities\Private\AbilitySystemComponent_Abilities.cpp" />
     <ClCompile Include="Engine\Restricted\NotForLicensees\Plugins\OnlineGameplayFramework\Source\McpProfileSys\Private\McpProfileGroup.cpp" />
     <ClCompile Include="Engine\Source\Runtime\CoreUObject\Private\UObject\Obj.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Core\Private\Delegates\DelegateHandle.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Core\Private\Logging\LogMacros.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Core\Private\Logging\LogSuppresionInterface.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Core\Private\Logging\LogVerbosity.cpp" />
@@ -209,12 +222,17 @@
     <ClCompile Include="Engine\Source\Runtime\Engine\Private\World.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Json\Private\Dom\JsonValue.cpp" />
     <ClCompile Include="FortniteGame\Source\FortniteAI\Private\AI\Navigation\AthenaNavSystem.cpp" />
+    <ClCompile Include="FortniteGame\Source\FortniteAI\Private\Athena\AI\FortAthenaAISpawnerDataComponent_AIBotCosmeticBase.cpp" />
     <ClCompile Include="FortniteGame\Source\FortniteAI\Private\Athena\AI\Systems\AthenaAIServicePlayerBots.cpp" />
+    <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Athena\ControllerComponents\FortControllerComponent_MapDiscoverability.cpp" />
     <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Athena\FortGameModeAthena.cpp" />
+    <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Athena\FortGameStateAthena.cpp" />
     <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Athena\FortPlayerControllerAthena.cpp" />
+    <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Athena\FortPoiVolume.cpp" />
     <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Components\FortControllerComponent_Aircraft.cpp" />
     <ClCompile Include="FortniteGame\Source\FortniteGame\Private\FortGameInstance.cpp" />
     <ClCompile Include="FortniteGame\Source\FortniteGame\Private\FortGameSessionDedicated.cpp" />
+    <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Items\FortInventoryOwnerInterface.cpp" />
     <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Lobby\FortGameModeEmptyDedicated.cpp" />
     <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Online\FortGameSessionDedicatedAthena.cpp" />
     <ClCompile Include="pch.cpp">
@@ -229,6 +247,9 @@
     <ClCompile Include="SDK\SDK\Engine_functions.cpp" />
     <ClCompile Include="SDK\SDK\FortniteGame_functions.cpp" />
     <ClCompile Include="SDK\SDK\GameplayAbilities_functions.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Engine\Source\Runtime\Core\Public\Delegates\DelegateSignatureImpl.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

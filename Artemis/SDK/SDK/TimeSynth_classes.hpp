@@ -87,7 +87,7 @@ public:
 	uint8                                         Pad_730[0xA20];                                    // 0x0730(0x0A20)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
-	void AddQuantizationEventDelegate(ETimeSynthEventQuantization QuantizationType, const TDelegate<void(ETimeSynthEventQuantization QuantizationType, int32 NumBars, float Beat)>& OnQuantizationEvent);
+	void AddQuantizationEventDelegate(ETimeSynthEventQuantization QuantizationType, const TDynamicDelegate<void(ETimeSynthEventQuantization QuantizationType, int32 NumBars, float Beat)>& OnQuantizationEvent);
 	bool HasActiveClips();
 	struct FTimeSynthClipHandle PlayClip(class UTimeSynthClip* InClip, class UTimeSynthVolumeGroup* InVolumeGroup);
 	void ResetSeed();

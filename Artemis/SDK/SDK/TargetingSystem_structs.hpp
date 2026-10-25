@@ -95,7 +95,7 @@ struct alignas(0x08) FTargetingRequestData final
 {
 public:
 	uint8                                         Pad_0[0x18];                                       // 0x0000(0x0018)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void(const struct FTargetingRequestHandle& TargetingRequestHandle)> TargetingRequestDynamicDelegate; // 0x0018(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const struct FTargetingRequestHandle& TargetingRequestHandle)> TargetingRequestDynamicDelegate; // 0x0018(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // ScriptStruct TargetingSystem.TargetingAsyncTaskData

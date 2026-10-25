@@ -89,7 +89,7 @@ public:
 	bool                                          CallFunc_CanBeInteractedWithWhenTamed_bCanInteract; // 0x0004(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	uint8                                         Pad_5[0x3];                                        // 0x0005(0x0003)(Fixing Size After Last Property [ Dumper-8 ])
 	TSoftClassPtr<class UClass>                   K2Node_CustomEvent_AnimationLayer;                 // 0x0008(0x0028)(HasGetValueTypeHash)
-	TDelegate<void(TSubclassOf<class UObject> Loaded)> K2Node_CreateDelegate_OutputDelegate;         // 0x0030(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(TSubclassOf<class UObject> Loaded)> K2Node_CreateDelegate_OutputDelegate;         // 0x0030(0x0010)(ZeroConstructor, NoDestructor)
 	bool                                          CallFunc_IsValidSoftClassReference_ReturnValue;    // 0x0040(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	uint8                                         Pad_41[0x7];                                       // 0x0041(0x0007)(Fixing Size After Last Property [ Dumper-8 ])
 	class AActor*                                 K2Node_Event_AIPawn;                               // 0x0048(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)

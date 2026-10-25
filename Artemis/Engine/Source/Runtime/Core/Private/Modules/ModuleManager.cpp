@@ -20,10 +20,13 @@
 #include "FortniteGame\Source\FortniteAI\Public\Athena\AI\Systems\AthenaAIServicePlayerBots.h"
 #include "FortniteGame\Source\FortniteAI\Public\AI\Navigation\AthenaNavSystem.h"
 #include "Engine\Source\Runtime\CoreUObject\Public\UObject\Object.h"
+#include "FortniteGame\Source\FortniteGame\Public\Athena\FortPoiVolume.h"
+#include "FortniteGame\Source\FortniteGame\Public\Athena\ControllerComponents\FortControllerComponent_MapDiscoverability.h"
 
 void FModuleManager::LoadAllModules()
 {
 	UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"log LogMatchmakingServiceDedicatedServer all", nullptr);
+	UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"log LogAthenaBots VeryVerbose | log LogFortQuest VeryVerbose", nullptr);
 	GameMapsSettings::LoadModule();
 	World::LoadModule();
 	FortGameModeAthena::LoadModule();
@@ -45,5 +48,7 @@ void FModuleManager::LoadAllModules()
 	FortPlayerControllerAthena::LoadModule();
 	AbilitySystemComponent::LoadModule();
 	FortControllerComponent_Aircraft::LoadModule();
+	FortPoiVolume::LoadModule();
+	FortControllerComponent_MapDiscoverability::LoadModule();
 	UE_LOG(LogModuleManager, Verbose, TEXT("All modules loaded"));
 }

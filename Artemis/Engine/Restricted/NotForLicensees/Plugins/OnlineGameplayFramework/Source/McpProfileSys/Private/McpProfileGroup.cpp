@@ -2,9 +2,9 @@
 #include "../Public/McpProfileGroup.h"
 #include "Engine/Source/Runtime/Engine/Classes/Kismet/MemoryLibrary.h"
 
-void McpProfileGroup::SendRequestNow(UMcpProfileGroup* __this, __int64 HttpRequest, FBaseUrlContext::EContextCredentials ContextCredentials)
+void McpProfileGroup::SendRequestNow(UMcpProfileGroup* __this, const TSharedRef<IHttpRequest>& HttpRequest, FBaseUrlContext::EContextCredentials ContextCredentials)
 {
-	Originals::SendRequestNow(__this, HttpRequest, FBaseUrlContext::CXC_Public);
+	Originals::SendRequestNow(__this, HttpRequest, FBaseUrlContext::EContextCredentials::CXC_Public);
 }
 
 void McpProfileGroup::LoadModule()

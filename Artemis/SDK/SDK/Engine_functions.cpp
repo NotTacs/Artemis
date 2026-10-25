@@ -631,6 +631,11 @@ bool UActorComponent::IsComponentTickEnabled() const
 	return Parms.ReturnValue;
 }
 
+void UActorComponent::RegisterComponent()
+{
+	static void (*RegisterComponentWithWorld)(void*, void*, void*) = decltype(RegisterComponentWithWorld)(InSDKUtils::GetImageBase() + 0xd80220);
+	RegisterComponentWithWorld(this, OwnerPrivate->GetWorld(), nullptr);
+}
 
 // Function Engine.Actor.AddComponent
 // (Final, Native, Public, HasOutParams, HasDefaults, BlueprintCallable)
@@ -43038,13 +43043,13 @@ void UAudioComponent::Play(float StartTime)
 // const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class UQuartzClockHandle*&              InClockHandle                                          (Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // struct FQuartzQuantizationBoundary&     InQuantizationBoundary                                 (Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
 // float                                   InStartTime                                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   InFadeInDuration                                       (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   InFadeVolumeLevel                                      (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // EAudioFaderCurve                        InFadeCurve                                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UAudioComponent::PlayQuantized(const class UObject* WorldContextObject, class UQuartzClockHandle*& InClockHandle, struct FQuartzQuantizationBoundary& InQuantizationBoundary, const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& InDelegate, float InStartTime, float InFadeInDuration, float InFadeVolumeLevel, EAudioFaderCurve InFadeCurve)
+void UAudioComponent::PlayQuantized(const class UObject* WorldContextObject, class UQuartzClockHandle*& InClockHandle, struct FQuartzQuantizationBoundary& InQuantizationBoundary, const TDynamicDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& InDelegate, float InStartTime, float InFadeInDuration, float InFadeVolumeLevel, EAudioFaderCurve InFadeCurve)
 {
 	static class UFunction* Func = nullptr;
 
@@ -97274,9 +97279,9 @@ void UKismetSystemLibrary::K2_ClearTimer(class UObject* Object, const class FStr
 // Function Engine.KismetSystemLibrary.K2_ClearTimerDelegate
 // (Final, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// TDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UKismetSystemLibrary::K2_ClearTimerDelegate(TDelegate<void()> Delegate)
+void UKismetSystemLibrary::K2_ClearTimerDelegate(TDynamicDelegate<void()> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -97356,10 +97361,10 @@ float UKismetSystemLibrary::K2_GetTimerElapsedTime(class UObject* Object, const 
 // Function Engine.KismetSystemLibrary.K2_GetTimerElapsedTimeDelegate
 // (Final, Native, Static, Public, BlueprintCallable, BlueprintPure)
 // Parameters:
-// TDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // float                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-float UKismetSystemLibrary::K2_GetTimerElapsedTimeDelegate(TDelegate<void()> Delegate)
+float UKismetSystemLibrary::K2_GetTimerElapsedTimeDelegate(TDynamicDelegate<void()> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -97444,10 +97449,10 @@ float UKismetSystemLibrary::K2_GetTimerRemainingTime(class UObject* Object, cons
 // Function Engine.KismetSystemLibrary.K2_GetTimerRemainingTimeDelegate
 // (Final, Native, Static, Public, BlueprintCallable, BlueprintPure)
 // Parameters:
-// TDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // float                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-float UKismetSystemLibrary::K2_GetTimerRemainingTimeDelegate(TDelegate<void()> Delegate)
+float UKismetSystemLibrary::K2_GetTimerRemainingTimeDelegate(TDynamicDelegate<void()> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -97562,10 +97567,10 @@ bool UKismetSystemLibrary::K2_IsTimerActive(class UObject* Object, const class F
 // Function Engine.KismetSystemLibrary.K2_IsTimerActiveDelegate
 // (Final, Native, Static, Public, BlueprintCallable, BlueprintPure)
 // Parameters:
-// TDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-bool UKismetSystemLibrary::K2_IsTimerActiveDelegate(TDelegate<void()> Delegate)
+bool UKismetSystemLibrary::K2_IsTimerActiveDelegate(TDynamicDelegate<void()> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -97650,10 +97655,10 @@ bool UKismetSystemLibrary::K2_IsTimerPaused(class UObject* Object, const class F
 // Function Engine.KismetSystemLibrary.K2_IsTimerPausedDelegate
 // (Final, Native, Static, Public, BlueprintCallable, BlueprintPure)
 // Parameters:
-// TDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-bool UKismetSystemLibrary::K2_IsTimerPausedDelegate(TDelegate<void()> Delegate)
+bool UKismetSystemLibrary::K2_IsTimerPausedDelegate(TDynamicDelegate<void()> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -97763,9 +97768,9 @@ void UKismetSystemLibrary::K2_PauseTimer(class UObject* Object, const class FStr
 // Function Engine.KismetSystemLibrary.K2_PauseTimerDelegate
 // (Final, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// TDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UKismetSystemLibrary::K2_PauseTimerDelegate(TDelegate<void()> Delegate)
+void UKismetSystemLibrary::K2_PauseTimerDelegate(TDynamicDelegate<void()> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -97853,14 +97858,14 @@ struct FTimerHandle UKismetSystemLibrary::K2_SetTimer(class UObject* Object, con
 // Function Engine.KismetSystemLibrary.K2_SetTimerDelegate
 // (Final, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// TDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // float                                   Time                                                   (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // bool                                    bLooping                                               (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   InitialStartDelay                                      (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   InitialStartDelayVariance                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // struct FTimerHandle                     ReturnValue                                            (Parm, OutParm, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-struct FTimerHandle UKismetSystemLibrary::K2_SetTimerDelegate(TDelegate<void()> Delegate, float Time, bool bLooping, float InitialStartDelay, float InitialStartDelayVariance)
+struct FTimerHandle UKismetSystemLibrary::K2_SetTimerDelegate(TDynamicDelegate<void()> Delegate, float Time, bool bLooping, float InitialStartDelay, float InitialStartDelayVariance)
 {
 	static class UFunction* Func = nullptr;
 
@@ -97919,10 +97924,10 @@ struct FTimerHandle UKismetSystemLibrary::K2_SetTimerForNextTick(class UObject* 
 // Function Engine.KismetSystemLibrary.K2_SetTimerForNextTickDelegate
 // (Final, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// TDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // struct FTimerHandle                     ReturnValue                                            (Parm, OutParm, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-struct FTimerHandle UKismetSystemLibrary::K2_SetTimerForNextTickDelegate(TDelegate<void()> Delegate)
+struct FTimerHandle UKismetSystemLibrary::K2_SetTimerForNextTickDelegate(TDynamicDelegate<void()> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -97977,10 +97982,10 @@ bool UKismetSystemLibrary::K2_TimerExists(class UObject* Object, const class FSt
 // Function Engine.KismetSystemLibrary.K2_TimerExistsDelegate
 // (Final, Native, Static, Public, BlueprintCallable, BlueprintPure)
 // Parameters:
-// TDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-bool UKismetSystemLibrary::K2_TimerExistsDelegate(TDelegate<void()> Delegate)
+bool UKismetSystemLibrary::K2_TimerExistsDelegate(TDynamicDelegate<void()> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -98062,9 +98067,9 @@ void UKismetSystemLibrary::K2_UnPauseTimer(class UObject* Object, const class FS
 // Function Engine.KismetSystemLibrary.K2_UnPauseTimerDelegate
 // (Final, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// TDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UKismetSystemLibrary::K2_UnPauseTimerDelegate(TDelegate<void()> Delegate)
+void UKismetSystemLibrary::K2_UnPauseTimerDelegate(TDynamicDelegate<void()> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -98453,10 +98458,10 @@ bool UKismetSystemLibrary::LineTraceSingleForObjects(const class UObject* WorldC
 // Parameters:
 // const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // TSoftObjectPtr<class UObject>           Asset                                                  (Parm, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(class UObject* Loaded)>  OnLoaded                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(class UObject* Loaded)>  OnLoaded                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // const struct FLatentActionInfo&         LatentInfo                                             (Parm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UKismetSystemLibrary::LoadAsset(const class UObject* WorldContextObject, TSoftObjectPtr<class UObject> Asset, TDelegate<void(class UObject* Loaded)> OnLoaded, const struct FLatentActionInfo& LatentInfo)
+void UKismetSystemLibrary::LoadAsset(const class UObject* WorldContextObject, TSoftObjectPtr<class UObject> Asset, TDynamicDelegate<void(class UObject* Loaded)> OnLoaded, const struct FLatentActionInfo& LatentInfo)
 {
 	static class UFunction* Func = nullptr;
 
@@ -98512,10 +98517,10 @@ class UObject* UKismetSystemLibrary::LoadAsset_Blocking(TSoftObjectPtr<class UOb
 // Parameters:
 // const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // TSoftClassPtr<class UClass>             AssetClass                                             (Parm, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(TSubclassOf<class UObject> Loaded)>OnLoaded                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(TSubclassOf<class UObject> Loaded)>OnLoaded                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // const struct FLatentActionInfo&         LatentInfo                                             (Parm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UKismetSystemLibrary::LoadAssetClass(const class UObject* WorldContextObject, TSoftClassPtr<class UClass> AssetClass, TDelegate<void(TSubclassOf<class UObject> Loaded)> OnLoaded, const struct FLatentActionInfo& LatentInfo)
+void UKismetSystemLibrary::LoadAssetClass(const class UObject* WorldContextObject, TSoftClassPtr<class UClass> AssetClass, TDynamicDelegate<void(TSubclassOf<class UObject> Loaded)> OnLoaded, const struct FLatentActionInfo& LatentInfo)
 {
 	static class UFunction* Func = nullptr;
 
@@ -103429,9 +103434,9 @@ void USkyLightComponent::SetVolumetricScatteringIntensity(float NewIntensity)
 // (Final, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(const TArray<float>& Envelope)>&OnSubmixEnvelopeBP                                     (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(const TArray<float>& Envelope)>&OnSubmixEnvelopeBP                                     (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void USoundSubmix::AddEnvelopeFollowerDelegate(const class UObject* WorldContextObject, const TDelegate<void(const TArray<float>& Envelope)>& OnSubmixEnvelopeBP)
+void USoundSubmix::AddEnvelopeFollowerDelegate(const class UObject* WorldContextObject, const TDynamicDelegate<void(const TArray<float>& Envelope)>& OnSubmixEnvelopeBP)
 {
 	static class UFunction* Func = nullptr;
 
@@ -103457,7 +103462,7 @@ void USoundSubmix::AddEnvelopeFollowerDelegate(const class UObject* WorldContext
 // Parameters:
 // const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const TArray<struct FSoundSubmixSpectralAnalysisBandSettings>&InBandSettings                                         (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
-// const TDelegate<void(const TArray<float>& Magnitude)>&OnSubmixSpectralAnalysisBP                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(const TArray<float>& Magnitude)>&OnSubmixSpectralAnalysisBP                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 // float                                   UpdateRate                                             (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   DecibelNoiseFloor                                      (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // bool                                    bDoNormalize                                           (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -103465,7 +103470,7 @@ void USoundSubmix::AddEnvelopeFollowerDelegate(const class UObject* WorldContext
 // float                                   AutoRangeAttackTime                                    (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   AutoRangeReleaseTime                                   (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void USoundSubmix::AddSpectralAnalysisDelegate(const class UObject* WorldContextObject, const TArray<struct FSoundSubmixSpectralAnalysisBandSettings>& InBandSettings, const TDelegate<void(const TArray<float>& Magnitude)>& OnSubmixSpectralAnalysisBP, float UpdateRate, float DecibelNoiseFloor, bool bDoNormalize, bool bDoAutoRange, float AutoRangeAttackTime, float AutoRangeReleaseTime)
+void USoundSubmix::AddSpectralAnalysisDelegate(const class UObject* WorldContextObject, const TArray<struct FSoundSubmixSpectralAnalysisBandSettings>& InBandSettings, const TDynamicDelegate<void(const TArray<float>& Magnitude)>& OnSubmixSpectralAnalysisBP, float UpdateRate, float DecibelNoiseFloor, bool bDoNormalize, bool bDoAutoRange, float AutoRangeAttackTime, float AutoRangeReleaseTime)
 {
 	static class UFunction* Func = nullptr;
 
@@ -103497,9 +103502,9 @@ void USoundSubmix::AddSpectralAnalysisDelegate(const class UObject* WorldContext
 // (Final, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(const TArray<float>& Magnitude)>&OnSubmixSpectralAnalysisBP                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(const TArray<float>& Magnitude)>&OnSubmixSpectralAnalysisBP                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void USoundSubmix::RemoveSpectralAnalysisDelegate(const class UObject* WorldContextObject, const TDelegate<void(const TArray<float>& Magnitude)>& OnSubmixSpectralAnalysisBP)
+void USoundSubmix::RemoveSpectralAnalysisDelegate(const class UObject* WorldContextObject, const TDynamicDelegate<void(const TArray<float>& Magnitude)>& OnSubmixSpectralAnalysisBP)
 {
 	static class UFunction* Func = nullptr;
 
@@ -106078,10 +106083,10 @@ void UVectorFieldComponent::SetIntensity(float NewIntensity)
 // Function Engine.ViewportStatsSubsystem.AddDisplayDelegate
 // (Final, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const TDelegate<void(class FText* OutText, struct FLinearColor* OutColor)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(class FText* OutText, struct FLinearColor* OutColor)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 // int32                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-int32 UViewportStatsSubsystem::AddDisplayDelegate(const TDelegate<void(class FText* OutText, struct FLinearColor* OutColor)>& Delegate)
+int32 UViewportStatsSubsystem::AddDisplayDelegate(const TDynamicDelegate<void(class FText* OutText, struct FLinearColor* OutColor)>& Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -106570,3 +106575,184 @@ bool UWorldPartitionSubsystem::IsStreamingCompleted(EWorldPartitionRuntimeCellSt
 	return Parms.ReturnValue;
 }
 
+void UBrushComponent::RequestUpdateBrushCollision()
+{
+	if (BrushBodySetup)
+	{
+
+		const FVector LocalRelativeScale3D = RelativeScale3D;
+		const bool bIsMirrored = (LocalRelativeScale3D.X * LocalRelativeScale3D.Y * LocalRelativeScale3D.Z) < 0.0f;
+		if ((BrushBodySetup->bGenerateNonMirroredCollision && bIsMirrored) || (BrushBodySetup->bGenerateMirroredCollision && !bIsMirrored))
+		{
+			BrushBodySetup->bGenerateNonMirroredCollision = !bIsMirrored;
+			BrushBodySetup->bGenerateMirroredCollision = bIsMirrored;
+			BrushBodySetup->InvalidatePhysicsData();
+		}
+	}
+}
+
+void UBrushComponent::BuildSimpleBrushCollision()
+{
+	AActor* Owner = GetOwner();
+	if (!Owner)
+	{
+		UE_LOG(LogArtemis, Warning, TEXT("BuildSimpleBrushCollision: BrushComponent with no Owner!"));
+		return;
+	}
+
+	if (BrushBodySetup == NULL)
+	{
+		BrushBodySetup = NewObject<UBodySetup>(this);
+		//check(BrushBodySetup);
+	}
+
+	// No complex collision, so use the simple for that
+	BrushBodySetup->CollisionTraceFlag = ECollisionTraceFlag::CTF_UseSimpleAsComplex;
+
+
+	RequestUpdateBrushCollision();
+
+	// Convert collision model into convex hulls.
+	BrushBodySetup->CreateFromModel(Brush, true);
+
+	RecreatePhysicsState();
+}
+
+static void EmptyConvexElems(FKAggregateGeom* Geom)
+{
+	TArray<FKConvexElem>& ConvexElems = Geom->ConvexElems;
+	for (int32 i = 0; i < ConvexElems.Num(); i++)
+	{
+		FKConvexElem::Destruct(&ConvexElems[i]);
+	}
+	ConvexElems.Free();
+}
+
+static void FixupConvexUserData(FKAggregateGeom* Geom)
+{
+	TArray<FKConvexElem>& ConvexElems = Geom->ConvexElems;
+	for (int32 i = 0; i < ConvexElems.Num(); i++)
+	{
+		ConvexElems[i].UserDataPayload = &ConvexElems[i];
+	}
+}
+
+void UBodySetup::RemoveSimpleCollision()
+{
+	InvalidatePhysicsData();
+
+	AggGeom.BoxElems.Free();
+	EmptyConvexElems(&AggGeom);
+	AggGeom.SphylElems.Free();
+	AggGeom.SphereElems.Free();
+	AggGeom.TaperedCapsuleElems.Free();
+}
+
+static bool AddConvexPrim(FKAggregateGeom* OutGeom, TArray<FPlane>& Planes, UModel* InModel)
+{
+	TArray<FVector> SnapVerts;
+	for (int32 k = 0; k < InModel->Verts.Num(); k++)
+	{
+		const int32 PointIx = InModel->Verts[k].pVertex;
+		if (PointIx < 0 || PointIx >= InModel->Points.Num())
+		{
+			continue;
+		}
+
+		SnapVerts.Add(InModel->Points[PointIx]);
+	}
+
+	alignas(FKConvexElem) uint8 NewConvexStorage[sizeof(FKConvexElem)];
+	FKConvexElem* NewConvex = reinterpret_cast<FKConvexElem*>(NewConvexStorage);
+	FKConvexElem::Construct(NewConvex);
+
+	bool bSuccess = NewConvex->HullFromPlanes(Planes, SnapVerts);
+
+	if (bSuccess && NewConvex->ElemBox.IsValid)
+	{
+		OutGeom->ConvexElems.Add(*NewConvex);
+		FixupConvexUserData(OutGeom);
+	}
+	else
+	{
+		FKConvexElem::Destruct(NewConvex);
+	}
+
+	SnapVerts.Free();
+
+	return bSuccess;
+}
+
+static bool ModelToHullsWorker(FKAggregateGeom* outGeom,
+	UModel* inModel,
+	int32 nodeIx,
+	bool bOutside,
+	TArray<FPlane>& planes)
+{
+	FBspNode& node = inModel->Nodes[nodeIx];
+	if (node.iBack != INDEX_NONE)
+	{
+		planes.Add(node.Plane);
+		if (!ModelToHullsWorker(outGeom, inModel, node.iBack, node.ChildOutside(0, bOutside), planes))
+		{
+			return false;
+		}
+		planes.Remove(planes.Num() - 1);
+	}
+	else if (!node.ChildOutside(0, bOutside))
+	{
+		planes.Add(node.Plane);
+		if (!AddConvexPrim(outGeom, planes, inModel))
+		{
+			return false;
+		}
+		planes.Remove(planes.Num() - 1);
+	}
+
+	if (node.iFront != INDEX_NONE)
+	{
+		planes.Add(node.Plane.Flip());
+		if (!ModelToHullsWorker(outGeom, inModel, node.iFront, node.ChildOutside(1, bOutside), planes))
+		{
+			return false;
+		}
+		planes.Remove(planes.Num() - 1);
+	}
+	else if (!node.ChildOutside(1, bOutside))
+	{
+		planes.Add(node.Plane.Flip());
+		if (!AddConvexPrim(outGeom, planes, inModel))
+		{
+			return false;
+		}
+		planes.Remove(planes.Num() - 1);
+	}
+
+	return true;
+}
+
+bool UBodySetup::CreateFromModel(UModel* InModel, bool bRemoveExisting)
+{
+	if (bRemoveExisting)
+	{
+		RemoveSimpleCollision();
+	}
+
+	const int32 NumHullsAtStart = AggGeom.ConvexElems.Num();
+
+	bool bSuccess = false;
+
+	if (InModel != NULL && InModel->Nodes.Num() > 0)
+	{
+		TArray<FPlane> Planes;
+		bSuccess = ModelToHullsWorker(&AggGeom, InModel, 0, InModel->RootOutside, Planes);
+		if (!bSuccess)
+		{
+			EmptyConvexElems(&AggGeom);
+		}
+		Planes.Free();
+	}
+
+	InvalidatePhysicsData();
+	return bSuccess;
+}

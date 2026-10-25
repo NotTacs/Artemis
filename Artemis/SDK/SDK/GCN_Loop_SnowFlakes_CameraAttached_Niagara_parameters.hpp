@@ -28,7 +28,7 @@ public:
 	TArray<class UAudioComponent*>                K2Node_Event_AudioComponents;                      // 0x00E0(0x0010)(ConstParm, ReferenceParm, ContainsInstancedReference)
 	class UMatineeCameraShake*                    K2Node_Event_BurstCameraShakeInstance;             // 0x00F0(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	class ADecalActor*                            K2Node_Event_BurstDecalInstance;                   // 0x00F8(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	TDelegate<void()>                             K2Node_CreateDelegate_OutputDelegate;              // 0x0100(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void()>                             K2Node_CreateDelegate_OutputDelegate;              // 0x0100(0x0010)(ZeroConstructor, NoDestructor)
 	class AActor*                                 K2Node_Event_MyTarget_2;                           // 0x0110(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	struct FGameplayCueParameters                 K2Node_Event_Parameters_2;                         // 0x0118(0x00C0)(ConstParm, ContainsInstancedReference)
 	TArray<class UParticleSystemComponent*>       K2Node_Event_ParticleComponents_2;                 // 0x01D8(0x0010)(ConstParm, ReferenceParm, ContainsInstancedReference)

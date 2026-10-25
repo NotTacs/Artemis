@@ -3,7 +3,7 @@
 #include "../Public/OnlineSubsystemUtils.h"
 #include "Engine/Source/Runtime/Engine/Classes/Kismet/MemoryLibrary.h"
 
-struct FDelegateBase
+struct FDelegateBaseTemp
 {
 	void* Data;
 	int DelegateSize;
@@ -46,8 +46,9 @@ bool OnlineBeaconClient::InitClient(AOnlineBeaconClient* __this, FURL& URL)
 
 					if (*reinterpret_cast<void**>(__int64(__this) + 0x140))
 					{
+						/*TODO: Make file proper.*/
 						void* Inst = FMemory::Realloc(nullptr, 0x30, 0);
-						FDelegateBase Base{};
+						FDelegateBaseTemp Base{};
 						Base.Data = reinterpret_cast<decltype(Base.Data)>(Inst);
 						Base.DelegateSize = 3;
 						static void (*sub_4DF7C04)(...) = decltype(sub_4DF7C04)(InSDKUtils::GetImageBase() + 0x4DF7C04);

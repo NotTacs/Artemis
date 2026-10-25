@@ -106,7 +106,7 @@ public:
 	EFortDialogResult                             K2Node_CustomEvent_Result;                         // 0x0211(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	uint8                                         Pad_212[0x2];                                      // 0x0212(0x0002)(Fixing Size After Last Property [ Dumper-8 ])
 	class FName                                   K2Node_CustomEvent_ResultName;                     // 0x0214(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	TDelegate<void(EFortDialogResult Result, class FName ResultName)> K2Node_CreateDelegate_OutputDelegate; // 0x021C(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(EFortDialogResult Result, class FName ResultName)> K2Node_CreateDelegate_OutputDelegate; // 0x021C(0x0010)(ZeroConstructor, NoDestructor)
 	uint8                                         Pad_22C[0x4];                                      // 0x022C(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
 	struct FGameplayTagContainer                  CallFunc_MakeLiteralGameplayTagContainer_ReturnValue; // 0x0230(0x0020)()
 };

@@ -9394,9 +9394,9 @@ void UGameplayTagReponseTable::TagResponseEvent(const struct FGameplayTag& Tag, 
 // Function GameplayAbilities.MovieSceneGameplayCueTrack.SetSequencerTrackHandler
 // (Final, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// TDelegate<void(class AActor* Target, const struct FGameplayTag& GameplayTag, const struct FGameplayCueParameters& Parameters, EGameplayCueEvent Event)>InGameplayCueTrackHandler                              (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(class AActor* Target, const struct FGameplayTag& GameplayTag, const struct FGameplayCueParameters& Parameters, EGameplayCueEvent Event)>InGameplayCueTrackHandler                              (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UMovieSceneGameplayCueTrack::SetSequencerTrackHandler(TDelegate<void(class AActor* Target, const struct FGameplayTag& GameplayTag, const struct FGameplayCueParameters& Parameters, EGameplayCueEvent Event)> InGameplayCueTrackHandler)
+void UMovieSceneGameplayCueTrack::SetSequencerTrackHandler(TDynamicDelegate<void(class AActor* Target, const struct FGameplayTag& GameplayTag, const struct FGameplayCueParameters& Parameters, EGameplayCueEvent Event)> InGameplayCueTrackHandler)
 {
 	static class UFunction* Func = nullptr;
 

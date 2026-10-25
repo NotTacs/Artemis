@@ -80,7 +80,7 @@ public:
 	class UCommonButtonLegacy*                    K2Node_ComponentBoundEvent_Button_3;               // 0x0060(0x0008)(ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	class UUMGSequencePlayer*                     CallFunc_PlayAnimation_ReturnValue_1;              // 0x0068(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	class UCommonButtonLegacy*                    K2Node_ComponentBoundEvent_Button_2;               // 0x0070(0x0008)(ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	TDelegate<void(EFireModeType NewFireMode)>    K2Node_CreateDelegate_OutputDelegate;              // 0x0078(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(EFireModeType NewFireMode)>    K2Node_CreateDelegate_OutputDelegate;              // 0x0078(0x0010)(ZeroConstructor, NoDestructor)
 	class UHUDLayoutToolContext*                  CallFunc_GetContext_ReturnValue;                   // 0x0088(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	ESlateVisibility                              Temp_byte_Variable_2;                              // 0x0090(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	uint8                                         Pad_91[0x7];                                       // 0x0091(0x0007)(Fixing Size After Last Property [ Dumper-8 ])
@@ -158,9 +158,9 @@ public:
 	bool                                          CallFunc_Less_IntInt_ReturnValue;                  // 0x0031(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	uint8                                         Pad_32[0x2];                                       // 0x0032(0x0002)(Fixing Size After Last Property [ Dumper-8 ])
 	int32                                         CallFunc_Add_IntInt_ReturnValue;                   // 0x0034(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	TDelegate<void(class UFireModeSelectTile_C* Tile)> K2Node_CreateDelegate_OutputDelegate;         // 0x0038(0x0010)(ZeroConstructor, NoDestructor)
-	TDelegate<void(class UFireModeSelectTile_C* Tile)> K2Node_CreateDelegate_OutputDelegate_1;       // 0x0048(0x0010)(ZeroConstructor, NoDestructor)
-	TDelegate<void(class UFireModeSelectTile_C* Tile)> K2Node_CreateDelegate_OutputDelegate_2;       // 0x0058(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(class UFireModeSelectTile_C* Tile)> K2Node_CreateDelegate_OutputDelegate;         // 0x0038(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(class UFireModeSelectTile_C* Tile)> K2Node_CreateDelegate_OutputDelegate_1;       // 0x0048(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(class UFireModeSelectTile_C* Tile)> K2Node_CreateDelegate_OutputDelegate_2;       // 0x0058(0x0010)(ZeroConstructor, NoDestructor)
 };
 
 // Function HUDLayoutToolFireModePanel.HUDLayoutToolFireModePanel_C.NewTileSelected
@@ -199,7 +199,7 @@ public:
 	int32                                         Temp_int_Array_Index_Variable;                     // 0x0008(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	int32                                         Temp_int_Loop_Counter_Variable;                    // 0x000C(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	int32                                         CallFunc_Add_IntInt_ReturnValue;                   // 0x0010(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	TDelegate<void()>                             K2Node_CreateDelegate_OutputDelegate;              // 0x0014(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void()>                             K2Node_CreateDelegate_OutputDelegate;              // 0x0014(0x0010)(ZeroConstructor, NoDestructor)
 	uint8                                         Pad_24[0x4];                                       // 0x0024(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
 	struct FTimerHandle                           CallFunc_K2_SetTimerDelegate_ReturnValue;          // 0x0028(0x0008)(NoDestructor, HasGetValueTypeHash)
 	bool                                          CallFunc_K2_IsValidTimerHandle_ReturnValue;        // 0x0030(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)

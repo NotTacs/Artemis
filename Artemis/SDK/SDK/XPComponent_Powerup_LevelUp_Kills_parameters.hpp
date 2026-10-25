@@ -30,7 +30,7 @@ struct XPComponent_Powerup_LevelUp_Kills_C_ExecuteUbergraph_XPComponent_Powerup_
 public:
 	int32                                         EntryPoint;                                        // 0x0000(0x0004)(BlueprintVisible, BlueprintReadOnly, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	float                                         CallFunc_GetValueAtLevel_ReturnValue;              // 0x0004(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	TDelegate<void(const struct FGameplayEventData& Payload)> K2Node_CreateDelegate_OutputDelegate;  // 0x0008(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(const struct FGameplayEventData& Payload)> K2Node_CreateDelegate_OutputDelegate;  // 0x0008(0x0010)(ZeroConstructor, NoDestructor)
 	struct FGameplayEventData                     K2Node_CustomEvent_Payload;                        // 0x0018(0x00B0)()
 	struct FGameplayEventData                     Temp_struct_Variable;                              // 0x00C8(0x00B0)()
 	class AFortPawn*                              CallFunc_GetOwningPawn_ReturnValue;                // 0x0178(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)

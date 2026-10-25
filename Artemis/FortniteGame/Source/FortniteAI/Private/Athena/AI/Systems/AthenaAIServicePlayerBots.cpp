@@ -237,7 +237,56 @@ void AthenaAIServicePlayerBots::InitializeMMRInfos(UAthenaAIServicePlayerBots* _
 	}
 }
 
+void AthenaAIServicePlayerBots::PlacePlayerBotsInAircraft(UAthenaAIServicePlayerBots* __this, const TArray<AFortAthenaAircraft*> Aircrafts)
+{
+	if (__this->CachedAIPopulationTracker)
+	{
+		for (FFortServerBotInfo BotInfo : __this->PlayerBots)
+		{
+			if (BotInfo.BotController)
+			{
+				AFortAthenaAircraft* Aircraft = Cast<AFortGameStateAthena>(UWorld::GetWorld()->GameState)->Aircrafts[0];
+				BotInfo.BotController->EnterAircraft(Aircraft);
+			}
+		}
+
+		int32 OverrideSquadCount = UFortScalableFloatUtils::GetValueAsInteger(__this->OverridePOISpreadingSquadCount, 0);
+		if (OverrideSquadCount < 0)
+		{
+			float Ratio = UFortScalableFloatUtils::GetValue(__this->UseAllBattleBusPOIsSquadRatio);
+			//STUFF HERE
+		}
+		else
+		{
+			//STUFF HERRE
+		}
+
+		return;
+	}
+
+	UE_LOG(LogAthenaAIServicePlayerBots, Error, TEXT("[UAthenaAIServicePlayerBots::PlacePlayerBotsInAircraft] No CachedAIPopulationTracker present!"));
+}
+
+void AthenaAIServicePlayerBots::OnPlayerBotSpawned(UAthenaAIServicePlayerBots* __this, AActor* Actor, const int SpawnRequestID, double PawnMMR)
+{
+	UE_LOG(LogAthenaAIServicePlayerBots, Log, L"OnPlayerBotSpawned.");
+	AthenaAIServicePlayerBots::Originals::OnPlayerBotSpawned(__this, Actor, SpawnRequestID, PawnMMR);
+	AFortPlayerPawnAthena* FortPlayerPawn = Cast<AFortPlayerPawnAthena>(Actor);
+	if (FortPlayerPawn)
+	{
+		AFortPlayerStateAthena* PlayerState = Cast<AFortPlayerStateAthena>(FortPlayerPawn->PlayerState);
+		static __int64(*FindOrAdd)(__int64, int) = decltype(FindOrAdd)(InSDKUtils::GetImageBase() + 0x12E76A0);
+		static __int64(*PlayerlistAdd)(__int64, __int64) = decltype(PlayerlistAdd)(InSDKUtils::GetImageBase() + 0x12E7338);
+
+		__int64 TeamIdxPlayerList = FindOrAdd(__int64(UWorld::GetWorld()->GameState) + 0x1678, PlayerState->TeamIndex);
+		PlayerlistAdd(TeamIdxPlayerList, __int64(PlayerState));
+		__int64 SquadIdPlayerList = FindOrAdd(__int64(UWorld::GetWorld()->GameState) + 0x16B0, PlayerState->SquadId);
+		PlayerlistAdd(SquadIdPlayerList, __int64(PlayerState));
+	}
+}
+
 void AthenaAIServicePlayerBots::LoadModule()
 {
 	FMemoryLibrary::Rel32Swap_Lea(0x5EE0504, InitializeMMRInfos);
+	FMemoryLibrary::DetourHook(0x5edf374, OnPlayerBotSpawned, Originals::OnPlayerBotSpawned);
 }

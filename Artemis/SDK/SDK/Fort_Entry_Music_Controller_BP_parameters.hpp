@@ -51,7 +51,7 @@ public:
 	bool                                          CallFunc_IsValid_ReturnValue;                      // 0x003D(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	bool                                          CallFunc_NotEqual_ObjectObject_ReturnValue;        // 0x003E(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	uint8                                         Pad_3F[0x1];                                       // 0x003F(0x0001)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void(const class UAthenaMusicPackItemDefinition* NewMusicPack, float StartTimeOffset)> K2Node_CreateDelegate_OutputDelegate; // 0x0040(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(const class UAthenaMusicPackItemDefinition* NewMusicPack, float StartTimeOffset)> K2Node_CreateDelegate_OutputDelegate; // 0x0040(0x0010)(ZeroConstructor, NoDestructor)
 	bool                                          Temp_bool_Variable;                                // 0x0050(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	uint8                                         Pad_51[0x7];                                       // 0x0051(0x0007)(Fixing Size After Last Property [ Dumper-8 ])
 	const class UAthenaMusicPackItemDefinition*   K2Node_CustomEvent_NewMusicPack;                   // 0x0058(0x0008)(ConstParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)

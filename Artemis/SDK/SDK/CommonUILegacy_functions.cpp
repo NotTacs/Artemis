@@ -146,11 +146,11 @@ void UCommonInputManagerLegacy::SetGlobalInputHandlerPriorityFilter(int32 InFilt
 // (Final, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // const struct FDataTableRowHandle&       InputActionDataRow                                     (ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-// const TDelegate<void()>&                CompleteEvent                                          (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-// const TDelegate<void(float HeldPercent)>&ProgressEvent                                          (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void()>&                CompleteEvent                                          (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(float HeldPercent)>&ProgressEvent                                          (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 // bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-bool UCommonInputManagerLegacy::StartListeningForExistingHeldAction(const struct FDataTableRowHandle& InputActionDataRow, const TDelegate<void()>& CompleteEvent, const TDelegate<void(float HeldPercent)>& ProgressEvent)
+bool UCommonInputManagerLegacy::StartListeningForExistingHeldAction(const struct FDataTableRowHandle& InputActionDataRow, const TDynamicDelegate<void()>& CompleteEvent, const TDynamicDelegate<void(float HeldPercent)>& ProgressEvent)
 {
 	static class UFunction* Func = nullptr;
 
@@ -178,11 +178,11 @@ bool UCommonInputManagerLegacy::StartListeningForExistingHeldAction(const struct
 // (Final, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // const struct FDataTableRowHandle&       InputActionDataRow                                     (ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-// const TDelegate<void()>&                CompleteEvent                                          (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-// const TDelegate<void(float HeldPercent)>&ProgressEvent                                          (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void()>&                CompleteEvent                                          (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(float HeldPercent)>&ProgressEvent                                          (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 // bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-bool UCommonInputManagerLegacy::StopListeningForExistingHeldAction(const struct FDataTableRowHandle& InputActionDataRow, const TDelegate<void()>& CompleteEvent, const TDelegate<void(float HeldPercent)>& ProgressEvent)
+bool UCommonInputManagerLegacy::StopListeningForExistingHeldAction(const struct FDataTableRowHandle& InputActionDataRow, const TDynamicDelegate<void()>& CompleteEvent, const TDynamicDelegate<void(float HeldPercent)>& ProgressEvent)
 {
 	static class UFunction* Func = nullptr;
 
@@ -487,9 +487,9 @@ void UCommonButtonLegacy::SetTriggeredInputActionLegacy(const struct FDataTableR
 // Parameters:
 // class UDataTable*                       DataTable                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             RowName                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(bool* bPassThrough)>     CommitedEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool* bPassThrough)>     CommitedEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UCommonActivatablePanelLegacy::AddInputActionHandler(class UDataTable* DataTable, class FName RowName, TDelegate<void(bool* bPassThrough)> CommitedEvent)
+void UCommonActivatablePanelLegacy::AddInputActionHandler(class UDataTable* DataTable, class FName RowName, TDynamicDelegate<void(bool* bPassThrough)> CommitedEvent)
 {
 	static class UFunction* Func = nullptr;
 
@@ -516,10 +516,10 @@ void UCommonActivatablePanelLegacy::AddInputActionHandler(class UDataTable* Data
 // Parameters:
 // class UDataTable*                       DataTable                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             RowName                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(bool* bPassThrough)>     CommitedEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool* bPassThrough)>     CommitedEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // class UCommonPopupMenuLegacy*           PopupMenu                                              (Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UCommonActivatablePanelLegacy::AddInputActionHandlerWithPopup(class UDataTable* DataTable, class FName RowName, TDelegate<void(bool* bPassThrough)> CommitedEvent, class UCommonPopupMenuLegacy* PopupMenu)
+void UCommonActivatablePanelLegacy::AddInputActionHandlerWithPopup(class UDataTable* DataTable, class FName RowName, TDynamicDelegate<void(bool* bPassThrough)> CommitedEvent, class UCommonPopupMenuLegacy* PopupMenu)
 {
 	static class UFunction* Func = nullptr;
 
@@ -547,10 +547,10 @@ void UCommonActivatablePanelLegacy::AddInputActionHandlerWithPopup(class UDataTa
 // Parameters:
 // class UDataTable*                       DataTable                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             RowName                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(bool* bPassThrough)>     CommitedEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
-// TDelegate<void(float HeldPercent)>      ProgressEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool* bPassThrough)>     CommitedEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(float HeldPercent)>      ProgressEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UCommonActivatablePanelLegacy::AddInputActionHandlerWithProgress(class UDataTable* DataTable, class FName RowName, TDelegate<void(bool* bPassThrough)> CommitedEvent, TDelegate<void(float HeldPercent)> ProgressEvent)
+void UCommonActivatablePanelLegacy::AddInputActionHandlerWithProgress(class UDataTable* DataTable, class FName RowName, TDynamicDelegate<void(bool* bPassThrough)> CommitedEvent, TDynamicDelegate<void(float HeldPercent)> ProgressEvent)
 {
 	static class UFunction* Func = nullptr;
 
@@ -578,11 +578,11 @@ void UCommonActivatablePanelLegacy::AddInputActionHandlerWithProgress(class UDat
 // Parameters:
 // class UDataTable*                       DataTable                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             RowName                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(bool* bPassThrough)>     CommitedEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
-// TDelegate<void(float HeldPercent)>      ProgressEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool* bPassThrough)>     CommitedEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(float HeldPercent)>      ProgressEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // class UCommonPopupMenuLegacy*           PopupMenu                                              (Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UCommonActivatablePanelLegacy::AddInputActionHandlerWithProgressPopup(class UDataTable* DataTable, class FName RowName, TDelegate<void(bool* bPassThrough)> CommitedEvent, TDelegate<void(float HeldPercent)> ProgressEvent, class UCommonPopupMenuLegacy* PopupMenu)
+void UCommonActivatablePanelLegacy::AddInputActionHandlerWithProgressPopup(class UDataTable* DataTable, class FName RowName, TDynamicDelegate<void(bool* bPassThrough)> CommitedEvent, TDynamicDelegate<void(float HeldPercent)> ProgressEvent, class UCommonPopupMenuLegacy* PopupMenu)
 {
 	static class UFunction* Func = nullptr;
 
@@ -933,9 +933,9 @@ void UCommonActivatablePanelLegacy::SetActionHandlerStateFromHandle(const struct
 // Parameters:
 // const struct FDataTableRowHandle&       InputActionRow                                         (Parm, NoDestructor, NativeAccessSpecifierPublic)
 // EInputActionState                       State                                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(bool* bPassThrough)>     DisabledCommitEvent                                    (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool* bPassThrough)>     DisabledCommitEvent                                    (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UCommonActivatablePanelLegacy::SetActionHandlerStateFromHandleWithDisabledCommitEvent(const struct FDataTableRowHandle& InputActionRow, EInputActionState State, TDelegate<void(bool* bPassThrough)> DisabledCommitEvent)
+void UCommonActivatablePanelLegacy::SetActionHandlerStateFromHandleWithDisabledCommitEvent(const struct FDataTableRowHandle& InputActionRow, EInputActionState State, TDynamicDelegate<void(bool* bPassThrough)> DisabledCommitEvent)
 {
 	static class UFunction* Func = nullptr;
 
@@ -963,9 +963,9 @@ void UCommonActivatablePanelLegacy::SetActionHandlerStateFromHandleWithDisabledC
 // class UDataTable*                       DataTable                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             RowName                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // EInputActionState                       State                                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(bool* bPassThrough)>     DisabledCommitEvent                                    (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool* bPassThrough)>     DisabledCommitEvent                                    (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UCommonActivatablePanelLegacy::SetActionHandlerStateWithDisabledCommitEvent(class UDataTable* DataTable, class FName RowName, EInputActionState State, TDelegate<void(bool* bPassThrough)> DisabledCommitEvent)
+void UCommonActivatablePanelLegacy::SetActionHandlerStateWithDisabledCommitEvent(class UDataTable* DataTable, class FName RowName, EInputActionState State, TDynamicDelegate<void(bool* bPassThrough)> DisabledCommitEvent)
 {
 	static class UFunction* Func = nullptr;
 
@@ -992,9 +992,9 @@ void UCommonActivatablePanelLegacy::SetActionHandlerStateWithDisabledCommitEvent
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
 // const struct FDataTableRowHandle&       InputActionRow                                         (Parm, NoDestructor, NativeAccessSpecifierPublic)
-// TDelegate<void(bool* bPassThrough)>     CommitedEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool* bPassThrough)>     CommitedEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UCommonActivatablePanelLegacy::SetInputActionHandler(const struct FDataTableRowHandle& InputActionRow, TDelegate<void(bool* bPassThrough)> CommitedEvent)
+void UCommonActivatablePanelLegacy::SetInputActionHandler(const struct FDataTableRowHandle& InputActionRow, TDynamicDelegate<void(bool* bPassThrough)> CommitedEvent)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1019,10 +1019,10 @@ void UCommonActivatablePanelLegacy::SetInputActionHandler(const struct FDataTabl
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
 // const struct FDataTableRowHandle&       InputActionRow                                         (Parm, NoDestructor, NativeAccessSpecifierPublic)
-// TDelegate<void(bool* bPassThrough)>     CommitedEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool* bPassThrough)>     CommitedEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // class UCommonPopupMenuLegacy*           PopupMenu                                              (Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UCommonActivatablePanelLegacy::SetInputActionHandlerWithPopupMenu(const struct FDataTableRowHandle& InputActionRow, TDelegate<void(bool* bPassThrough)> CommitedEvent, class UCommonPopupMenuLegacy* PopupMenu)
+void UCommonActivatablePanelLegacy::SetInputActionHandlerWithPopupMenu(const struct FDataTableRowHandle& InputActionRow, TDynamicDelegate<void(bool* bPassThrough)> CommitedEvent, class UCommonPopupMenuLegacy* PopupMenu)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1048,10 +1048,10 @@ void UCommonActivatablePanelLegacy::SetInputActionHandlerWithPopupMenu(const str
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
 // const struct FDataTableRowHandle&       InputActionRow                                         (Parm, NoDestructor, NativeAccessSpecifierPublic)
-// TDelegate<void(bool* bPassThrough)>     CommitedEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
-// TDelegate<void(float HeldPercent)>      ProgressEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool* bPassThrough)>     CommitedEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(float HeldPercent)>      ProgressEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UCommonActivatablePanelLegacy::SetInputActionHandlerWithProgress(const struct FDataTableRowHandle& InputActionRow, TDelegate<void(bool* bPassThrough)> CommitedEvent, TDelegate<void(float HeldPercent)> ProgressEvent)
+void UCommonActivatablePanelLegacy::SetInputActionHandlerWithProgress(const struct FDataTableRowHandle& InputActionRow, TDynamicDelegate<void(bool* bPassThrough)> CommitedEvent, TDynamicDelegate<void(float HeldPercent)> ProgressEvent)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1077,11 +1077,11 @@ void UCommonActivatablePanelLegacy::SetInputActionHandlerWithProgress(const stru
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
 // const struct FDataTableRowHandle&       InputActionRow                                         (Parm, NoDestructor, NativeAccessSpecifierPublic)
-// TDelegate<void(bool* bPassThrough)>     CommitedEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
-// TDelegate<void(float HeldPercent)>      ProgressEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool* bPassThrough)>     CommitedEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(float HeldPercent)>      ProgressEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // class UCommonPopupMenuLegacy*           PopupMenu                                              (Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UCommonActivatablePanelLegacy::SetInputActionHandlerWithProgressPopupMenu(const struct FDataTableRowHandle& InputActionRow, TDelegate<void(bool* bPassThrough)> CommitedEvent, TDelegate<void(float HeldPercent)> ProgressEvent, class UCommonPopupMenuLegacy* PopupMenu)
+void UCommonActivatablePanelLegacy::SetInputActionHandlerWithProgressPopupMenu(const struct FDataTableRowHandle& InputActionRow, TDynamicDelegate<void(bool* bPassThrough)> CommitedEvent, TDynamicDelegate<void(float HeldPercent)> ProgressEvent, class UCommonPopupMenuLegacy* PopupMenu)
 {
 	static class UFunction* Func = nullptr;
 

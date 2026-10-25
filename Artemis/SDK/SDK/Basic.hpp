@@ -1395,6 +1395,21 @@ public:
 	bool IsValid() const { return IsWithinBounds(ComparisonIndex); }
 };
 
+inline uint32 GetTypeHash(FNameEntryId Id)
+{
+	const uint32 Block = Id.ToUnstableInt() >> FNameBlockOffsetBits;
+	const uint32 Offset = Id.ToUnstableInt() & (FNameBlockOffsets - 1);
+
+	return (Block << (32 - FNameMaxBlockBits)) + Block
+		+ (Offset << FNameBlockOffsetBits) + Offset
+		+ (Offset >> 4);
+}
+
+inline uint32 GetTypeHash(const FName& Name)
+{
+	return GetTypeHash(Name.ComparisonIndex) + Name.Number;
+}
+
 static bool IsNamePoolInitialized()
 {
 	return *reinterpret_cast<bool*>(InSDKUtils::GetImageBase() + Offsets::bNamePoolInitialized);
@@ -1512,7 +1527,12 @@ public:
 	int32                                         ObjectSerialNumber;                                // 0x0004(0x0004)(NOT AUTO-GENERATED PROPERTY)
 
 public:
-	class UObject* Get() const;
+	FWeakObjectPtr& operator=(const class UObject* Object);
+
+	void Reset();
+
+	class UObject* Get(bool bEvenIfPendingKill = false) const;
+	bool IsValid(bool bEvenIfPendingKill = false) const;
 	class UObject* operator->() const;
 	bool operator==(const FWeakObjectPtr& Other) const;
 	bool operator!=(const FWeakObjectPtr& Other) const;
@@ -1520,18 +1540,28 @@ public:
 	bool operator!=(const class UObject* Other) const;
 };
 
+inline uint32 GetTypeHash(const FWeakObjectPtr& WeakObjectPtr)
+{
+	return uint32(WeakObjectPtr.ObjectIndex ^ WeakObjectPtr.ObjectSerialNumber);
+}
+
 template<typename UEType>
 class TWeakObjectPtr : public FWeakObjectPtr
 {
 public:
-	UEType* Get() const
+	TWeakObjectPtr& operator=(const UEType* Object)
 	{
-		return static_cast<UEType*>(FWeakObjectPtr::Get());
+		FWeakObjectPtr::operator=(reinterpret_cast<const class UObject*>(Object));
+		return *this;
+	}
+	UEType* Get(bool bEvenIfPendingKill = false) const
+	{
+		return reinterpret_cast<UEType*>(FWeakObjectPtr::Get(bEvenIfPendingKill));
 	}
 
 	UEType* operator->() const
 	{
-		return static_cast<UEType*>(FWeakObjectPtr::Get());
+		return reinterpret_cast<UEType*>(FWeakObjectPtr::Get());
 	}
 };
 
@@ -1755,17 +1785,17 @@ public:
 // Predefined struct TDelegate
 // 0x0010 (0x0010 - 0x0000)
 template<typename FunctionSignature>
-class TDelegate
+class TDynamicDelegate
 {
 public:
-	struct InvalidUseOfTDelegate                  TemplateParamIsNotAFunctionSignature;              // 0x0000(0x0000)(NOT AUTO-GENERATED PROPERTY)
+	struct InvalidUseOfTDynamicDelegate           TemplateParamIsNotAFunctionSignature;              // 0x0000(0x0000)(NOT AUTO-GENERATED PROPERTY)
 	uint8                                         Pad_0[0x10];                                       // 0x0000(0x0010)(Fixing Struct Size After Last Property [ Dumper-8 ])
 };
 
-// Predefined struct TDelegate<Ret(Args...)>
+// Predefined struct TDynamicDelegate<Ret(Args...)>
 // 0x0010 (0x0010 - 0x0000)
 template<typename Ret, typename... Args>
-class TDelegate<Ret(Args...)>
+class TDynamicDelegate<Ret(Args...)>
 {
 public:
 	FScriptDelegate                               BoundFunction;                                     // 0x0000(0x0010)(NOT AUTO-GENERATED PROPERTY)

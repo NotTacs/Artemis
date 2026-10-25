@@ -1284,9 +1284,9 @@ void UHeadMountedDisplayFunctionLibrary::SetWorldToMetersScale(class UObject* Wo
 // Function HeadMountedDisplay.HeadMountedDisplayFunctionLibrary.SetXRDisconnectDelegate
 // (Final, Native, Static, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const TDelegate<void(const class FString& OutReason)>&InDisconnectedDelegate                                 (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(const class FString& OutReason)>&InDisconnectedDelegate                                 (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UHeadMountedDisplayFunctionLibrary::SetXRDisconnectDelegate(const TDelegate<void(const class FString& OutReason)>& InDisconnectedDelegate)
+void UHeadMountedDisplayFunctionLibrary::SetXRDisconnectDelegate(const TDynamicDelegate<void(const class FString& OutReason)>& InDisconnectedDelegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1310,9 +1310,9 @@ void UHeadMountedDisplayFunctionLibrary::SetXRDisconnectDelegate(const TDelegate
 // (Final, Native, Static, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // const class FName&                      ActionName                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(const float Value, const struct FTimespan& Time)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(const float Value, const struct FTimespan& Time)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UHeadMountedDisplayFunctionLibrary::SetXRTimedInputActionDelegate(const class FName& ActionName, const TDelegate<void(const float Value, const struct FTimespan& Time)>& InDelegate)
+void UHeadMountedDisplayFunctionLibrary::SetXRTimedInputActionDelegate(const class FName& ActionName, const TDynamicDelegate<void(const float Value, const struct FTimespan& Time)>& InDelegate)
 {
 	static class UFunction* Func = nullptr;
 

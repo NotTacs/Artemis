@@ -67,6 +67,12 @@ struct FGameplayTag
 {
 public:
 	class FName                                   TagName;                                           // 0x0000(0x0008)(Edit, ZeroConstructor, EditConst, SaveGame, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+
+public:
+	std::string ToString() const
+	{
+		return TagName.ToString();
+	}
 };
 
 // ScriptStruct GameplayTags.GameplayTagContainer
@@ -76,6 +82,52 @@ struct FGameplayTagContainer final
 public:
 	TArray<struct FGameplayTag>                   GameplayTags;                                      // 0x0000(0x0010)(Edit, BlueprintVisible, ZeroConstructor, EditConst, SaveGame, Protected, NativeAccessSpecifierProtected)
 	TArray<struct FGameplayTag>                   ParentTags;                                        // 0x0010(0x0010)(ZeroConstructor, Transient, Protected, NativeAccessSpecifierProtected)
+
+public:
+	std::string ToString() const
+	{
+		std::string ExportString = "(GameplayTags=(";
+		for (int32 i = 0; i < GameplayTags.Num(); ++i)
+		{
+			if (i > 0)
+			{
+				ExportString += ",";
+			}
+			ExportString += "(TagName=\"" + GameplayTags[i].ToString() + "\")";
+		}
+		ExportString += "))";
+		return ExportString;
+	}
+
+	std::string ToStringSimple(bool bQuoted = false) const
+	{
+		std::string RetString;
+		for (int32 i = 0; i < GameplayTags.Num(); ++i)
+		{
+			if (bQuoted)
+			{
+				RetString += "\"";
+			}
+			RetString += GameplayTags[i].ToString();
+			if (bQuoted)
+			{
+				RetString += "\"";
+			}
+
+			if (i < GameplayTags.Num() - 1)
+			{
+				RetString += ", ";
+			}
+		}
+		return RetString;
+	}
+
+	FAllocatedString ToFString() const
+	{
+		const std::string ExportString = ToString();
+		const std::wstring WideString(ExportString.begin(), ExportString.end());
+		return FAllocatedString(WideString.c_str(), static_cast<int32>(WideString.size()));
+	}
 };
 
 // ScriptStruct GameplayTags.GameplayTagReferenceHelper

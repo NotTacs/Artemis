@@ -14272,7 +14272,7 @@ public:
 struct FOnTimeHitInfo final
 {
 public:
-	TDelegate<void()>                             TimeCallback;                                      // 0x0000(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             TimeCallback;                                      // 0x0000(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	uint8                                         Pad_10[0x20];                                      // 0x0010(0x0020)(Fixing Struct Size After Last Property [ Dumper-8 ])
 };
 
@@ -18280,10 +18280,31 @@ public:
 struct FFortItemEntry final : public FFastArraySerializerItem
 {
 public:
+	FFortItemEntry()
+	{
+		static FFortItemEntry* (*DefaultConstructer)(FFortItemEntry*) = decltype(DefaultConstructer)(InSDKUtils::GetImageBase() + 0x12812d0);
+		DefaultConstructer(this);
+	}
+	FFortItemEntry(const FFortItemEntry& OtherEntry)
+	{
+		static FFortItemEntry* (*constOtherConstrucer)(FFortItemEntry*, const FFortItemEntry*) = decltype(constOtherConstrucer)(InSDKUtils::GetImageBase() + 0x2125b58);
+		constOtherConstrucer(this, &OtherEntry);
+	}
+	FFortItemEntry(class UFortItemDefinition* InDefinition, int InCount, int InLevel = 0, struct FGuid ItemVariantGuid = {})
+	{
+		static FFortItemEntry* (*Constructer)(FFortItemEntry*, class UFortItemDefinition* InDefinition, int InCount, int InLevel, struct FGuid* ItemVariantGuid) = decltype(Constructer)(InSDKUtils::GetImageBase() + 0x15319c0);
+		Constructer(this, InDefinition, InCount, InLevel, &ItemVariantGuid);
+	}
+	~FFortItemEntry()
+	{
+		static void (*DefaultDeConstructer)(FFortItemEntry*) = decltype(DefaultDeConstructer)(InSDKUtils::GetImageBase() + 0x1281584);
+		DefaultDeConstructer(this);
+	}
+public:
 	int32                                         Count;                                             // 0x000C(0x0004)(BlueprintVisible, BlueprintReadOnly, ZeroConstructor, SaveGame, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	int32                                         PreviousCount;                                     // 0x0010(0x0004)(ZeroConstructor, Transient, IsPlainOldData, RepSkip, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
-	class UFortItemDefinition*                    ItemDefinition;                                    // 0x0018(0x0008)(BlueprintVisible, BlueprintReadOnly, ZeroConstructor, SaveGame, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	class UFortItemDefinition* ItemDefinition;                                    // 0x0018(0x0008)(BlueprintVisible, BlueprintReadOnly, ZeroConstructor, SaveGame, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	int16                                         OrderIndex;                                        // 0x0020(0x0002)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 	uint8                                         Pad_22[0x2];                                       // 0x0022(0x0002)(Fixing Size After Last Property [ Dumper-8 ])
 	float                                         Durability;                                        // 0x0024(0x0004)(ZeroConstructor, SaveGame, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
@@ -18316,6 +18337,19 @@ public:
 	uint8                                         Pad_148[0x50];                                     // 0x0148(0x0050)(Fixing Size After Last Property [ Dumper-8 ])
 	int32                                         PickupVariantIndex;                                // 0x0198(0x0004)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 	int32                                         ItemVariantDataMappingIndex;                       // 0x019C(0x0004)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+
+public:
+	FFortItemEntry& operator=(const FFortItemEntry& Other)
+	{
+		static FFortItemEntry& (*OperatorEqual)(FFortItemEntry*, const FFortItemEntry * Other) = decltype(OperatorEqual)(InSDKUtils::GetImageBase() + 0x1128bcc);
+		return OperatorEqual(this, &Other);
+	}
+
+	bool operator==(const FFortItemEntry& Other)
+	{
+		static bool (*OperatorEqualEqual)(FFortItemEntry*, const FFortItemEntry * Other) = decltype(OperatorEqualEqual)(InSDKUtils::GetImageBase() + 0x64dad4c);
+		return OperatorEqualEqual(this, &Other);
+	}
 };
 
 // ScriptStruct FortniteGame.GliderTrailParticleDefinition
@@ -25272,9 +25306,9 @@ struct FFortItemList final : public FFastArraySerializer
 {
 public:
 	TArray<struct FFortItemEntry>                 ReplicatedEntries;                                 // 0x0108(0x0010)(ZeroConstructor, SaveGame, NativeAccessSpecifierPublic)
-	uint8                                         Pad_118[0x50];                                     // 0x0118(0x0050)(Fixing Size After Last Property [ Dumper-8 ])
+	TMap<FGuid, FFortItemEntry*>                  ItemEntryMap;
 	TArray<class UFortWorldItem*>                 ItemInstances;                                     // 0x0168(0x0010)(ZeroConstructor, NativeAccessSpecifierPublic)
-	uint8                                         Pad_178[0x50];                                     // 0x0178(0x0050)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	TMap<FGuid, UFortWorldItem*>                  ItemInstanceMap;
 };
 
 // ScriptStruct FortniteGame.RepParamIntegerArray
@@ -25412,8 +25446,10 @@ public:
 struct FCachedPOIVolumeLocations final
 {
 public:
-	class AFortPoiVolume*                         POIVolume;                                         // 0x0000(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_8[0x18];                                       // 0x0008(0x0018)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	class AFortPoiVolume* POIVolume;                                         // 0x0000(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<struct FVector> NavMeshLocations;
+	int NumLocationsReserved;
+	unsigned __int32 bEQSQueryPending : 1;
 };
 
 // ScriptStruct FortniteGame.HeroSubclassRarityAttributeData
@@ -26053,8 +26089,8 @@ public:
 	class USoundBase*                             Sound;                                             // 0x0080(0x0008)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	EIndicatorStateImage                          StateImageOverride;                                // 0x0088(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_89[0x3];                                       // 0x0089(0x0003)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void(class AActor* IndicatedActor)> OnActorAdded;                                      // 0x008C(0x0010)(BlueprintVisible, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
-	TDelegate<void(class AActor* IndicatedActor)> OnActorRemoved;                                    // 0x009C(0x0010)(BlueprintVisible, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(class AActor* IndicatedActor)> OnActorAdded;                                      // 0x008C(0x0010)(BlueprintVisible, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(class AActor* IndicatedActor)> OnActorRemoved;                                    // 0x009C(0x0010)(BlueprintVisible, ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	uint8                                         Pad_AC[0x4];                                       // 0x00AC(0x0004)(Fixing Struct Size After Last Property [ Dumper-8 ])
 };
 
@@ -27848,7 +27884,19 @@ public:
 	struct FScalableFloat                         PlayerCapSolo;                                     // 0x0168(0x0028)(Edit, Protected, NativeAccessSpecifierProtected)
 	struct FScalableFloat                         PlayerCapDuo;                                      // 0x0190(0x0028)(Edit, Protected, NativeAccessSpecifierProtected)
 	struct FScalableFloat                         PlayerCapSquad;                                    // 0x01B8(0x0028)(Edit, Protected, NativeAccessSpecifierProtected)
-	uint8                                         Pad_1E0[0xB8];                                     // 0x01E0(0x00B8)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	int                                           CachedCurveTableVersion;
+	float                                         CountCached;
+	TArray<float>                                 RadiusCached;
+	TArray<float>                                 ForceDistanceMinCached;
+	TArray<float>                                 ForceDistanceMaxCached;
+	TArray<float> RejectRadiusCached;
+	TArray<float> RejectOuterDistanceCached;
+	TArray<float> WaitTimeCached;
+	TArray<float> ShrinkTimeCached;
+	TArray<float> MegaStormGridCellThicknessCached;
+	TArray<float> PlayerCapSoloCached;
+	TArray<float> PlayerCapDuoCached;
+	TArray<float> PlayerCapSquadCached;
 };
 
 // ScriptStruct FortniteGame.FortBuddyTagListener

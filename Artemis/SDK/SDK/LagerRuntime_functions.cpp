@@ -857,10 +857,10 @@ class UFortAthenaLivingWorldEncounterInstance* UFortAthenaLivingWorldManager::St
 // Parameters:
 // const struct FDataTableRowHandle&       EventEntry                                             (Parm, NoDestructor, NativeAccessSpecifierPublic)
 // const struct FTransform&                SpawnLocation                                          (ConstParm, Parm, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
-// const TDelegate<void(const TArray<class AActor*>& SpawnedActors, bool bSuccess)>&OnRequestFinished                                      (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(const TArray<class AActor*>& SpawnedActors, bool bSuccess)>&OnRequestFinished                                      (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 // bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-bool UFortAthenaLivingWorldManager::TrySpawnEvent(const struct FDataTableRowHandle& EventEntry, const struct FTransform& SpawnLocation, const TDelegate<void(const TArray<class AActor*>& SpawnedActors, bool bSuccess)>& OnRequestFinished)
+bool UFortAthenaLivingWorldManager::TrySpawnEvent(const struct FDataTableRowHandle& EventEntry, const struct FTransform& SpawnLocation, const TDynamicDelegate<void(const TArray<class AActor*>& SpawnedActors, bool bSuccess)>& OnRequestFinished)
 {
 	static class UFunction* Func = nullptr;
 

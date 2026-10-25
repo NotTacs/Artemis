@@ -385,6 +385,6 @@ public:
 	bool                                          CallFunc_Less_IntInt_ReturnValue;                  // 0x003C(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	uint8                                         Pad_3D[0x3];                                       // 0x003D(0x0003)(Fixing Size After Last Property [ Dumper-8 ])
 	int32                                         CallFunc_Array_AddUnique_ReturnValue;              // 0x0040(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	TDelegate<void(ETimeSynthEventQuantization QuantizationType, int32 NumBars, float Beat)> K2Node_CreateDelegate_OutputDelegate; // 0x0044(0x0010)(ZeroConstructor, NoDestructor)
-	TDelegate<void(ETimeSynthEventQuantization QuantizationType, int32 NumBars, float Beat)> K2Node_CreateDelegate_OutputDelegate_1; // 0x0054(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(ETimeSynthEventQuantization QuantizationType, int32 NumBars, float Beat)> K2Node_CreateDelegate_OutputDelegate; // 0x0044(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(ETimeSynthEventQuantization QuantizationType, int32 NumBars, float Beat)> K2Node_CreateDelegate_OutputDelegate_1; // 0x0054(0x0010)(ZeroConstructor, NoDestructor)
 };

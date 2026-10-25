@@ -12,10 +12,13 @@
 #include <windows.h>
 #include <stdexcept>
 #include <iostream>
+#include <type_traits>
+#include <utility>
+#include <new>
 #include "UtfN.hpp"
 
 namespace UC
-{	
+{
 	typedef int8_t  int8;
 	typedef int16_t int16;
 	typedef int32_t int32;
@@ -151,14 +154,14 @@ namespace UC
 		static void* Realloc(void* Ptr, uint64 Size, uint32 Alignment)
 		{
 
-            static void* (*FMemoryRealloc)(void* Ptr, uint64 Size, uint32 Alignment) = decltype(FMemoryRealloc)(uintptr_t(GetModuleHandle(0)) + 0x01A1927C); 		
-            return FMemoryRealloc(Ptr, Size, Alignment);
+			static void* (*FMemoryRealloc)(void* Ptr, uint64 Size, uint32 Alignment) = decltype(FMemoryRealloc)(uintptr_t(GetModuleHandle(0)) + 0x01A1927C);
+			return FMemoryRealloc(Ptr, Size, Alignment);
 		}
 
 		static void Free(void* Ptr)
 		{
 
-			Realloc(Ptr,0,0);
+			Realloc(Ptr, 0, 0);
 		}
 
 		template <typename T>
@@ -167,6 +170,49 @@ namespace UC
 			return reinterpret_cast<const TUnaligned<T>*>(Ptr)->Value;
 		}
 	};
+
+
+	inline uint32 HashCombine(uint32 A, uint32 C)
+	{
+		uint32 B = 0x9e3779b9;
+		A += B;
+
+		A -= B; A -= C; A ^= (C >> 13);
+		B -= C; B -= A; B ^= (A << 8);
+		C -= A; C -= B; C ^= (B >> 13);
+		A -= B; A -= C; A ^= (C >> 12);
+		B -= C; B -= A; B ^= (A << 16);
+		C -= A; C -= B; C ^= (B >> 5);
+		A -= B; A -= C; A ^= (C >> 3);
+		B -= C; B -= A; B ^= (A << 10);
+		C -= A; C -= B; C ^= (B >> 15);
+
+		return C;
+	}
+
+	inline uint32 PointerHash(const void* Key, uint32 C = 0)
+	{
+		const uint64 PtrInt = reinterpret_cast<uint64>(Key) >> 4;
+		return HashCombine(static_cast<uint32>(PtrInt), C);
+	}
+
+	inline uint32 GetTypeHash(const uint8 A) { return A; }
+	inline uint32 GetTypeHash(const int8 A) { return A; }
+	inline uint32 GetTypeHash(const uint16 A) { return A; }
+	inline uint32 GetTypeHash(const int16 A) { return A; }
+	inline uint32 GetTypeHash(const int32 A) { return A; }
+	inline uint32 GetTypeHash(const uint32 A) { return A; }
+	inline uint32 GetTypeHash(const uint64 A) { return (uint32)A + ((uint32)(A >> 32) * 23); }
+	inline uint32 GetTypeHash(const int64 A) { return (uint32)A + ((uint32)(A >> 32) * 23); }
+	inline uint32 GetTypeHash(const float Value) { return *reinterpret_cast<const uint32*>(&Value); }
+	inline uint32 GetTypeHash(const double Value) { return GetTypeHash(*reinterpret_cast<const uint64*>(&Value)); }
+	inline uint32 GetTypeHash(const void* A) { return PointerHash(A); }
+
+	template<typename T>
+	inline uint32 GetTypeHash(T* A) { return PointerHash(A); }
+
+	template<typename EnumType>
+	inline std::enable_if_t<std::is_enum_v<EnumType>, uint32> GetTypeHash(EnumType E) { return GetTypeHash(static_cast<std::underlying_type_t<EnumType>>(E)); }
 
 	template<typename ArrayElementType>
 	class TArray;
@@ -266,8 +312,31 @@ namespace UC
 
 			public:
 				inline const ElementType* GetAllocation() const { return SecondaryData ? SecondaryData : reinterpret_cast<const ElementType*>(&InlineData); }
+				inline       ElementType* GetAllocation() { return SecondaryData ? SecondaryData : reinterpret_cast<ElementType*>(&InlineData); }
 
 				inline uint32 GetNumInlineBytes() const { return NumInlineElements; }
+
+				inline void ResizeAllocation(int32 PreviousNumElements, int32 NumElements)
+				{
+					if (NumElements <= static_cast<int32>(NumInlineElements))
+					{
+						if (SecondaryData)
+						{
+							memcpy(&InlineData, SecondaryData, PreviousNumElements * ElementSize);
+							FMemory::Free(SecondaryData);
+							SecondaryData = nullptr;
+						}
+					}
+					else if (!SecondaryData)
+					{
+						SecondaryData = static_cast<ElementType*>(FMemory::Realloc(nullptr, NumElements * ElementSize, ElementAlign));
+						memcpy(SecondaryData, &InlineData, PreviousNumElements * ElementSize);
+					}
+					else
+					{
+						SecondaryData = static_cast<ElementType*>(FMemory::Realloc(SecondaryData, NumElements * ElementSize, ElementAlign));
+					}
+				}
 			};
 		};
 
@@ -284,7 +353,7 @@ namespace UC
 
 		public:
 			FBitArray()
-				: NumBits(0), MaxBits(Data.GetNumInlineBytes() * NumBitsPerDWORD)
+				: NumBits(0), MaxBits(Data.GetNumInlineBytes()* NumBitsPerDWORD)
 			{
 			}
 
@@ -317,8 +386,38 @@ namespace UC
 			inline bool operator!=(const FBitArray& Other) const { return NumBits != Other.NumBits || GetData() != Other.GetData(); }
 
 		public:
+			inline void SetBit(int32 Index, bool bValue)
+			{
+				VerifyIndex(Index);
+
+				uint32& Word = reinterpret_cast<uint32*>(Data.GetAllocation())[Index / NumBitsPerDWORD];
+				const uint32 Mask = 1u << (Index & (NumBitsPerDWORD - 1));
+				Word = bValue ? (Word | Mask) : (Word & ~Mask);
+			}
+
+			inline int32 AddBit(bool bValue)
+			{
+				const int32 Index = NumBits;
+
+				if (NumBits + 1 > MaxBits)
+				{
+					const int32 OldMaxDWORDs = MaxBits / NumBitsPerDWORD;
+					const int32 NewMaxDWORDs = OldMaxDWORDs * 2 > 4 ? OldMaxDWORDs * 2 : 4;
+
+					Data.ResizeAllocation(OldMaxDWORDs, NewMaxDWORDs);
+					memset(reinterpret_cast<uint32*>(Data.GetAllocation()) + OldMaxDWORDs, 0, (NewMaxDWORDs - OldMaxDWORDs) * sizeof(uint32));
+					MaxBits = NewMaxDWORDs * NumBitsPerDWORD;
+				}
+
+				NumBits++;
+				SetBit(Index, bValue);
+
+				return Index;
+			}
+
+		public:
 			friend Iterators::FSetBitIterator begin(const FBitArray& Array);
-			friend Iterators::FSetBitIterator end  (const FBitArray& Array);
+			friend Iterators::FSetBitIterator end(const FBitArray& Array);
 		};
 
 		template<typename SparseArrayType>
@@ -362,10 +461,10 @@ namespace UC
 		}
 
 	public:
-		inline       KeyType& Key()       { return First; }
+		inline       KeyType& Key() { return First; }
 		inline const KeyType& Key() const { return First; }
 
-		inline       ValueType& Value()       { return Second; }
+		inline       ValueType& Value() { return Second; }
 		inline const ValueType& Value() const { return Second; }
 	};
 
@@ -407,7 +506,7 @@ namespace UC
 
 		inline void VerifyIndex(int32 Index) const { if (!IsValidIndex(Index)) throw std::out_of_range("Index was out of range!"); }
 
-		inline       ArrayElementType& GetUnsafe(int32 Index)       { return Data[Index]; }
+		inline       ArrayElementType& GetUnsafe(int32 Index) { return Data[Index]; }
 		inline const ArrayElementType& GetUnsafe(int32 Index) const { return Data[Index]; }
 
 	public:
@@ -421,11 +520,33 @@ namespace UC
 		{
 
 			ResizeTo((NumElements + 1));
-			Data[NumElements] = Element;
+			new (&Data[NumElements]) ArrayElementType(Element);
 			NumElements++;
 
 			return true;
 		}
+
+
+		inline ArrayElementType& AddImproper(const ArrayElementType& Element)
+		{
+			ResizeTo((NumElements + 1));
+			Data[NumElements] = Element;
+			NumElements++;
+
+			return Data[NumElements - 1];
+		}
+
+		inline bool Contains(const ArrayElementType& Element)
+		{
+			for (int i = 0; i < Num(); i++)
+			{
+				if (Data[i] == Element)
+					return true;
+			}
+
+			return false;
+		}
+
 		inline bool Remove(int32 Index)
 		{
 			if (!IsValidIndex(Index))
@@ -454,7 +575,7 @@ namespace UC
 		{
 			if (Data)
 				FMemory::Free(Data);
-            Data = nullptr;
+			Data = nullptr;
 			MaxElements = 0;
 			NumElements = 0;
 		}
@@ -470,7 +591,7 @@ namespace UC
 		inline bool IsValid() const { return Data && NumElements > 0 && MaxElements >= NumElements; }
 
 	public:
-		inline       ArrayElementType& operator[](int32 Index)       { VerifyIndex(Index); return Data[Index]; }
+		inline       ArrayElementType& operator[](int32 Index) { VerifyIndex(Index); return Data[Index]; }
 		inline const ArrayElementType& operator[](int32 Index) const { VerifyIndex(Index); return Data[Index]; }
 
 		inline bool operator==(const TArray<ArrayElementType>& Other) const { return Data == Other.Data; }
@@ -480,7 +601,7 @@ namespace UC
 
 	public:
 		template<typename T> friend Iterators::TArrayIterator<T> begin(const TArray& Array);
-		template<typename T> friend Iterators::TArrayIterator<T> end  (const TArray& Array);
+		template<typename T> friend Iterators::TArrayIterator<T> end(const TArray& Array);
 	};
 
 	class FString : public TArray<wchar_t>
@@ -505,7 +626,7 @@ namespace UC
 		{
 			if (*this)
 			{
-				return UtfN::Utf16StringToUtf8String<std::string>(Data, NumElements  - 1); // Exclude null-terminator
+				return UtfN::Utf16StringToUtf8String<std::string>(Data, NumElements - 1); // Exclude null-terminator
 			}
 
 			return "";
@@ -520,9 +641,10 @@ namespace UC
 		}
 
 	public:
-		inline       wchar_t* CStr()       { return Data; }
+		inline       wchar_t* CStr() { return Data; }
 		inline const wchar_t* CStr() const { return Data; }
 
+		/** Like UE's FString::operator*, never null so it is safe to pass straight to a %s. */
 		inline const wchar_t* operator*() const { return Data && NumElements > 0 ? Data : L""; }
 
 	public:
@@ -532,7 +654,7 @@ namespace UC
 
 	/*
 	* Class to allow construction of a TArray, that uses c-style standard-library memory allocation.
-	* 
+	*
 	* Useful for calling functions that expect a buffer of a certain size and do not reallocate that buffer.
 	* This avoids leaking memory, if the array would otherwise be allocated by the engine, and couldn't be freed without FMemory-functions.
 	*/
@@ -560,7 +682,7 @@ namespace UC
 		}
 
 	public:
-		inline operator       TArray<ArrayElementType>()       { return *reinterpret_cast<      TArray<ArrayElementType>*>(this); }
+		inline operator TArray<ArrayElementType>() { return *reinterpret_cast<TArray<ArrayElementType>*>(this); }
 		inline operator const TArray<ArrayElementType>() const { return *reinterpret_cast<const TArray<ArrayElementType>*>(this); }
 	};
 
@@ -583,6 +705,7 @@ namespace UC
 			MaxElements = Size;
 		}
 
+		/* Owns a copy of Str (not a borrowed pointer like FString(const wchar_t*)) */
 		FAllocatedString(const wchar_t* Str, int32 Len)
 			: FAllocatedString(Len + 1)
 		{
@@ -599,6 +722,7 @@ namespace UC
 		{
 		}
 
+		/* Move-only: the buffer is owned, a copy would free it twice */
 		FAllocatedString(const FAllocatedString&) = delete;
 		FAllocatedString& operator=(const FAllocatedString&) = delete;
 
@@ -641,7 +765,7 @@ namespace UC
 		}
 
 	public:
-		inline operator       FString()       { return *reinterpret_cast<      FString*>(this); }
+		inline operator FString() { return *reinterpret_cast<FString*>(this); }
 		inline operator const FString() const { return *reinterpret_cast<const FString*>(this); }
 	};
 	template<typename SparseArrayElementType>
@@ -690,15 +814,47 @@ namespace UC
 		const ContainerImpl::FBitArray& GetAllocationFlags() const { return AllocationFlags; }
 
 	public:
-		inline       SparseArrayElementType& operator[](int32 Index)       { VerifyIndex(Index); return *reinterpret_cast<SparseArrayElementType*>(&Data.GetUnsafe(Index).ElementData); }
-		inline const SparseArrayElementType& operator[](int32 Index) const { VerifyIndex(Index); return *reinterpret_cast<SparseArrayElementType*>(&Data.GetUnsafe(Index).ElementData); }
+		inline int32 AddUninitialized()
+		{
+			int32 Index;
+
+			if (NumFreeIndices > 0)
+			{
+				Index = FirstFreeIndex;
+				FirstFreeIndex = Data.GetUnsafe(FirstFreeIndex).NextFreeIndex;
+				--NumFreeIndices;
+
+				if (NumFreeIndices > 0)
+					Data.GetUnsafe(FirstFreeIndex).PrevFreeIndex = -1;
+			}
+			else
+			{
+				Index = Data.NumElements;
+
+				if (Data.NumElements + 1 > Data.MaxElements)
+					Data.ResizeTo(Data.NumElements + 3 * Data.NumElements / 8 + 16);
+
+				Data.NumElements++;
+				AllocationFlags.AddBit(false);
+			}
+
+			AllocationFlags.SetBit(Index, true);
+
+			return Index;
+		}
+
+		inline void* GetElementMemory(int32 Index) { return &Data.GetUnsafe(Index).ElementData; }
+
+	public:
+		inline       SparseArrayElementType& operator[](int32 Index) { VerifyIndex(Index); return *reinterpret_cast<SparseArrayElementType*>(&Data.GetUnsafe(Index).ElementData); }
+		inline const SparseArrayElementType& operator[](int32 Index) const { VerifyIndex(Index); return *reinterpret_cast<const SparseArrayElementType*>(&Data.GetUnsafe(Index).ElementData); }
 
 		inline bool operator==(const TSparseArray<SparseArrayElementType>& Other) const { return Data == Other.Data; }
 		inline bool operator!=(const TSparseArray<SparseArrayElementType>& Other) const { return Data != Other.Data; }
 
 	public:
 		template<typename T> friend Iterators::TSparseArrayIterator<T> begin(const TSparseArray& Array);
-		template<typename T> friend Iterators::TSparseArrayIterator<T> end  (const TSparseArray& Array);
+		template<typename T> friend Iterators::TSparseArrayIterator<T> end(const TSparseArray& Array);
 	};
 
 	template <int IndexSize>
@@ -1008,8 +1164,99 @@ namespace UC
 	public:
 		const ContainerImpl::FBitArray& GetAllocationFlags() const { return Elements.GetAllocationFlags(); }
 
+	private:
+		template<typename KeyElementType, typename ValueElementType>
+		friend class TMap;
+
+		inline int32& GetTypedHash(uint32 KeyHash) { return Hash.GetAllocation()[KeyHash & (HashSize - 1)]; }
+
+		inline void LinkElement(int32 ElementId, uint32 KeyHash)
+		{
+			SetDataType& Element = Elements[ElementId];
+			Element.HashIndex = KeyHash & (HashSize - 1);
+			Element.HashNextId = GetTypedHash(Element.HashIndex);
+			GetTypedHash(Element.HashIndex) = ElementId;
+		}
+
+		static inline int32 GetNumberOfHashBuckets(int32 NumHashedElements)
+		{
+			if (NumHashedElements >= DEFAULT_MIN_NUMBER_OF_HASHED_ELEMENTS)
+				return RoundUpToPowerOfTwo(NumHashedElements / DEFAULT_NUMBER_OF_ELEMENTS_PER_HASH_BUCKET + DEFAULT_BASE_NUMBER_OF_HASH_BUCKETS);
+
+			return 1;
+		}
+
+		template<typename GetKeyHashType>
+		inline void Rehash(GetKeyHashType&& GetKeyHash)
+		{
+			Hash.ResizeAllocation(0, 0);
+
+			if (HashSize <= 0)
+				return;
+
+			Hash.ResizeAllocation(0, HashSize);
+
+			for (int32 HashIndex = 0; HashIndex < HashSize; HashIndex++)
+				Hash.GetAllocation()[HashIndex] = -1;
+
+			for (int32 Index = 0; Index < Elements.NumAllocated(); Index++)
+			{
+				if (Elements.IsValidIndex(Index))
+					LinkElement(Index, GetKeyHash(Elements[Index].Value));
+			}
+		}
+
+		/* Returns true if the hash was rebuilt (which also links every element, including a just-added one). */
+		template<typename GetKeyHashType>
+		inline bool ConditionalRehash(int32 NumHashedElements, GetKeyHashType&& GetKeyHash)
+		{
+			const int32 DesiredHashSize = GetNumberOfHashBuckets(NumHashedElements);
+
+			if (NumHashedElements > 0 && (!HashSize || HashSize < DesiredHashSize))
+			{
+				HashSize = DesiredHashSize;
+				Rehash(GetKeyHash);
+				return true;
+			}
+
+			return false;
+		}
+
+		template<typename KeyType, typename GetKeyType>
+		inline int32 FindIdByHash(uint32 KeyHash, const KeyType& Key, GetKeyType&& GetKey) const
+		{
+			if (Elements.Num() <= 0 || HashSize <= 0)
+				return -1;
+
+			auto* MutableThis = const_cast<TSet*>(this);
+
+			for (int32 ElementId = MutableThis->GetTypedHash(KeyHash); ElementId != -1; ElementId = Elements[ElementId].HashNextId)
+			{
+				if (GetKey(Elements[ElementId].Value) == Key)
+					return ElementId;
+			}
+
+			return -1;
+		}
+
+		template<typename GetKeyHashType>
+		inline int32 AddByHash(uint32 KeyHash, const SetElementType& Value, GetKeyHashType&& GetKeyHash)
+		{
+			const int32 ElementId = Elements.AddUninitialized();
+
+			SetDataType* Element = static_cast<SetDataType*>(Elements.GetElementMemory(ElementId));
+			new (&Element->Value) SetElementType(Value);
+			Element->HashNextId = -1;
+			Element->HashIndex = 0;
+
+			if (!ConditionalRehash(Elements.Num(), GetKeyHash))
+				LinkElement(ElementId, KeyHash);
+
+			return ElementId;
+		}
+
 	public:
-		inline       SetElementType& operator[] (int32 Index)       { return Elements[Index].Value; }
+		inline       SetElementType& operator[] (int32 Index) { return Elements[Index].Value; }
 		inline const SetElementType& operator[] (int32 Index) const { return Elements[Index].Value; }
 
 		inline bool operator==(const TSet<SetElementType>& Other) const { return Elements == Other.Elements; }
@@ -1017,7 +1264,7 @@ namespace UC
 
 	public:
 		template<typename T> friend Iterators::TSetIterator<T> begin(const TSet& Set);
-		template<typename T> friend Iterators::TSetIterator<T> end  (const TSet& Set);
+		template<typename T> friend Iterators::TSetIterator<T> end(const TSet& Set);
 	};
 
 	template<typename KeyElementType, typename ValueElementType>
@@ -1045,6 +1292,49 @@ namespace UC
 	public:
 		const ContainerImpl::FBitArray& GetAllocationFlags() const { return Elements.GetAllocationFlags(); }
 
+	private:
+		/* Unqualified so class-type keys pick up their GetTypeHash through ADL (FName, FWeakObjectPtr, ...). */
+		static inline uint32 GetKeyHash(const KeyElementType& Key) { return GetTypeHash(Key); }
+		static inline uint32 GetElementKeyHash(const ElementType& Element) { return GetKeyHash(Element.Key()); }
+		static inline const KeyElementType& GetElementKey(const ElementType& Element) { return Element.Key(); }
+
+	public:
+		inline ValueElementType* Find(const KeyElementType& Key)
+		{
+			const int32 ElementId = Elements.FindIdByHash(GetKeyHash(Key), Key, GetElementKey);
+			return ElementId != -1 ? &Elements[ElementId].Value() : nullptr;
+		}
+
+		inline const ValueElementType* Find(const KeyElementType& Key) const
+		{
+			return const_cast<TMap*>(this)->Find(Key);
+		}
+
+		inline bool Contains(const KeyElementType& Key) const { return Find(Key) != nullptr; }
+
+		inline ValueElementType& Add(const KeyElementType& Key, const ValueElementType& Value)
+		{
+			const uint32 KeyHash = GetKeyHash(Key);
+			const int32 ExistingId = Elements.FindIdByHash(KeyHash, Key, GetElementKey);
+
+			if (ExistingId != -1)
+			{
+				Elements[ExistingId].Value() = Value;
+				return Elements[ExistingId].Value();
+			}
+
+			const int32 ElementId = Elements.AddByHash(KeyHash, ElementType(Key, Value), GetElementKeyHash);
+			return Elements[ElementId].Value();
+		}
+
+		inline ValueElementType& FindOrAdd(const KeyElementType& Key)
+		{
+			if (ValueElementType* Existing = Find(Key))
+				return *Existing;
+
+			return Elements[Elements.AddByHash(GetKeyHash(Key), ElementType(Key, ValueElementType{}), GetElementKeyHash)].Value();
+		}
+
 	public:
 		inline decltype(auto) Find(const KeyElementType& Key, bool(*Equals)(const KeyElementType& LeftKey, const KeyElementType& RightKey))
 		{
@@ -1053,12 +1343,12 @@ namespace UC
 				if (Equals(It->Key(), Key))
 					return It;
 			}
-		
+
 			return end(*this);
 		}
 
 	public:
-		inline       ElementType& operator[] (int32 Index)       { return Elements[Index]; }
+		inline       ElementType& operator[] (int32 Index) { return Elements[Index]; }
 		inline const ElementType& operator[] (int32 Index) const { return Elements[Index]; }
 
 		inline bool operator==(const TMap<KeyElementType, ValueElementType>& Other) const { return Elements == Other.Elements; }
@@ -1066,7 +1356,7 @@ namespace UC
 
 	public:
 		template<typename KeyType, typename ValueType> friend Iterators::TMapIterator<KeyType, ValueType> begin(const TMap& Map);
-		template<typename KeyType, typename ValueType> friend Iterators::TMapIterator<KeyType, ValueType> end  (const TMap& Map);
+		template<typename KeyType, typename ValueType> friend Iterators::TMapIterator<KeyType, ValueType> end(const TMap& Map);
 	};
 
 	namespace Iterators
@@ -1179,10 +1469,10 @@ namespace UC
 			inline TArrayIterator& operator++() { ++Index; return *this; }
 			inline TArrayIterator& operator--() { --Index; return *this; }
 
-			inline       ArrayType& operator*()       { return IteratedArray[GetIndex()]; }
+			inline       ArrayType& operator*() { return IteratedArray[GetIndex()]; }
 			inline const ArrayType& operator*() const { return IteratedArray[GetIndex()]; }
 
-			inline       ArrayType* operator->()       { return &IteratedArray[GetIndex()]; }
+			inline       ArrayType* operator->() { return &IteratedArray[GetIndex()]; }
 			inline const ArrayType* operator->() const { return &IteratedArray[GetIndex()]; }
 
 			inline bool operator==(const TArrayIterator& Other) const { return &IteratedArray == &Other.IteratedArray && Index == Other.Index; }
@@ -1211,10 +1501,10 @@ namespace UC
 			inline TContainerIterator& operator++() { ++BitIterator; return *this; }
 			inline TContainerIterator& operator--() { --BitIterator; return *this; }
 
-			inline       auto& operator*()       { return IteratedContainer[GetIndex()]; }
+			inline       auto& operator*() { return IteratedContainer[GetIndex()]; }
 			inline const auto& operator*() const { return IteratedContainer[GetIndex()]; }
 
-			inline       auto* operator->()       { return &IteratedContainer[GetIndex()]; }
+			inline       auto* operator->() { return &IteratedContainer[GetIndex()]; }
 			inline const auto* operator->() const { return &IteratedContainer[GetIndex()]; }
 
 			inline bool operator==(const TContainerIterator& Other) const { return &IteratedContainer == &Other.IteratedContainer && BitIterator == Other.BitIterator; }
@@ -1223,19 +1513,19 @@ namespace UC
 	}
 
 	inline Iterators::FSetBitIterator begin(const ContainerImpl::FBitArray& Array) { return Iterators::FSetBitIterator(Array, 0); }
-	inline Iterators::FSetBitIterator end  (const ContainerImpl::FBitArray& Array) { return Iterators::FSetBitIterator(Array, Array.Num()); }
+	inline Iterators::FSetBitIterator end(const ContainerImpl::FBitArray& Array) { return Iterators::FSetBitIterator(Array, Array.Num()); }
 
 	template<typename T> inline Iterators::TArrayIterator<T> begin(const TArray<T>& Array) { return Iterators::TArrayIterator<T>(Array, 0); }
-	template<typename T> inline Iterators::TArrayIterator<T> end  (const TArray<T>& Array) { return Iterators::TArrayIterator<T>(Array, Array.Num()); }
+	template<typename T> inline Iterators::TArrayIterator<T> end(const TArray<T>& Array) { return Iterators::TArrayIterator<T>(Array, Array.Num()); }
 
 	template<typename T> inline Iterators::TSparseArrayIterator<T> begin(const TSparseArray<T>& Array) { return Iterators::TSparseArrayIterator<T>(Array, Array.GetAllocationFlags(), 0); }
-	template<typename T> inline Iterators::TSparseArrayIterator<T> end  (const TSparseArray<T>& Array) { return Iterators::TSparseArrayIterator<T>(Array, Array.GetAllocationFlags(), Array.NumAllocated()); }
+	template<typename T> inline Iterators::TSparseArrayIterator<T> end(const TSparseArray<T>& Array) { return Iterators::TSparseArrayIterator<T>(Array, Array.GetAllocationFlags(), Array.NumAllocated()); }
 
 	template<typename T> inline Iterators::TSetIterator<T> begin(const TSet<T>& Set) { return Iterators::TSetIterator<T>(Set, Set.GetAllocationFlags(), 0); }
-	template<typename T> inline Iterators::TSetIterator<T> end  (const TSet<T>& Set) { return Iterators::TSetIterator<T>(Set, Set.GetAllocationFlags(), Set.NumAllocated()); }
+	template<typename T> inline Iterators::TSetIterator<T> end(const TSet<T>& Set) { return Iterators::TSetIterator<T>(Set, Set.GetAllocationFlags(), Set.NumAllocated()); }
 
 	template<typename T0, typename T1> inline Iterators::TMapIterator<T0, T1> begin(const TMap<T0, T1>& Map) { return Iterators::TMapIterator<T0, T1>(Map, Map.GetAllocationFlags(), 0); }
-	template<typename T0, typename T1> inline Iterators::TMapIterator<T0, T1> end  (const TMap<T0, T1>& Map) { return Iterators::TMapIterator<T0, T1>(Map, Map.GetAllocationFlags(), Map.NumAllocated()); }
+	template<typename T0, typename T1> inline Iterators::TMapIterator<T0, T1> end(const TMap<T0, T1>& Map) { return Iterators::TMapIterator<T0, T1>(Map, Map.GetAllocationFlags(), Map.NumAllocated()); }
 
 	static_assert(sizeof(TArray<int32>) == 0x10, "TArray has a wrong size!");
 	static_assert(sizeof(TSet<int32>) == 0x50, "TSet has a wrong size!");

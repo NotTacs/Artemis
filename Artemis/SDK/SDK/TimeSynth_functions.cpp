@@ -19,9 +19,9 @@
 // (Final, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // ETimeSynthEventQuantization             QuantizationType                                       (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(ETimeSynthEventQuantization QuantizationType, int32 NumBars, float Beat)>&OnQuantizationEvent                                    (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(ETimeSynthEventQuantization QuantizationType, int32 NumBars, float Beat)>&OnQuantizationEvent                                    (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UTimeSynthComponent::AddQuantizationEventDelegate(ETimeSynthEventQuantization QuantizationType, const TDelegate<void(ETimeSynthEventQuantization QuantizationType, int32 NumBars, float Beat)>& OnQuantizationEvent)
+void UTimeSynthComponent::AddQuantizationEventDelegate(ETimeSynthEventQuantization QuantizationType, const TDynamicDelegate<void(ETimeSynthEventQuantization QuantizationType, int32 NumBars, float Beat)>& OnQuantizationEvent)
 {
 	static class UFunction* Func = nullptr;
 

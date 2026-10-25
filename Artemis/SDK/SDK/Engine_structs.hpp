@@ -9515,7 +9515,10 @@ public:
 	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
 	uint8                                         bContributeToMass : 1;                             // 0x0018(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate))
 	ECollisionEnabled                             CollisionEnabled;                                  // 0x0019(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_1A[0x16];                                      // 0x001A(0x0016)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	uint8                                         Pad_1A[0x6];                                       // 0x001A(0x0006)(Fixing Size After Last Property [ Dumper-8 ])
+	int32                                         UserDataType;                                      // 0x0020(0x0004)(NOT AUTO-GENERATED PROPERTY) FPhysxUserData::Type, 6 = EPhysxUserDataType::AggShape
+	uint8                                         Pad_24[0x4];                                       // 0x0024(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
+	void*                                         UserDataPayload;                                   // 0x0028(0x0008)(NOT AUTO-GENERATED PROPERTY) FPhysxUserData::Payload, points back at this element
 };
 
 // ScriptStruct Engine.KSphereElem
@@ -9562,6 +9565,26 @@ public:
 	uint8                                         Pad_6C[0x4];                                       // 0x006C(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
 	struct FTransform                             Transform;                                         // 0x0070(0x0030)(IsPlainOldData, NoDestructor, NativeAccessSpecifierPrivate)
 	uint8                                         Pad_A0[0x10];                                      // 0x00A0(0x0010)(Fixing Struct Size After Last Property [ Dumper-8 ])
+
+public:
+public:
+	static void Construct(FKConvexElem* Elem)
+	{
+		static void (*ConstructOriginal)(FKConvexElem*) = decltype(ConstructOriginal)(InSDKUtils::GetImageBase() + 0x1021920);
+		ConstructOriginal(Elem);
+	}
+
+	static void Destruct(FKConvexElem* Elem)
+	{
+		static void (*DestructOriginal)(FKConvexElem*) = decltype(DestructOriginal)(InSDKUtils::GetImageBase() + 0x10219BC);
+		DestructOriginal(Elem);
+	}
+
+	bool HullFromPlanes(const TArray<struct FPlane>& InPlanes, const TArray<struct FVector>& SnapVerts)
+	{
+		static bool (*HullFromPlanesOriginal)(FKConvexElem*, const TArray<struct FPlane>&, const TArray<struct FVector>&) = decltype(HullFromPlanesOriginal)(InSDKUtils::GetImageBase() + 0x77CB760);
+		return HullFromPlanesOriginal(this, InPlanes, SnapVerts);
+	}
 };
 
 // ScriptStruct Engine.KTaperedCapsuleElem
@@ -9588,6 +9611,91 @@ public:
 	TArray<struct FKConvexElem>                   ConvexElems;                                       // 0x0030(0x0010)(Edit, EditFixedSize, ZeroConstructor, NativeAccessSpecifierPublic)
 	TArray<struct FKTaperedCapsuleElem>           TaperedCapsuleElems;                               // 0x0040(0x0010)(Edit, EditFixedSize, ZeroConstructor, NativeAccessSpecifierPublic)
 	uint8                                         Pad_50[0x8];                                       // 0x0050(0x0008)(Fixing Struct Size After Last Property [ Dumper-8 ])
+};
+
+// Enum Engine.EBspNodeFlags (not reflected, Model.h)
+enum EBspNodeFlags : uint8
+{
+	NF_NotCsg = 0x01, // Node is not a Csg splitter, i.e. is a transparent poly.
+	NF_NotVisBlocking = 0x04, // Node does not block visibility, i.e. is an invisible collision hull.
+	NF_BrightCorners = 0x10, // Temporary.
+	NF_IsNew = 0x20, // Editor: Node was newly-added.
+	NF_IsFront = 0x40, // Filter operation bounding-sphere precomputed and guaranteed to be front.
+	NF_IsBack = 0x80, // Guaranteed back.
+};
+
+// Struct Engine.Vert (not reflected, Model.h)
+// 0x0018 (0x0018 - 0x0000), element size from TArray<FVert>::BulkSerialize in UModel::Serialize
+struct FVert final
+{
+public:
+	int32                                         pVertex;                                           // 0x0000(0x0004) Index of vertex.
+	int32                                         iSide;                                             // 0x0004(0x0004) If shared, index of unique side. Otherwise INDEX_NONE.
+	struct FVector2D                              ShadowTexCoord;                                    // 0x0008(0x0008) The vertex's shadow map coordinate.
+	struct FVector2D                              BackfaceShadowTexCoord;                            // 0x0010(0x0008) The vertex's shadow map coordinate for the backface of the node.
+};
+
+// Struct Engine.BspNode (not reflected, Model.h)
+// 0x0040 (0x0040 - 0x0000), UModel::Serialize clears NodeFlags at +0x37 with a 0x40 stride
+struct alignas(0x10) FBspNode final
+{
+public:
+	enum { MAX_NODE_VERTICES = 255 };	// Max vertices in a Bsp node.
+	enum { MAX_ZONES = 64 };			// Max zones per level.
+
+	struct FPlane                                 Plane;                                             // 0x0000(0x0010) Plane the node falls into (X, Y, Z, W).
+	int32                                         iVertPool;                                         // 0x0010(0x0004) Index of first vertex in vertex pool, =iTerrain if NumVertices==0 and NF_TerrainFront.
+	int32                                         iSurf;                                             // 0x0014(0x0004) Index to surface information.
+	int32                                         iVertexIndex;                                      // 0x0018(0x0004) The index of the node's first vertex in the UModel's vertex buffer.
+	uint16                                        ComponentIndex;                                    // 0x001C(0x0002) The index in ULevel::ModelComponents of the UModelComponent containing this node.
+	uint16                                        ComponentNodeIndex;                                // 0x001E(0x0002) The index of the node in the UModelComponent's Nodes array.
+	int32                                         ComponentElementIndex;                             // 0x0020(0x0004) The index of the element in the UModelComponent's Element array.
+	union
+	{
+		int32                                     iBack;                                             // 0x0024(0x0004) Index to the back child node, INDEX_NONE = leaf.
+		int32                                     iChild[1];
+	};
+	int32                                         iFront;                                            // 0x0028(0x0004) Index to the front child node, INDEX_NONE = leaf.
+	int32                                         iPlane;                                            // 0x002C(0x0004) Index to next coplanar poly in coplanar list.
+	int32                                         iCollisionBound;                                   // 0x0030(0x0004) Collision bound.
+	uint8                                         iZone[2];                                          // 0x0034(0x0002) Visibility zone in 1=front, 0=back.
+	uint8                                         NumVertices;                                       // 0x0036(0x0001) Number of vertices in node.
+	uint8                                         NodeFlags;                                         // 0x0037(0x0001) Node flags.
+	int32                                         iLeaf[2];                                          // 0x0038(0x0008) Leaf in back and front, INDEX_NONE=not a leaf.
+
+public:
+	// Functions.
+	bool IsCsg(uint32 ExtraFlags = 0) const
+	{
+		return (NumVertices > 0) && !(NodeFlags & (NF_IsNew | NF_NotCsg | ExtraFlags));
+	}
+	bool ChildOutside(int32 IniChild, bool Outside, uint32 ExtraFlags = 0) const
+	{
+		return IniChild ? (Outside || IsCsg(ExtraFlags)) : (Outside && !IsCsg(ExtraFlags));
+	}
+};
+
+// Struct Engine.BspSurf (not reflected, Model.h)
+// 0x0050 (0x0050 - 0x0000), from operator<<(FArchive&, FBspSurf&) and TArray<FBspSurf> serialize stride
+struct alignas(0x10) FBspSurf final
+{
+public:
+	class UMaterialInterface* Material;                                          // 0x0000(0x0008) Material.
+	uint32                                        PolyFlags;                                         // 0x0008(0x0004) Polygon flags.
+	int32                                         pBase;                                             // 0x000C(0x0004) Polygon & texture base point index (where U,V==0,0).
+	int32                                         vNormal;                                           // 0x0010(0x0004) Index to polygon normal.
+	int32                                         vTextureU;                                         // 0x0014(0x0004) Texture U-vector index.
+	int32                                         vTextureV;                                         // 0x0018(0x0004) Texture V-vector index.
+	int32                                         iBrushPoly;                                        // 0x001C(0x0004) Editor brush polygon index.
+	class ABrush* Actor;                                             // 0x0020(0x0008) Brush actor owning this Bsp surface.
+	uint8                                         Pad_28[0x8];                                       // 0x0028(0x0008)(Fixing Size After Last Property [ Dumper-8 ])
+	struct FPlane                                 Plane;                                             // 0x0030(0x0010) The plane this surface lies on.
+	float                                         LightMapScale;                                     // 0x0040(0x0004) The number of units/lightmap texel on this surface.
+	int32                                         iLightmassIndex;                                   // 0x0044(0x0004) Index to the lightmass settings
+	bool                                          bHiddenEdTemporary;                                // 0x0048(0x0001) Not serialized.
+	bool                                          bHiddenEdLevel;                                    // 0x0049(0x0001) Not serialized.
+	bool                                          bHiddenEdLayer;                                    // 0x004A(0x0001) Not serialized.
+	uint8                                         Pad_4B[0x5];                                       // 0x004B(0x0005)(Fixing Struct Size After Last Property [ Dumper-8 ])
 };
 
 // ScriptStruct Engine.PropertyAccessSegment
@@ -14098,7 +14206,7 @@ struct FTimelineFloatTrack final
 {
 public:
 	class UCurveFloat*                            FloatCurve;                                        // 0x0000(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void(float Output)>                 InterpFunc;                                        // 0x0008(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(float Output)>                 InterpFunc;                                        // 0x0008(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	class FName                                   TrackName;                                         // 0x0018(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class FName                                   FloatPropertyName;                                 // 0x0020(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_28[0x18];                                      // 0x0028(0x0018)(Fixing Struct Size After Last Property [ Dumper-8 ])
@@ -14109,7 +14217,7 @@ public:
 struct FDelegateArray final
 {
 public:
-	TArray<TDelegate<void(const struct FPlatformInterfaceDelegateResult& Result)>> Delegates;        // 0x0000(0x0010)(ZeroConstructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+	TArray<TDynamicDelegate<void(const struct FPlatformInterfaceDelegateResult& Result)>> Delegates;        // 0x0000(0x0010)(ZeroConstructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
 };
 
 // ScriptStruct Engine.CameraCacheEntry
@@ -14180,7 +14288,7 @@ struct FTimelineVectorTrack final
 {
 public:
 	class UCurveVector*                           VectorCurve;                                       // 0x0000(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void(const struct FVector& Output)> InterpFunc;                                        // 0x0008(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const struct FVector& Output)> InterpFunc;                                        // 0x0008(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	class FName                                   TrackName;                                         // 0x0018(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class FName                                   VectorPropertyName;                                // 0x0020(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_28[0x18];                                      // 0x0028(0x0018)(Fixing Struct Size After Last Property [ Dumper-8 ])
@@ -14192,7 +14300,7 @@ struct FTimelineEventEntry final
 {
 public:
 	float                                         Time;                                              // 0x0000(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             EventFunc;                                         // 0x0004(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             EventFunc;                                         // 0x0004(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // ScriptStruct Engine.TimelineLinearColorTrack
@@ -14201,7 +14309,7 @@ struct FTimelineLinearColorTrack final
 {
 public:
 	class UCurveLinearColor*                      LinearColorCurve;                                  // 0x0000(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void(const struct FLinearColor& Output)> InterpFunc;                                   // 0x0008(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const struct FLinearColor& Output)> InterpFunc;                                   // 0x0008(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 	class FName                                   TrackName;                                         // 0x0018(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class FName                                   LinearColorPropertyName;                           // 0x0020(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_28[0x18];                                      // 0x0028(0x0018)(Fixing Struct Size After Last Property [ Dumper-8 ])
@@ -14224,8 +14332,8 @@ public:
 	TArray<struct FTimelineVectorTrack>           InterpVectors;                                     // 0x0020(0x0010)(ZeroConstructor, RepSkip, ContainsInstancedReference, NativeAccessSpecifierPrivate)
 	TArray<struct FTimelineFloatTrack>            InterpFloats;                                      // 0x0030(0x0010)(ZeroConstructor, RepSkip, ContainsInstancedReference, NativeAccessSpecifierPrivate)
 	TArray<struct FTimelineLinearColorTrack>      InterpLinearColors;                                // 0x0040(0x0010)(ZeroConstructor, RepSkip, ContainsInstancedReference, NativeAccessSpecifierPrivate)
-	TDelegate<void()>                             TimelinePostUpdateFunc;                            // 0x0050(0x0010)(ZeroConstructor, InstancedReference, RepSkip, NoDestructor, NativeAccessSpecifierPrivate)
-	TDelegate<void()>                             TimelineFinishedFunc;                              // 0x0060(0x0010)(ZeroConstructor, InstancedReference, RepSkip, NoDestructor, NativeAccessSpecifierPrivate)
+	TDynamicDelegate<void()>                             TimelinePostUpdateFunc;                            // 0x0050(0x0010)(ZeroConstructor, InstancedReference, RepSkip, NoDestructor, NativeAccessSpecifierPrivate)
+	TDynamicDelegate<void()>                             TimelineFinishedFunc;                              // 0x0060(0x0010)(ZeroConstructor, InstancedReference, RepSkip, NoDestructor, NativeAccessSpecifierPrivate)
 	TWeakObjectPtr<class UObject>                 PropertySetObject;                                 // 0x0070(0x0008)(ZeroConstructor, IsPlainOldData, RepSkip, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 	class FName                                   DirectionPropertyName;                             // 0x0078(0x0008)(ZeroConstructor, IsPlainOldData, RepSkip, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 	uint8                                         Pad_80[0x18];                                      // 0x0080(0x0018)(Fixing Struct Size After Last Property [ Dumper-8 ])

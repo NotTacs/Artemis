@@ -42848,9 +42848,9 @@ void ABuildingSMActor::SetParentActorToAttachTo(class ABuildingSMActor* InParent
 // Function FortniteGame.BuildingSMActor.SetResourcesEarnedOverrideDelegate
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
-// TDelegate<void(class AController* InstigatorController, class ABuildingSMActor* BuildingSMActor, float ResourcesEarned, bool bJustHitWeakspot, float* ModifiedResourcesEarned)>InOnResourcesEarnedOverrideDelegate                    (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(class AController* InstigatorController, class ABuildingSMActor* BuildingSMActor, float ResourcesEarned, bool bJustHitWeakspot, float* ModifiedResourcesEarned)>InOnResourcesEarnedOverrideDelegate                    (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void ABuildingSMActor::SetResourcesEarnedOverrideDelegate(TDelegate<void(class AController* InstigatorController, class ABuildingSMActor* BuildingSMActor, float ResourcesEarned, bool bJustHitWeakspot, float* ModifiedResourcesEarned)> InOnResourcesEarnedOverrideDelegate)
+void ABuildingSMActor::SetResourcesEarnedOverrideDelegate(TDynamicDelegate<void(class AController* InstigatorController, class ABuildingSMActor* BuildingSMActor, float ResourcesEarned, bool bJustHitWeakspot, float* ModifiedResourcesEarned)> InOnResourcesEarnedOverrideDelegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -73447,9 +73447,9 @@ bool AFortAthenaCreativePortal::ShouldPausePortalUpdates_Client() const
 // (Final, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // const struct FCreativeLoadedLinkData&   LinkData                                               (ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-// const TDelegate<void(bool bValidIsland)>&OnIslandModerationCheckComplete                        (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(bool bValidIsland)>&OnIslandModerationCheckComplete                        (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortPortalComponent::CheckIslandModeration(const struct FCreativeLoadedLinkData& LinkData, const TDelegate<void(bool bValidIsland)>& OnIslandModerationCheckComplete)
+void UFortPortalComponent::CheckIslandModeration(const struct FCreativeLoadedLinkData& LinkData, const TDynamicDelegate<void(bool bValidIsland)>& OnIslandModerationCheckComplete)
 {
 	static class UFunction* Func = nullptr;
 
@@ -81033,9 +81033,9 @@ EIndexNavigationResult ISingleIndexSelectionModel::TryMoveDelta(int32 InDelta)
 // Function FortniteGame.SingleIndexSelectionModel.AddOnNavigationChangedDelegate
 // (Native, Public, HasOutParams, BlueprintCallable, Const)
 // Parameters:
-// const TDelegate<void(class UObject* Source)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(class UObject* Source)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void ISingleIndexSelectionModel::AddOnNavigationChangedDelegate(const TDelegate<void(class UObject* Source)>& InDelegate) const
+void ISingleIndexSelectionModel::AddOnNavigationChangedDelegate(const TDynamicDelegate<void(class UObject* Source)>& InDelegate) const
 {
 	static class UFunction* Func = nullptr;
 
@@ -81058,9 +81058,9 @@ void ISingleIndexSelectionModel::AddOnNavigationChangedDelegate(const TDelegate<
 // Function FortniteGame.SingleIndexSelectionModel.AddOnNumItemsChangedDelegate
 // (Native, Public, HasOutParams, BlueprintCallable, Const)
 // Parameters:
-// const TDelegate<void(class UObject* Source)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(class UObject* Source)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void ISingleIndexSelectionModel::AddOnNumItemsChangedDelegate(const TDelegate<void(class UObject* Source)>& InDelegate) const
+void ISingleIndexSelectionModel::AddOnNumItemsChangedDelegate(const TDynamicDelegate<void(class UObject* Source)>& InDelegate) const
 {
 	static class UFunction* Func = nullptr;
 
@@ -81083,9 +81083,9 @@ void ISingleIndexSelectionModel::AddOnNumItemsChangedDelegate(const TDelegate<vo
 // Function FortniteGame.SingleIndexSelectionModel.AddOnSelectedIndexChangedDelegate
 // (Native, Public, HasOutParams, BlueprintCallable, Const)
 // Parameters:
-// const TDelegate<void(class UObject* Source)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(class UObject* Source)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void ISingleIndexSelectionModel::AddOnSelectedIndexChangedDelegate(const TDelegate<void(class UObject* Source)>& InDelegate) const
+void ISingleIndexSelectionModel::AddOnSelectedIndexChangedDelegate(const TDynamicDelegate<void(class UObject* Source)>& InDelegate) const
 {
 	static class UFunction* Func = nullptr;
 
@@ -81186,9 +81186,9 @@ int32 ISingleIndexSelectionModel::GetSelectedIndex() const
 // Function FortniteGame.SingleIndexSelectionModel.RemoveOnNavigationChangedDelegate
 // (Native, Public, HasOutParams, BlueprintCallable, Const)
 // Parameters:
-// const TDelegate<void(class UObject* Source)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(class UObject* Source)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void ISingleIndexSelectionModel::RemoveOnNavigationChangedDelegate(const TDelegate<void(class UObject* Source)>& InDelegate) const
+void ISingleIndexSelectionModel::RemoveOnNavigationChangedDelegate(const TDynamicDelegate<void(class UObject* Source)>& InDelegate) const
 {
 	static class UFunction* Func = nullptr;
 
@@ -81211,9 +81211,9 @@ void ISingleIndexSelectionModel::RemoveOnNavigationChangedDelegate(const TDelega
 // Function FortniteGame.SingleIndexSelectionModel.RemoveOnNumItemsChangedDelegate
 // (Native, Public, HasOutParams, BlueprintCallable, Const)
 // Parameters:
-// const TDelegate<void(class UObject* Source)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(class UObject* Source)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void ISingleIndexSelectionModel::RemoveOnNumItemsChangedDelegate(const TDelegate<void(class UObject* Source)>& InDelegate) const
+void ISingleIndexSelectionModel::RemoveOnNumItemsChangedDelegate(const TDynamicDelegate<void(class UObject* Source)>& InDelegate) const
 {
 	static class UFunction* Func = nullptr;
 
@@ -81236,9 +81236,9 @@ void ISingleIndexSelectionModel::RemoveOnNumItemsChangedDelegate(const TDelegate
 // Function FortniteGame.SingleIndexSelectionModel.RemoveOnSelectedIndexChangedDelegate
 // (Native, Public, HasOutParams, BlueprintCallable, Const)
 // Parameters:
-// const TDelegate<void(class UObject* Source)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(class UObject* Source)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void ISingleIndexSelectionModel::RemoveOnSelectedIndexChangedDelegate(const TDelegate<void(class UObject* Source)>& InDelegate) const
+void ISingleIndexSelectionModel::RemoveOnSelectedIndexChangedDelegate(const TDynamicDelegate<void(class UObject* Source)>& InDelegate) const
 {
 	static class UFunction* Func = nullptr;
 
@@ -82043,12 +82043,12 @@ TSoftObjectPtr<class UFortHomebaseBannerIconItemDefinition> UFortBannerUtilities
 // const struct FVector&                   Location                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const float                             Radius                                                 (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const TArray<class AActor*>&            ActorsToIgnore                                         (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
-// TDelegate<void(bool* ShouldCancel)>     ShouldCancelProcess                                    (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
-// TDelegate<void(class AActor* HitActor)> ProcessHitActorFunction                                (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
-// TDelegate<void(bool WasCancelled)>      CompletionFunction                                     (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool* ShouldCancel)>     ShouldCancelProcess                                    (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(class AActor* HitActor)> ProcessHitActorFunction                                (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool WasCancelled)>      CompletionFunction                                     (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // ECollisionChannel                       TraceChannel                                           (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UAsyncOverlapQueue::AsyncSphereOverlapActors(class AActor* ContextActor, const struct FVector& Location, const float Radius, const TArray<class AActor*>& ActorsToIgnore, TDelegate<void(bool* ShouldCancel)> ShouldCancelProcess, TDelegate<void(class AActor* HitActor)> ProcessHitActorFunction, TDelegate<void(bool WasCancelled)> CompletionFunction, ECollisionChannel TraceChannel)
+void UAsyncOverlapQueue::AsyncSphereOverlapActors(class AActor* ContextActor, const struct FVector& Location, const float Radius, const TArray<class AActor*>& ActorsToIgnore, TDynamicDelegate<void(bool* ShouldCancel)> ShouldCancelProcess, TDynamicDelegate<void(class AActor* HitActor)> ProcessHitActorFunction, TDynamicDelegate<void(bool WasCancelled)> CompletionFunction, ECollisionChannel TraceChannel)
 {
 	static class UFunction* Func = nullptr;
 
@@ -82083,13 +82083,13 @@ void UAsyncOverlapQueue::AsyncSphereOverlapActors(class AActor* ContextActor, co
 // const float                             Radius                                                 (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const bool                              bCheckLineOfSight                                      (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const TArray<class AActor*>&            ActorsToIgnore                                         (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
-// TDelegate<void(bool* ShouldCancel)>     ShouldCancelProcess                                    (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
-// TDelegate<void(class AActor* HitActor)> ProcessHitActorFunction                                (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
-// TDelegate<void(bool WasCancelled)>      CompletionFunction                                     (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool* ShouldCancel)>     ShouldCancelProcess                                    (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(class AActor* HitActor)> ProcessHitActorFunction                                (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool WasCancelled)>      CompletionFunction                                     (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // const TArray<EObjectTypeQuery>&         ObjectTypes                                            (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
 // ECollisionChannel                       TraceChannel                                           (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UAsyncOverlapQueue::ThrottledAsyncSphereOverlapActors(class AActor* ContextActor, const struct FVector& Location, const float Radius, const bool bCheckLineOfSight, const TArray<class AActor*>& ActorsToIgnore, TDelegate<void(bool* ShouldCancel)> ShouldCancelProcess, TDelegate<void(class AActor* HitActor)> ProcessHitActorFunction, TDelegate<void(bool WasCancelled)> CompletionFunction, const TArray<EObjectTypeQuery>& ObjectTypes, ECollisionChannel TraceChannel)
+void UAsyncOverlapQueue::ThrottledAsyncSphereOverlapActors(class AActor* ContextActor, const struct FVector& Location, const float Radius, const bool bCheckLineOfSight, const TArray<class AActor*>& ActorsToIgnore, TDynamicDelegate<void(bool* ShouldCancel)> ShouldCancelProcess, TDynamicDelegate<void(class AActor* HitActor)> ProcessHitActorFunction, TDynamicDelegate<void(bool WasCancelled)> CompletionFunction, const TArray<EObjectTypeQuery>& ObjectTypes, ECollisionChannel TraceChannel)
 {
 	static class UFunction* Func = nullptr;
 
@@ -95151,9 +95151,9 @@ void UFortEventLevelNavigationBangCheckComponent::OnInitializedForPlayer()
 // const struct FVector&                   EndLocation                                            (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const TArray<class AActor*>&            ActorsToIgnore                                         (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
 // ECollisionChannel                       CollisionChannel                                       (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(bool Succeeded, const class AActor* ActorHit, const struct FHitResult& HitResult)>CompletionFunction                                     (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool Succeeded, const class AActor* ActorHit, const struct FHitResult& HitResult)>CompletionFunction                                     (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UAsyncTraceQueue::AsyncTrace_Immediate(class UObject* WorldContextObject, const struct FVector& StartLocation, const struct FVector& EndLocation, const TArray<class AActor*>& ActorsToIgnore, ECollisionChannel CollisionChannel, TDelegate<void(bool Succeeded, const class AActor* ActorHit, const struct FHitResult& HitResult)> CompletionFunction)
+void UAsyncTraceQueue::AsyncTrace_Immediate(class UObject* WorldContextObject, const struct FVector& StartLocation, const struct FVector& EndLocation, const TArray<class AActor*>& ActorsToIgnore, ECollisionChannel CollisionChannel, TDynamicDelegate<void(bool Succeeded, const class AActor* ActorHit, const struct FHitResult& HitResult)> CompletionFunction)
 {
 	static class UFunction* Func = nullptr;
 
@@ -95186,9 +95186,9 @@ void UAsyncTraceQueue::AsyncTrace_Immediate(class UObject* WorldContextObject, c
 // const struct FVector&                   EndLocation                                            (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const TArray<class AActor*>&            ActorsToIgnore                                         (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
 // ECollisionChannel                       CollisionChannel                                       (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(bool Succeeded, const class AActor* ActorHit, const struct FHitResult& HitResult)>CompletionFunction                                     (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool Succeeded, const class AActor* ActorHit, const struct FHitResult& HitResult)>CompletionFunction                                     (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UAsyncTraceQueue::ThrottledAsyncTrace(class UObject* WorldContextObject, const struct FVector& StartLocation, const struct FVector& EndLocation, const TArray<class AActor*>& ActorsToIgnore, ECollisionChannel CollisionChannel, TDelegate<void(bool Succeeded, const class AActor* ActorHit, const struct FHitResult& HitResult)> CompletionFunction)
+void UAsyncTraceQueue::ThrottledAsyncTrace(class UObject* WorldContextObject, const struct FVector& StartLocation, const struct FVector& EndLocation, const TArray<class AActor*>& ActorsToIgnore, ECollisionChannel CollisionChannel, TDynamicDelegate<void(bool Succeeded, const class AActor* ActorHit, const struct FHitResult& HitResult)> CompletionFunction)
 {
 	static class UFunction* Func = nullptr;
 
@@ -95224,9 +95224,9 @@ void UAsyncTraceQueue::ThrottledAsyncTrace(class UObject* WorldContextObject, co
 // const struct FVector&                   TargetOffset                                           (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const TArray<class AActor*>&            ActorsToIgnore                                         (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
 // ECollisionChannel                       CollisionChannel                                       (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(bool Succeeded, const class AActor* ActorHit, const struct FHitResult& HitResult)>CompletionFunction                                     (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool Succeeded, const class AActor* ActorHit, const struct FHitResult& HitResult)>CompletionFunction                                     (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UAsyncTraceQueue::ThrottledAsyncTrace_SourceTarget(class UObject* WorldContextObject, const bool bUseLocalCameraAsSource, const class AActor* SourceActor, const struct FVector& SourceOffset, const class AActor* TargetActor, const struct FVector& TargetOffset, const TArray<class AActor*>& ActorsToIgnore, ECollisionChannel CollisionChannel, TDelegate<void(bool Succeeded, const class AActor* ActorHit, const struct FHitResult& HitResult)> CompletionFunction)
+void UAsyncTraceQueue::ThrottledAsyncTrace_SourceTarget(class UObject* WorldContextObject, const bool bUseLocalCameraAsSource, const class AActor* SourceActor, const struct FVector& SourceOffset, const class AActor* TargetActor, const struct FVector& TargetOffset, const TArray<class AActor*>& ActorsToIgnore, ECollisionChannel CollisionChannel, TDynamicDelegate<void(bool Succeeded, const class AActor* ActorHit, const struct FHitResult& HitResult)> CompletionFunction)
 {
 	static class UFunction* Func = nullptr;
 
@@ -107886,9 +107886,9 @@ bool UAthenaNavSystem::IsInitialNavigationLockActive(class UObject* WorldContext
 // (Final, Native, Static, Public, BlueprintCallable)
 // Parameters:
 // class USceneComponent*                  Component                                              (Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(class USceneComponent* Component)>Event                                                  (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(class USceneComponent* Component)>Event                                                  (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UAthenaNavSystem::RegisterNavGenerationObserver(class USceneComponent* Component, TDelegate<void(class USceneComponent* Component)> Event)
+void UAthenaNavSystem::RegisterNavGenerationObserver(class USceneComponent* Component, TDynamicDelegate<void(class USceneComponent* Component)> Event)
 {
 	static class UFunction* Func = nullptr;
 
@@ -110178,9 +110178,9 @@ void UFortHealthSet::OnRep_SignalInStorm(const struct FFortGameplayAttributeData
 // Function FortniteGame.FortHealthSet.SetDamageDoneOverrideDelegate
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
-// TDelegate<void(class UFortHealthSet* HealthSet, float RawDamageDone, float* DamageDone, float* HealthModification)>InOnDamageDoneOverrideDelegate                         (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(class UFortHealthSet* HealthSet, float RawDamageDone, float* DamageDone, float* HealthModification)>InOnDamageDoneOverrideDelegate                         (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortHealthSet::SetDamageDoneOverrideDelegate(TDelegate<void(class UFortHealthSet* HealthSet, float RawDamageDone, float* DamageDone, float* HealthModification)> InOnDamageDoneOverrideDelegate)
+void UFortHealthSet::SetDamageDoneOverrideDelegate(TDynamicDelegate<void(class UFortHealthSet* HealthSet, float RawDamageDone, float* DamageDone, float* HealthModification)> InOnDamageDoneOverrideDelegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -152716,9 +152716,9 @@ struct FFortUICameraFrameTargetSettings IFortUICameraFrameTargetInterface::GetZo
 // Function FortniteGame.FortUICameraFrameTargetInterface.SetFrameTargetSettingsChangedDelegate
 // (Native, Event, Public, HasOutParams, BlueprintEvent)
 // Parameters:
-// const TDelegate<void(TScriptInterface<class IFortUICameraFrameTargetInterface> Object)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(TScriptInterface<class IFortUICameraFrameTargetInterface> Object)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void IFortUICameraFrameTargetInterface::SetFrameTargetSettingsChangedDelegate(const TDelegate<void(TScriptInterface<class IFortUICameraFrameTargetInterface> Object)>& Delegate)
+void IFortUICameraFrameTargetInterface::SetFrameTargetSettingsChangedDelegate(const TDynamicDelegate<void(TScriptInterface<class IFortUICameraFrameTargetInterface> Object)>& Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -154292,9 +154292,9 @@ void AFortGameStateZone::ApplyPlayerAbilityRestriction()
 // (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
 // EFortVoteType                           VoteType                                               (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(EFortVoteType VoteType, EFortVoteStatus VoteStatus, int32 VoteResult, const TArray<struct FVoter>& Voters)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(EFortVoteType VoteType, EFortVoteStatus VoteStatus, int32 VoteResult, const TArray<struct FVoter>& Voters)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void AFortGameStateZone::BindDelegateOnGameplayVoteUpdated(EFortVoteType VoteType, TDelegate<void(EFortVoteType VoteType, EFortVoteStatus VoteStatus, int32 VoteResult, const TArray<struct FVoter>& Voters)> Delegate)
+void AFortGameStateZone::BindDelegateOnGameplayVoteUpdated(EFortVoteType VoteType, TDynamicDelegate<void(EFortVoteType VoteType, EFortVoteStatus VoteStatus, int32 VoteResult, const TArray<struct FVoter>& Voters)> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -155342,9 +155342,9 @@ void AFortGameStateZone::SetZoneCompletionResult(EFortCompletionResult NewComple
 // (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
 // EFortVoteType                           VoteType                                               (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(EFortVoteType VoteType, EFortVoteStatus VoteStatus, int32 VoteResult, const TArray<struct FVoter>& Voters)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(EFortVoteType VoteType, EFortVoteStatus VoteStatus, int32 VoteResult, const TArray<struct FVoter>& Voters)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void AFortGameStateZone::UnbindDelegateOnGameplayVoteUpdated(EFortVoteType VoteType, TDelegate<void(EFortVoteType VoteType, EFortVoteStatus VoteStatus, int32 VoteResult, const TArray<struct FVoter>& Voters)> Delegate)
+void AFortGameStateZone::UnbindDelegateOnGameplayVoteUpdated(EFortVoteType VoteType, TDynamicDelegate<void(EFortVoteType VoteType, EFortVoteStatus VoteStatus, int32 VoteResult, const TArray<struct FVoter>& Voters)> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -205095,9 +205095,9 @@ void AFortMapMarkerTopperActor::SetLiveMapMarker(const class UAthenaMapMarkerIte
 // class UObject*                          InWorldContextObject                                   (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class UObject*                          InThrottleObject                                       (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // int32                                   InThrottleBucketID                                     (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(bool Succeeded)>         InThrottleCompleteFunction                             (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool Succeeded)>         InThrottleCompleteFunction                             (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortCreativeGeneralThrottleManager::RequestThrottleObject(class UObject* InWorldContextObject, class UObject* InThrottleObject, int32 InThrottleBucketID, TDelegate<void(bool Succeeded)> InThrottleCompleteFunction)
+void UFortCreativeGeneralThrottleManager::RequestThrottleObject(class UObject* InWorldContextObject, class UObject* InThrottleObject, int32 InThrottleBucketID, TDynamicDelegate<void(bool Succeeded)> InThrottleCompleteFunction)
 {
 	static class UFunction* Func = nullptr;
 
@@ -214770,9 +214770,9 @@ void AFortTimeOfDayManager::OnWeatherStart(int32 WeatherEventIndex)
 // Function FortniteGame.FortTimeOfDayManager.RegisterForDayPhaseChangedEvent
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
-// TDelegate<void(EFortDayPhase CurrentDayPhase, EFortDayPhase PreviousDayPhase, bool bAtCreation)>DelegateSignature                                      (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(EFortDayPhase CurrentDayPhase, EFortDayPhase PreviousDayPhase, bool bAtCreation)>DelegateSignature                                      (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void AFortTimeOfDayManager::RegisterForDayPhaseChangedEvent(TDelegate<void(EFortDayPhase CurrentDayPhase, EFortDayPhase PreviousDayPhase, bool bAtCreation)> DelegateSignature)
+void AFortTimeOfDayManager::RegisterForDayPhaseChangedEvent(TDynamicDelegate<void(EFortDayPhase CurrentDayPhase, EFortDayPhase PreviousDayPhase, bool bAtCreation)> DelegateSignature)
 {
 	static class UFunction* Func = nullptr;
 
@@ -215787,9 +215787,9 @@ void UFortCurieInteractionComponent::UnregisterCollisionComponent()
 // (Final, BlueprintAuthorityOnly, Native, Public, BlueprintCallable)
 // Parameters:
 // const struct FGameplayTag&              ToggleGroup                                            (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortCurieManager::BindDelegateOnToggleGroupFullyActive(const struct FGameplayTag& ToggleGroup, TDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)> Delegate)
+void UFortCurieManager::BindDelegateOnToggleGroupFullyActive(const struct FGameplayTag& ToggleGroup, TDynamicDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -215814,9 +215814,9 @@ void UFortCurieManager::BindDelegateOnToggleGroupFullyActive(const struct FGamep
 // (Final, BlueprintAuthorityOnly, Native, Public, BlueprintCallable)
 // Parameters:
 // const struct FGameplayTag&              ToggleGroup                                            (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortCurieManager::BindDelegateOnToggleGroupFullyInactive(const struct FGameplayTag& ToggleGroup, TDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)> Delegate)
+void UFortCurieManager::BindDelegateOnToggleGroupFullyInactive(const struct FGameplayTag& ToggleGroup, TDynamicDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -215841,9 +215841,9 @@ void UFortCurieManager::BindDelegateOnToggleGroupFullyInactive(const struct FGam
 // (Final, BlueprintAuthorityOnly, Native, Public, BlueprintCallable)
 // Parameters:
 // const struct FGameplayTag&              ToggleGroup                                            (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(class UFortCurieToggleComponent* ToggleComponent, bool bActive)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(class UFortCurieToggleComponent* ToggleComponent, bool bActive)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortCurieManager::BindDelegateOnToggleGroupMemberActiveStateChange(const struct FGameplayTag& ToggleGroup, TDelegate<void(class UFortCurieToggleComponent* ToggleComponent, bool bActive)> Delegate)
+void UFortCurieManager::BindDelegateOnToggleGroupMemberActiveStateChange(const struct FGameplayTag& ToggleGroup, TDynamicDelegate<void(class UFortCurieToggleComponent* ToggleComponent, bool bActive)> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -215966,9 +215966,9 @@ void UFortCurieManager::OnToggleGroupComponentDeactivated(class UActorComponent*
 // (Final, BlueprintAuthorityOnly, Native, Public, BlueprintCallable)
 // Parameters:
 // const struct FGameplayTag&              ToggleGroup                                            (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortCurieManager::UnbindDelegateOnToggleGroupFullyActive(const struct FGameplayTag& ToggleGroup, TDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)> Delegate)
+void UFortCurieManager::UnbindDelegateOnToggleGroupFullyActive(const struct FGameplayTag& ToggleGroup, TDynamicDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -215993,9 +215993,9 @@ void UFortCurieManager::UnbindDelegateOnToggleGroupFullyActive(const struct FGam
 // (Final, BlueprintAuthorityOnly, Native, Public, BlueprintCallable)
 // Parameters:
 // const struct FGameplayTag&              ToggleGroup                                            (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortCurieManager::UnbindDelegateOnToggleGroupFullyInactive(const struct FGameplayTag& ToggleGroup, TDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)> Delegate)
+void UFortCurieManager::UnbindDelegateOnToggleGroupFullyInactive(const struct FGameplayTag& ToggleGroup, TDynamicDelegate<void(class UFortCurieToggleComponent* LastToggleComponent)> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -216020,9 +216020,9 @@ void UFortCurieManager::UnbindDelegateOnToggleGroupFullyInactive(const struct FG
 // (Final, BlueprintAuthorityOnly, Native, Public, BlueprintCallable)
 // Parameters:
 // const struct FGameplayTag&              ToggleGroup                                            (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(class UFortCurieToggleComponent* ToggleComponent, bool bActive)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(class UFortCurieToggleComponent* ToggleComponent, bool bActive)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortCurieManager::UnbindDelegateOnToggleGroupMemberActiveStateChange(const struct FGameplayTag& ToggleGroup, TDelegate<void(class UFortCurieToggleComponent* ToggleComponent, bool bActive)> Delegate)
+void UFortCurieManager::UnbindDelegateOnToggleGroupMemberActiveStateChange(const struct FGameplayTag& ToggleGroup, TDynamicDelegate<void(class UFortCurieToggleComponent* ToggleComponent, bool bActive)> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -234107,10 +234107,10 @@ void AFortMission::RecordResourceActorSpawn(class AActor* SpawnedActor)
 // Function FortniteGame.FortMission.RegisterForBuildingHarvestedByPlayerEvent
 // (Final, BlueprintAuthorityOnly, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// TDelegate<void(class ABuildingSMActor* HarvestedBuilding, class AFortPlayerPawn* HarvesterPawn)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(class ABuildingSMActor* HarvestedBuilding, class AFortPlayerPawn* HarvesterPawn)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // const struct FGameplayTagQuery&         HarvestedBuildingRequirements                          (ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
 
-void AFortMission::RegisterForBuildingHarvestedByPlayerEvent(TDelegate<void(class ABuildingSMActor* HarvestedBuilding, class AFortPlayerPawn* HarvesterPawn)> Delegate, const struct FGameplayTagQuery& HarvestedBuildingRequirements)
+void AFortMission::RegisterForBuildingHarvestedByPlayerEvent(TDynamicDelegate<void(class ABuildingSMActor* HarvestedBuilding, class AFortPlayerPawn* HarvesterPawn)> Delegate, const struct FGameplayTagQuery& HarvestedBuildingRequirements)
 {
 	static class UFunction* Func = nullptr;
 
@@ -234134,10 +234134,10 @@ void AFortMission::RegisterForBuildingHarvestedByPlayerEvent(TDelegate<void(clas
 // Function FortniteGame.FortMission.RegisterForContainerSearchedEvent
 // (Final, BlueprintAuthorityOnly, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// TDelegate<void(class ABuildingContainer* SearchedContainer, class AFortPawn* SearcherPawn)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(class ABuildingContainer* SearchedContainer, class AFortPawn* SearcherPawn)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // const struct FGameplayTagQuery&         ContainerRequirements                                  (ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
 
-void AFortMission::RegisterForContainerSearchedEvent(TDelegate<void(class ABuildingContainer* SearchedContainer, class AFortPawn* SearcherPawn)> Delegate, const struct FGameplayTagQuery& ContainerRequirements)
+void AFortMission::RegisterForContainerSearchedEvent(TDynamicDelegate<void(class ABuildingContainer* SearchedContainer, class AFortPawn* SearcherPawn)> Delegate, const struct FGameplayTagQuery& ContainerRequirements)
 {
 	static class UFunction* Func = nullptr;
 
@@ -237311,10 +237311,10 @@ void UFortGameplayDataTrackerComponent::OnRep_EventValues()
 // Parameters:
 // const struct FGameplayTag&              AccumulationTag                                        (ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const struct FGameplayTag&              RangeTag                                               (ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(bool bIsInRange, const struct FGameplayTag& AccumulationTag, const struct FGameplayTag& RangeTag)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool bIsInRange, const struct FGameplayTag& AccumulationTag, const struct FGameplayTag& RangeTag)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-bool UFortGameplayDataTrackerComponent::RegisterForAccumulationRangeEvents(const struct FGameplayTag& AccumulationTag, const struct FGameplayTag& RangeTag, TDelegate<void(bool bIsInRange, const struct FGameplayTag& AccumulationTag, const struct FGameplayTag& RangeTag)> Delegate)
+bool UFortGameplayDataTrackerComponent::RegisterForAccumulationRangeEvents(const struct FGameplayTag& AccumulationTag, const struct FGameplayTag& RangeTag, TDynamicDelegate<void(bool bIsInRange, const struct FGameplayTag& AccumulationTag, const struct FGameplayTag& RangeTag)> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -237343,10 +237343,10 @@ bool UFortGameplayDataTrackerComponent::RegisterForAccumulationRangeEvents(const
 // Parameters:
 // const struct FGameplayTag&              Event                                                  (ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const struct FFortGameplayDataTrackedRange&Range                                                  (Parm, ContainsInstancedReference, NativeAccessSpecifierPublic)
-// TDelegate<void(bool bIsInRange, const struct FGameplayTag& AccumulationTag, const struct FGameplayTag& RangeTag)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool bIsInRange, const struct FGameplayTag& AccumulationTag, const struct FGameplayTag& RangeTag)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-bool UFortGameplayDataTrackerComponent::RegisterForEventValueRange(const struct FGameplayTag& Event, const struct FFortGameplayDataTrackedRange& Range, TDelegate<void(bool bIsInRange, const struct FGameplayTag& AccumulationTag, const struct FGameplayTag& RangeTag)> Delegate)
+bool UFortGameplayDataTrackerComponent::RegisterForEventValueRange(const struct FGameplayTag& Event, const struct FFortGameplayDataTrackedRange& Range, TDynamicDelegate<void(bool bIsInRange, const struct FGameplayTag& AccumulationTag, const struct FGameplayTag& RangeTag)> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -243261,9 +243261,9 @@ class UObject* UFortGenericDataStoreManagerComponent::GetNamedStoreByType(const 
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
 // int32                                   ControllerId                                           (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(bool bSuccess, const class FString& SanitizedMsg)>OnTextFiltered                                         (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool bSuccess, const class FString& SanitizedMsg)>OnTextFiltered                                         (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortGiftBoxItem::FilterUserMessageForProfanity(int32 ControllerId, TDelegate<void(bool bSuccess, const class FString& SanitizedMsg)> OnTextFiltered)
+void UFortGiftBoxItem::FilterUserMessageForProfanity(int32 ControllerId, TDynamicDelegate<void(bool bSuccess, const class FString& SanitizedMsg)> OnTextFiltered)
 {
 	static class UFunction* Func = nullptr;
 
@@ -270258,9 +270258,9 @@ bool UFortTimeOfDayWeatherComponent::IsWeatherEventActive() const
 // (Final, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // const struct FCreativeLoadedLinkData&   LinkData                                               (ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-// const TDelegate<void(bool bSuccess, class UTexture2DDynamic* InThumbnailTexture)>&Callback                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(bool bSuccess, class UTexture2DDynamic* InThumbnailTexture)>&Callback                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortLinkDataManager::DownloadThumbnail(const struct FCreativeLoadedLinkData& LinkData, const TDelegate<void(bool bSuccess, class UTexture2DDynamic* InThumbnailTexture)>& Callback)
+void UFortLinkDataManager::DownloadThumbnail(const struct FCreativeLoadedLinkData& LinkData, const TDynamicDelegate<void(bool bSuccess, class UTexture2DDynamic* InThumbnailTexture)>& Callback)
 {
 	static class UFunction* Func = nullptr;
 
@@ -270285,10 +270285,10 @@ void UFortLinkDataManager::DownloadThumbnail(const struct FCreativeLoadedLinkDat
 // (Final, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // const class FString&                    LinkCode                                               (Parm, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(bool bSuccess, const class FString& ErrorMessage, const struct FCreativeLoadedLinkData& LinkData)>&Callback                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(bool bSuccess, const class FString& ErrorMessage, const struct FCreativeLoadedLinkData& LinkData)>&Callback                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 // bool                                    bCalledByModerator                                     (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UFortLinkDataManager::QueryLinkDataByCode(const class FString& LinkCode, const TDelegate<void(bool bSuccess, const class FString& ErrorMessage, const struct FCreativeLoadedLinkData& LinkData)>& Callback, bool bCalledByModerator)
+void UFortLinkDataManager::QueryLinkDataByCode(const class FString& LinkCode, const TDynamicDelegate<void(bool bSuccess, const class FString& ErrorMessage, const struct FCreativeLoadedLinkData& LinkData)>& Callback, bool bCalledByModerator)
 {
 	static class UFunction* Func = nullptr;
 
@@ -272891,9 +272891,9 @@ EOfferPurchaseError UFortMcpContext::CanPurchaseOffer(const class FString& Offer
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
 // const class FString&                    AffiliateName                                          (Parm, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(bool bSuccess, bool bWasValidAffiliateName, const class FString& AffilateNameChecked)>OnCheckAffiliateNameComplete                           (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool bSuccess, bool bWasValidAffiliateName, const class FString& AffilateNameChecked)>OnCheckAffiliateNameComplete                           (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortMcpContext::CheckAffiliateName(const class FString& AffiliateName, TDelegate<void(bool bSuccess, bool bWasValidAffiliateName, const class FString& AffilateNameChecked)> OnCheckAffiliateNameComplete)
+void UFortMcpContext::CheckAffiliateName(const class FString& AffiliateName, TDynamicDelegate<void(bool bSuccess, bool bWasValidAffiliateName, const class FString& AffilateNameChecked)> OnCheckAffiliateNameComplete)
 {
 	static class UFunction* Func = nullptr;
 
@@ -273063,9 +273063,9 @@ bool UFortMcpContext::DoesPlatformSupportFriendCodes()
 // Function FortniteGame.FortMcpContext.DownloadEULA
 // (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
-// const TDelegate<void(bool bSuccessful, class FText EULAText, const class FString& Key)>OnCompleteDelegate                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(bool bSuccessful, class FText EULAText, const class FString& Key)>OnCompleteDelegate                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortMcpContext::DownloadEULA(const TDelegate<void(bool bSuccessful, class FText EULAText, const class FString& Key)> OnCompleteDelegate)
+void UFortMcpContext::DownloadEULA(const TDynamicDelegate<void(bool bSuccessful, class FText EULAText, const class FString& Key)> OnCompleteDelegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -273088,10 +273088,10 @@ void UFortMcpContext::DownloadEULA(const TDelegate<void(bool bSuccessful, class 
 // Function FortniteGame.FortMcpContext.DownloadEULAWithKey
 // (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
-// const TDelegate<void(bool bSuccessful, class FText EULAText, const class FString& Key)>OnCompleteDelegate                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(bool bSuccessful, class FText EULAText, const class FString& Key)>OnCompleteDelegate                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // const class FString&                    Key                                                    (Parm, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UFortMcpContext::DownloadEULAWithKey(const TDelegate<void(bool bSuccessful, class FText EULAText, const class FString& Key)> OnCompleteDelegate, const class FString& Key)
+void UFortMcpContext::DownloadEULAWithKey(const TDynamicDelegate<void(bool bSuccessful, class FText EULAText, const class FString& Key)> OnCompleteDelegate, const class FString& Key)
 {
 	static class UFunction* Func = nullptr;
 
@@ -273322,9 +273322,9 @@ bool UFortMcpContext::IsOfferCompletelyFree(const class FString& OfferId, const 
 // Function FortniteGame.FortMcpContext.IssueFriendCode
 // (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const TDelegate<void(bool bSuccess, const struct FFriendCode& FriendCode)>&OnCompleteDelegate                                     (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(bool bSuccess, const struct FFriendCode& FriendCode)>&OnCompleteDelegate                                     (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortMcpContext::IssueFriendCode(const TDelegate<void(bool bSuccess, const struct FFriendCode& FriendCode)>& OnCompleteDelegate)
+void UFortMcpContext::IssueFriendCode(const TDynamicDelegate<void(bool bSuccess, const struct FFriendCode& FriendCode)>& OnCompleteDelegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -273417,9 +273417,9 @@ void UFortMcpContext::PromoteItem(const class UFortItem* ItemToPromote)
 // (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // const TArray<class FString>&            OfferIdList                                            (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
-// const TDelegate<void(bool bSuccess, const TArray<class FString>& OfferTemplateIdList)>&Callback                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(bool bSuccess, const TArray<class FString>& OfferTemplateIdList)>&Callback                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortMcpContext::PurchaseBattlePassOffer(const TArray<class FString>& OfferIdList, const TDelegate<void(bool bSuccess, const TArray<class FString>& OfferTemplateIdList)>& Callback)
+void UFortMcpContext::PurchaseBattlePassOffer(const TArray<class FString>& OfferIdList, const TDynamicDelegate<void(bool bSuccess, const TArray<class FString>& OfferTemplateIdList)>& Callback)
 {
 	static class UFunction* Func = nullptr;
 
@@ -273444,14 +273444,14 @@ void UFortMcpContext::PurchaseBattlePassOffer(const TArray<class FString>& Offer
 // (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // const TMap<class FString, int32>&       OfferIdToQuantityMap                                   (ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-// const TDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const TArray<class FString>& OfferIdList)>&Callback                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const TArray<class FString>& OfferIdList)>&Callback                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 // int32                                   IndexInSection                                         (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // int32                                   ColumnIndexInSection                                   (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // int32                                   InnerRowIndexInSection                                 (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // int32                                   SectionIndex                                           (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // EOfferPurchaseError                     ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-EOfferPurchaseError UFortMcpContext::PurchaseMultipleOffers(const TMap<class FString, int32>& OfferIdToQuantityMap, const TDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const TArray<class FString>& OfferIdList)>& Callback, int32 IndexInSection, int32 ColumnIndexInSection, int32 InnerRowIndexInSection, int32 SectionIndex)
+EOfferPurchaseError UFortMcpContext::PurchaseMultipleOffers(const TMap<class FString, int32>& OfferIdToQuantityMap, const TDynamicDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const TArray<class FString>& OfferIdList)>& Callback, int32 IndexInSection, int32 ColumnIndexInSection, int32 InnerRowIndexInSection, int32 SectionIndex)
 {
 	static class UFunction* Func = nullptr;
 
@@ -273483,7 +273483,7 @@ EOfferPurchaseError UFortMcpContext::PurchaseMultipleOffers(const TMap<class FSt
 // Parameters:
 // const class FString&                    OfferId                                                (Parm, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const int32                             PriceIndex                                             (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)>&Callback                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)>&Callback                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 // int32                                   Quantity                                               (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // int32                                   IndexInSection                                         (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // bool                                    bIsIncarousel                                          (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -273494,7 +273494,7 @@ EOfferPurchaseError UFortMcpContext::PurchaseMultipleOffers(const TMap<class FSt
 // int32                                   SectionIndex                                           (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // EOfferPurchaseError                     ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-EOfferPurchaseError UFortMcpContext::PurchaseOffer(const class FString& OfferId, const int32 PriceIndex, const TDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)>& Callback, int32 Quantity, int32 IndexInSection, bool bIsIncarousel, int32 IndexIncarousel, int32 LengthOfCarousel, int32 ColumnIndexInSection, int32 InnerRowIndexInSection, int32 SectionIndex)
+EOfferPurchaseError UFortMcpContext::PurchaseOffer(const class FString& OfferId, const int32 PriceIndex, const TDynamicDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)>& Callback, int32 Quantity, int32 IndexInSection, bool bIsIncarousel, int32 IndexIncarousel, int32 LengthOfCarousel, int32 ColumnIndexInSection, int32 InnerRowIndexInSection, int32 SectionIndex)
 {
 	static class UFunction* Func = nullptr;
 
@@ -273530,11 +273530,11 @@ EOfferPurchaseError UFortMcpContext::PurchaseOffer(const class FString& OfferId,
 // (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // const class FString&                    OfferId                                                (Parm, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems)>&Callback                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems)>&Callback                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 // int32                                   PriceIndex                                             (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // int32                                   Quantity                                               (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UFortMcpContext::PurchaseRealMoneyCatalogEntry(const class FString& OfferId, const TDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems)>& Callback, int32 PriceIndex, int32 Quantity)
+void UFortMcpContext::PurchaseRealMoneyCatalogEntry(const class FString& OfferId, const TDynamicDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems)>& Callback, int32 PriceIndex, int32 Quantity)
 {
 	static class UFunction* Func = nullptr;
 
@@ -273560,9 +273560,9 @@ void UFortMcpContext::PurchaseRealMoneyCatalogEntry(const class FString& OfferId
 // Function FortniteGame.FortMcpContext.QueryUnredeemedFriendCodes
 // (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const TDelegate<void(bool bSuccess, const TArray<struct FFriendCode>& FriendCodes)>&OnCompleteDelegate                                     (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(bool bSuccess, const TArray<struct FFriendCode>& FriendCodes)>&OnCompleteDelegate                                     (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortMcpContext::QueryUnredeemedFriendCodes(const TDelegate<void(bool bSuccess, const TArray<struct FFriendCode>& FriendCodes)>& OnCompleteDelegate)
+void UFortMcpContext::QueryUnredeemedFriendCodes(const TDynamicDelegate<void(bool bSuccess, const TArray<struct FFriendCode>& FriendCodes)>& OnCompleteDelegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -273585,9 +273585,9 @@ void UFortMcpContext::QueryUnredeemedFriendCodes(const TDelegate<void(bool bSucc
 // Function FortniteGame.FortMcpContext.ReadPrivacySettings
 // (Final, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const TDelegate<void(bool bSuccess, const struct FMcpPrivacySettings& Settings)>&OnComplete                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(bool bSuccess, const struct FMcpPrivacySettings& Settings)>&OnComplete                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortMcpContext::ReadPrivacySettings(const TDelegate<void(bool bSuccess, const struct FMcpPrivacySettings& Settings)>& OnComplete)
+void UFortMcpContext::ReadPrivacySettings(const TDynamicDelegate<void(bool bSuccess, const struct FMcpPrivacySettings& Settings)>& OnComplete)
 {
 	static class UFunction* Func = nullptr;
 
@@ -273685,10 +273685,10 @@ void UFortMcpContext::RefundItem(const class UFortAccountItem* ItemToConvert)
 // Function FortniteGame.FortMcpContext.RegisterForEpicPurchasingDisplay
 // (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const TDelegate<void(class UWidget* WebWidget, const class FString& OfferId)>&DisplayCallback                                        (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-// const TDelegate<void()>&                DismissCallback                                        (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(class UWidget* WebWidget, const class FString& OfferId)>&DisplayCallback                                        (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void()>&                DismissCallback                                        (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortMcpContext::RegisterForEpicPurchasingDisplay(const TDelegate<void(class UWidget* WebWidget, const class FString& OfferId)>& DisplayCallback, const TDelegate<void()>& DismissCallback)
+void UFortMcpContext::RegisterForEpicPurchasingDisplay(const TDynamicDelegate<void(class UWidget* WebWidget, const class FString& OfferId)>& DisplayCallback, const TDynamicDelegate<void()>& DismissCallback)
 {
 	static class UFunction* Func = nullptr;
 
@@ -273738,9 +273738,9 @@ void UFortMcpContext::RemoveGiftBox(const class UFortGiftBoxItem* GiftBoxToRemov
 // (Final, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // const struct FFriendCode&               FriendCode                                             (ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-// const TDelegate<void(bool bMessageSent)>&OnCompleteDelegate                                     (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(bool bMessageSent)>&OnCompleteDelegate                                     (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortMcpContext::SendFriendCodePlatformMessage(const struct FFriendCode& FriendCode, const TDelegate<void(bool bMessageSent)>& OnCompleteDelegate)
+void UFortMcpContext::SendFriendCodePlatformMessage(const struct FFriendCode& FriendCode, const TDynamicDelegate<void(bool bMessageSent)>& OnCompleteDelegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -273765,9 +273765,9 @@ void UFortMcpContext::SendFriendCodePlatformMessage(const struct FFriendCode& Fr
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
 // const class FString&                    Name_0                                                 (Parm, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(bool bSuccess)>          OnAffilateNameSetAcknowledged                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool bSuccess)>          OnAffilateNameSetAcknowledged                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortMcpContext::SetAffiliateName(const class FString& Name_0, TDelegate<void(bool bSuccess)> OnAffilateNameSetAcknowledged)
+void UFortMcpContext::SetAffiliateName(const class FString& Name_0, TDynamicDelegate<void(bool bSuccess)> OnAffilateNameSetAcknowledged)
 {
 	static class UFunction* Func = nullptr;
 
@@ -273791,9 +273791,9 @@ void UFortMcpContext::SetAffiliateName(const class FString& Name_0, TDelegate<vo
 // Function FortniteGame.FortMcpContext.SetBansViewed
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
-// TDelegate<void(bool bSuccess)>          OnBanAcknowledged                                      (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool bSuccess)>          OnBanAcknowledged                                      (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortMcpContext::SetBansViewed(TDelegate<void(bool bSuccess)> OnBanAcknowledged)
+void UFortMcpContext::SetBansViewed(TDynamicDelegate<void(bool bSuccess)> OnBanAcknowledged)
 {
 	static class UFunction* Func = nullptr;
 
@@ -273940,9 +273940,9 @@ void UFortMcpContext::TransmogItem(const class UFortConversionControlItemDefinit
 // (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // const struct FMcpPrivacySettings&       NewSettings                                            (ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-// const TDelegate<void(bool bSuccess)>&   OnComplete                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(bool bSuccess)>&   OnComplete                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortMcpContext::UpdatePrivacySettings(const struct FMcpPrivacySettings& NewSettings, const TDelegate<void(bool bSuccess)>& OnComplete)
+void UFortMcpContext::UpdatePrivacySettings(const struct FMcpPrivacySettings& NewSettings, const TDynamicDelegate<void(bool bSuccess)>& OnComplete)
 {
 	static class UFunction* Func = nullptr;
 
@@ -275512,11 +275512,11 @@ bool UFortMcpContext::IsValid(const class FString& OfferId) const
 // const TArray<class FString>&            ReceiverAccountIds                                     (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
 // const class FString&                    GiftWrapTemplateId                                     (Parm, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const class FString&                    UserMessageToRecipients                                (Parm, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(bool bSuccess, const TArray<class FString>& IneligableAccounts, const TArray<class FString>& ErrorCodes)>&OnComplete                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(bool bSuccess, const TArray<class FString>& IneligableAccounts, const TArray<class FString>& ErrorCodes)>&OnComplete                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 // int32                                   ExpectedTotalPrice                                     (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // EOfferPurchaseError                     ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-EOfferPurchaseError UFortMcpContext::PurchaseOfferAsGift(const class FString& OfferId, int32 Quantity, int32 PriceIndex, const TArray<class FString>& ReceiverAccountIds, const class FString& GiftWrapTemplateId, const class FString& UserMessageToRecipients, const TDelegate<void(bool bSuccess, const TArray<class FString>& IneligableAccounts, const TArray<class FString>& ErrorCodes)>& OnComplete, int32 ExpectedTotalPrice) const
+EOfferPurchaseError UFortMcpContext::PurchaseOfferAsGift(const class FString& OfferId, int32 Quantity, int32 PriceIndex, const TArray<class FString>& ReceiverAccountIds, const class FString& GiftWrapTemplateId, const class FString& UserMessageToRecipients, const TDynamicDelegate<void(bool bSuccess, const TArray<class FString>& IneligableAccounts, const TArray<class FString>& ErrorCodes)>& OnComplete, int32 ExpectedTotalPrice) const
 {
 	static class UFunction* Func = nullptr;
 
@@ -282276,14 +282276,14 @@ void AFortMinigame::ServerEventLogScoreChanged(EFortQuestObjectiveStatEvent Type
 // Parameters:
 // class AFortPlayerState*                 PlayerState                                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // uint8                                   NewClassSlot                                           (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(class AFortPlayerState* PlayerState, uint8 ClassSlotIndex, uint8 OldClassSlotIndex)>OnComplete                                             (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(class AFortPlayerState* PlayerState, uint8 ClassSlotIndex, uint8 OldClassSlotIndex)>OnComplete                                             (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // bool                                    bRespawnPlayer                                         (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // bool                                    bResetCurrentVitals                                    (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // bool                                    bClearAllItems                                         (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   ClassSwitchDelay                                       (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-bool AFortMinigame::SetClassSlotForPlayer(class AFortPlayerState* PlayerState, uint8 NewClassSlot, TDelegate<void(class AFortPlayerState* PlayerState, uint8 ClassSlotIndex, uint8 OldClassSlotIndex)> OnComplete, bool bRespawnPlayer, bool bResetCurrentVitals, bool bClearAllItems, float ClassSwitchDelay)
+bool AFortMinigame::SetClassSlotForPlayer(class AFortPlayerState* PlayerState, uint8 NewClassSlot, TDynamicDelegate<void(class AFortPlayerState* PlayerState, uint8 ClassSlotIndex, uint8 OldClassSlotIndex)> OnComplete, bool bRespawnPlayer, bool bResetCurrentVitals, bool bClearAllItems, float ClassSwitchDelay)
 {
 	static class UFunction* Func = nullptr;
 

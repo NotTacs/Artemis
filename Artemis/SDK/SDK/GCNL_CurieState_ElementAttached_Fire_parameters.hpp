@@ -63,13 +63,13 @@ public:
 	bool                                          K2Node_DynamicCast_bSuccess;                       // 0x0210(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	uint8                                         Pad_211[0x7];                                      // 0x0211(0x0007)(Fixing Size After Last Property [ Dumper-8 ])
 	class UFortCurieManager*                      CallFunc_GetCurieManager_ReturnValue;              // 0x0218(0x0008)(ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	TDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& StateIdentifier)> K2Node_CreateDelegate_OutputDelegate; // 0x0220(0x0010)(ZeroConstructor, NoDestructor)
-	TDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& StateIdentifier)> K2Node_CreateDelegate_OutputDelegate_1; // 0x0230(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& StateIdentifier)> K2Node_CreateDelegate_OutputDelegate; // 0x0220(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& StateIdentifier)> K2Node_CreateDelegate_OutputDelegate_1; // 0x0230(0x0010)(ZeroConstructor, NoDestructor)
 	EB_Enum_PlayerFireStates                      CallFunc_GetPlayerFireState_Player_State;          // 0x0240(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	uint8                                         Pad_241[0x7];                                      // 0x0241(0x0007)(Fixing Size After Last Property [ Dumper-8 ])
 	class UFortCurieManager*                      CallFunc_GetCurieManager_ReturnValue_1;            // 0x0248(0x0008)(ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	TDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& StateIdentifier)> K2Node_CreateDelegate_OutputDelegate_2; // 0x0250(0x0010)(ZeroConstructor, NoDestructor)
-	TDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& StateIdentifier)> K2Node_CreateDelegate_OutputDelegate_3; // 0x0260(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& StateIdentifier)> K2Node_CreateDelegate_OutputDelegate_2; // 0x0250(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& StateIdentifier)> K2Node_CreateDelegate_OutputDelegate_3; // 0x0260(0x0010)(ZeroConstructor, NoDestructor)
 	float                                         CallFunc_GetGameTimeInSeconds_ReturnValue;         // 0x0270(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 };
 

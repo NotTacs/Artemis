@@ -6770,8 +6770,8 @@ struct FUINavigationEntry final
 {
 public:
 	struct FUINavigationData                      Data;                                              // 0x0000(0x0030)(NativeAccessSpecifierPublic)
-	TDelegate<void(const struct FUINavigationData& Data)> NavigateToDelegate;                        // 0x0030(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
-	TDelegate<void(const struct FUINavigationData& Data)> NavigateFromDelegate;                      // 0x0040(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const struct FUINavigationData& Data)> NavigateToDelegate;                        // 0x0030(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const struct FUINavigationData& Data)> NavigateFromDelegate;                      // 0x0040(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // ScriptStruct FortniteUI.FortUINavigationOperation

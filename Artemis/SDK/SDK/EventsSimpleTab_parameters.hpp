@@ -24,7 +24,7 @@ public:
 	uint8                                         Pad_4[0x4];                                        // 0x0004(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
 	class FString                                 Temp_string_Variable;                              // 0x0008(0x0010)(ConstParm, ZeroConstructor, HasGetValueTypeHash)
 	class FString                                 Temp_string_Variable_1;                            // 0x0018(0x0010)(ConstParm, ZeroConstructor, HasGetValueTypeHash)
-	TDelegate<void(class UCommonButtonLegacy* Button, bool Selected)> K2Node_CreateDelegate_OutputDelegate; // 0x0028(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(class UCommonButtonLegacy* Button, bool Selected)> K2Node_CreateDelegate_OutputDelegate; // 0x0028(0x0010)(ZeroConstructor, NoDestructor)
 	class FText                                   CallFunc_TextToUpper_ReturnValue;                  // 0x0038(0x0018)()
 	bool                                          K2Node_Event_IsDesignTime;                         // 0x0050(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	uint8                                         Pad_51[0x7];                                       // 0x0051(0x0007)(Fixing Size After Last Property [ Dumper-8 ])

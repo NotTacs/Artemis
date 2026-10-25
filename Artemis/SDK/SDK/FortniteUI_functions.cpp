@@ -7419,10 +7419,10 @@ void UAthenaItemShopOfferDetailsWidgetBase::PurchaseAmountRight()
 // Function FortniteUI.AthenaItemShopOfferDetailsWidgetBase.PurchaseOffer
 // (Final, Native, Protected, HasOutParams, BlueprintCallable)
 // Parameters:
-// const TDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)>&Callback                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)>&Callback                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 // int32                                   Quantity                                               (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UAthenaItemShopOfferDetailsWidgetBase::PurchaseOffer(const TDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)>& Callback, int32 Quantity)
+void UAthenaItemShopOfferDetailsWidgetBase::PurchaseOffer(const TDynamicDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)>& Callback, int32 Quantity)
 {
 	static class UFunction* Func = nullptr;
 
@@ -14854,10 +14854,10 @@ void UUINavigationManager::PopNavigation()
 // class UObject*                          ObjectData                                             (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             IdData                                                 (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // int32                                   IntData                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(const struct FUINavigationData& Data)>&OnNavigateTo                                           (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-// const TDelegate<void(const struct FUINavigationData& Data)>&OnNavigateFrom                                         (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(const struct FUINavigationData& Data)>&OnNavigateTo                                           (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(const struct FUINavigationData& Data)>&OnNavigateFrom                                         (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UUINavigationManager::PushNavigation(const class FText& DisplayName, class UObject* ObjectData, class FName IdData, int32 IntData, const TDelegate<void(const struct FUINavigationData& Data)>& OnNavigateTo, const TDelegate<void(const struct FUINavigationData& Data)>& OnNavigateFrom)
+void UUINavigationManager::PushNavigation(const class FText& DisplayName, class UObject* ObjectData, class FName IdData, int32 IntData, const TDynamicDelegate<void(const struct FUINavigationData& Data)>& OnNavigateTo, const TDynamicDelegate<void(const struct FUINavigationData& Data)>& OnNavigateFrom)
 {
 	static class UFunction* Func = nullptr;
 
@@ -39342,10 +39342,10 @@ void UFortStoreFrontOfferDetailsWidgetBase::PurchaseAmountRight()
 // Function FortniteUI.FortStoreFrontOfferDetailsWidgetBase.PurchaseOffer
 // (Final, Native, Protected, HasOutParams, BlueprintCallable)
 // Parameters:
-// const TDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)>&Callback                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)>&Callback                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 // int32                                   Quantity                                               (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UFortStoreFrontOfferDetailsWidgetBase::PurchaseOffer(const TDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)>& Callback, int32 Quantity)
+void UFortStoreFrontOfferDetailsWidgetBase::PurchaseOffer(const TDynamicDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)>& Callback, int32 Quantity)
 {
 	static class UFunction* Func = nullptr;
 
@@ -61005,9 +61005,9 @@ void UAthenaMarkerPointer::SetTargetScreenPosition(const struct FVector2D& InTar
 // class UWidget*                          Widget                                                 (Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class UAbilitySystemComponent*          ASC                                                    (Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const struct FGameplayAttribute&        Attribute                                              (Parm, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void()>                       Callback                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Callback                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortAbilitySystemContext::RegisterForAttributeChanged(class UWidget* Widget, class UAbilitySystemComponent* ASC, const struct FGameplayAttribute& Attribute, TDelegate<void()> Callback)
+void UFortAbilitySystemContext::RegisterForAttributeChanged(class UWidget* Widget, class UAbilitySystemComponent* ASC, const struct FGameplayAttribute& Attribute, TDynamicDelegate<void()> Callback)
 {
 	static class UFunction* Func = nullptr;
 
@@ -83706,9 +83706,9 @@ void UFortBattlePassRewardEntry::SetSocialPlayerProgress(float Progress)
 // Parameters:
 // class UDataTable*                       DataTable                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             RowName                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(bool* bPassThrough)>     CommittedEvent                                         (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool* bPassThrough)>     CommittedEvent                                         (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortRewardNotificationSubWidget::AddInputActionHandler(class UDataTable* DataTable, class FName RowName, TDelegate<void(bool* bPassThrough)> CommittedEvent)
+void UFortRewardNotificationSubWidget::AddInputActionHandler(class UDataTable* DataTable, class FName RowName, TDynamicDelegate<void(bool* bPassThrough)> CommittedEvent)
 {
 	static class UFunction* Func = nullptr;
 
@@ -101741,9 +101741,9 @@ void UFortHeroLoadoutTeamPerkPicker::SetTargetLoadout(const class UFortCampaignH
 // Function FortniteUI.FortTimerTimespanDataSource.SetTimespanSource
 // (Final, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const TDelegate<void(struct FTimespan* Result)>&Value                                                  (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(struct FTimespan* Result)>&Value                                                  (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortTimerTimespanDataSource::SetTimespanSource(const TDelegate<void(struct FTimespan* Result)>& Value)
+void UFortTimerTimespanDataSource::SetTimespanSource(const TDynamicDelegate<void(struct FTimespan* Result)>& Value)
 {
 	static class UFunction* Func = nullptr;
 
@@ -102728,9 +102728,9 @@ void UFortNameLoadoutPopup::OnAcceptFailed()
 // Function FortniteUI.FortLegacySlateBridgeWidget.SetOnCloseHandler
 // (Final, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const TDelegate<void()>&                OnCloseHandler                                         (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void()>&                OnCloseHandler                                         (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortLegacySlateBridgeWidget::SetOnCloseHandler(const TDelegate<void()>& OnCloseHandler)
+void UFortLegacySlateBridgeWidget::SetOnCloseHandler(const TDynamicDelegate<void()>& OnCloseHandler)
 {
 	static class UFunction* Func = nullptr;
 
@@ -112105,9 +112105,9 @@ void UFortStoreRootBase::OnUpdateOtherPlatformMTXMessage(bool HasOtherPlatformCu
 // Function FortniteUI.FortStoreRootBase.PopulatePrerollOffers
 // (Final, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const TDelegate<void(bool bSuccess)>&   Callback                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(bool bSuccess)>&   Callback                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortStoreRootBase::PopulatePrerollOffers(const TDelegate<void(bool bSuccess)>& Callback)
+void UFortStoreRootBase::PopulatePrerollOffers(const TDynamicDelegate<void(bool bSuccess)>& Callback)
 {
 	static class UFunction* Func = nullptr;
 
@@ -114937,9 +114937,9 @@ class UWidget* UFortGadgetsWidgetBase::OnGenerateTooltipWidget(const class FText
 // Function FortniteUI.FortGlobalActionDetailsDataSource.AddOnChangeDelegate
 // (Native, Event, Public, HasOutParams, BlueprintCallable, BlueprintEvent)
 // Parameters:
-// const TDelegate<void(class UObject* Source)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(class UObject* Source)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void IFortGlobalActionDetailsDataSource::AddOnChangeDelegate(const TDelegate<void(class UObject* Source)>& InDelegate)
+void IFortGlobalActionDetailsDataSource::AddOnChangeDelegate(const TDynamicDelegate<void(class UObject* Source)>& InDelegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -114962,9 +114962,9 @@ void IFortGlobalActionDetailsDataSource::AddOnChangeDelegate(const TDelegate<voi
 // Function FortniteUI.FortGlobalActionDetailsDataSource.RemoveOnChangeDelegate
 // (Native, Event, Public, HasOutParams, BlueprintCallable, BlueprintEvent)
 // Parameters:
-// const TDelegate<void(class UObject* Source)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(class UObject* Source)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void IFortGlobalActionDetailsDataSource::RemoveOnChangeDelegate(const TDelegate<void(class UObject* Source)>& InDelegate)
+void IFortGlobalActionDetailsDataSource::RemoveOnChangeDelegate(const TDynamicDelegate<void(class UObject* Source)>& InDelegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -115067,9 +115067,9 @@ void UFortGlobalUIContext::DrawAttention(class UWidget* BaseWidget)
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
 // EFortUIFeature                          Feature                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(EFortUIFeature ChangedFeature, EFortUIFeatureState NewState, EFortUIFeatureStateReason StateReason)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(EFortUIFeature ChangedFeature, EFortUIFeatureState NewState, EFortUIFeatureStateReason StateReason)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortGlobalUIContext::BindToFeatureStateAndInitialize(EFortUIFeature Feature, TDelegate<void(EFortUIFeature ChangedFeature, EFortUIFeatureState NewState, EFortUIFeatureStateReason StateReason)> Delegate)
+void UFortGlobalUIContext::BindToFeatureStateAndInitialize(EFortUIFeature Feature, TDynamicDelegate<void(EFortUIFeature ChangedFeature, EFortUIFeatureState NewState, EFortUIFeatureStateReason StateReason)> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -115659,10 +115659,10 @@ void UFortGlobalUIContext::RefreshHUDForRespawn()
 // Parameters:
 // const class UUserWidget*                UserWidget                                             (ConstParm, Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const struct FDataTableRowHandle&       InputActionRow                                         (Parm, NoDestructor, NativeAccessSpecifierPublic)
-// TDelegate<void(bool* bPassThrough)>     CommitedEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(bool* bPassThrough)>     CommitedEvent                                          (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // int32                                   InFilterPriority                                       (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UFortGlobalUIContext::RegisterInputAction(const class UUserWidget* UserWidget, const struct FDataTableRowHandle& InputActionRow, TDelegate<void(bool* bPassThrough)> CommitedEvent, int32 InFilterPriority)
+void UFortGlobalUIContext::RegisterInputAction(const class UUserWidget* UserWidget, const struct FDataTableRowHandle& InputActionRow, TDynamicDelegate<void(bool* bPassThrough)> CommitedEvent, int32 InFilterPriority)
 {
 	static class UFunction* Func = nullptr;
 
@@ -116012,9 +116012,9 @@ void UFortGlobalUIContext::SetRatingWidgetFeedbackTitle(const class FText& Title
 // (Final, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // const int32                             ControllerIndex                                        (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(const int32 ControllerIndex, const bool bUserSwitched)>&CompletionDelegate                                     (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(const int32 ControllerIndex, const bool bUserSwitched)>&CompletionDelegate                                     (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortGlobalUIContext::ShowConsoleAccountPicker(const int32 ControllerIndex, const TDelegate<void(const int32 ControllerIndex, const bool bUserSwitched)>& CompletionDelegate)
+void UFortGlobalUIContext::ShowConsoleAccountPicker(const int32 ControllerIndex, const TDynamicDelegate<void(const int32 ControllerIndex, const bool bUserSwitched)>& CompletionDelegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -116038,11 +116038,11 @@ void UFortGlobalUIContext::ShowConsoleAccountPicker(const int32 ControllerIndex,
 // Function FortniteUI.FortGlobalUIContext.ShowCreativeContentDownloadDialog
 // (Final, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const TDelegate<void()>&                OnSubGameContentReadyCallback                          (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-// const TDelegate<void()>&                OnSubGameContentCanceledCallback                       (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void()>&                OnSubGameContentReadyCallback                          (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void()>&                OnSubGameContentCanceledCallback                       (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 // bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-bool UFortGlobalUIContext::ShowCreativeContentDownloadDialog(const TDelegate<void()>& OnSubGameContentReadyCallback, const TDelegate<void()>& OnSubGameContentCanceledCallback)
+bool UFortGlobalUIContext::ShowCreativeContentDownloadDialog(const TDynamicDelegate<void()>& OnSubGameContentReadyCallback, const TDynamicDelegate<void()>& OnSubGameContentCanceledCallback)
 {
 	static class UFunction* Func = nullptr;
 
@@ -116124,9 +116124,9 @@ void UFortGlobalUIContext::TetherChanged(bool bIsTethered)
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
 // EFortUIFeature                          Feature                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(EFortUIFeature ChangedFeature, EFortUIFeatureState NewState, EFortUIFeatureStateReason StateReason)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(EFortUIFeature ChangedFeature, EFortUIFeatureState NewState, EFortUIFeatureStateReason StateReason)>Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortGlobalUIContext::UnbindToFeatureState(EFortUIFeature Feature, TDelegate<void(EFortUIFeature ChangedFeature, EFortUIFeatureState NewState, EFortUIFeatureStateReason StateReason)> Delegate)
+void UFortGlobalUIContext::UnbindToFeatureState(EFortUIFeature Feature, TDynamicDelegate<void(EFortUIFeature ChangedFeature, EFortUIFeatureState NewState, EFortUIFeatureStateReason StateReason)> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -120414,9 +120414,9 @@ bool UFortHeroSupportPerkWidget::IsPerkUnlocked() const
 // Function FortniteUI.FortTimespanDataSource.AddOnChangeDelegate
 // (Native, Event, Public, HasOutParams, BlueprintCallable, BlueprintEvent)
 // Parameters:
-// const TDelegate<void(class UObject* Source)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(class UObject* Source)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void IFortTimespanDataSource::AddOnChangeDelegate(const TDelegate<void(class UObject* Source)>& InDelegate)
+void IFortTimespanDataSource::AddOnChangeDelegate(const TDynamicDelegate<void(class UObject* Source)>& InDelegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -120439,9 +120439,9 @@ void IFortTimespanDataSource::AddOnChangeDelegate(const TDelegate<void(class UOb
 // Function FortniteUI.FortTimespanDataSource.RemoveOnChangeDelegate
 // (Native, Event, Public, HasOutParams, BlueprintCallable, BlueprintEvent)
 // Parameters:
-// const TDelegate<void(class UObject* Source)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(class UObject* Source)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void IFortTimespanDataSource::RemoveOnChangeDelegate(const TDelegate<void(class UObject* Source)>& InDelegate)
+void IFortTimespanDataSource::RemoveOnChangeDelegate(const TDynamicDelegate<void(class UObject* Source)>& InDelegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -123637,9 +123637,9 @@ void UFortItemWidget::SetItem(const class UFortItem* InItem, int32 QuantityOverr
 // Function FortniteUI.FortItemWidget.SetOnGetItemToCompareDelegate
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
-// TDelegate<void(class UFortItem** ItemToCompare)>InDelegate                                             (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(class UFortItem** ItemToCompare)>InDelegate                                             (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortItemWidget::SetOnGetItemToCompareDelegate(TDelegate<void(class UFortItem** ItemToCompare)> InDelegate)
+void UFortItemWidget::SetOnGetItemToCompareDelegate(TDynamicDelegate<void(class UFortItem** ItemToCompare)> InDelegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -150346,9 +150346,9 @@ bool UFortUIBlueprintFunctionLibrary::AreModalsConfirmationsErrorsActive(class A
 // (Final, Native, Static, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // class UUserWidget*                      Context                                                (Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void()>&                Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void()>&                Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortUIBlueprintFunctionLibrary::BindToOnEndSpokenDialog(class UUserWidget* Context, const TDelegate<void()>& Delegate)
+void UFortUIBlueprintFunctionLibrary::BindToOnEndSpokenDialog(class UUserWidget* Context, const TDynamicDelegate<void()>& Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -150373,9 +150373,9 @@ void UFortUIBlueprintFunctionLibrary::BindToOnEndSpokenDialog(class UUserWidget*
 // (Final, Native, Static, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // class UUserWidget*                      Context                                                (Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(bool bShouldBlockSubtitlePortrait)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(bool bShouldBlockSubtitlePortrait)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortUIBlueprintFunctionLibrary::BindToOnShouldBlockSubtitlePortraitChanged(class UUserWidget* Context, const TDelegate<void(bool bShouldBlockSubtitlePortrait)>& Delegate)
+void UFortUIBlueprintFunctionLibrary::BindToOnShouldBlockSubtitlePortraitChanged(class UUserWidget* Context, const TDynamicDelegate<void(bool bShouldBlockSubtitlePortrait)>& Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -150400,9 +150400,9 @@ void UFortUIBlueprintFunctionLibrary::BindToOnShouldBlockSubtitlePortraitChanged
 // (Final, Native, Static, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // class UUserWidget*                      Context                                                (Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void()>&                Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void()>&                Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortUIBlueprintFunctionLibrary::BindToOnShouldCloseTalkingHead(class UUserWidget* Context, const TDelegate<void()>& Delegate)
+void UFortUIBlueprintFunctionLibrary::BindToOnShouldCloseTalkingHead(class UUserWidget* Context, const TDynamicDelegate<void()>& Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -150427,9 +150427,9 @@ void UFortUIBlueprintFunctionLibrary::BindToOnShouldCloseTalkingHead(class UUser
 // (Final, Native, Static, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // class UUserWidget*                      Context                                                (Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(class UTexture2D* Image, class FText Title, class FText Subtitle, EFortAnnouncementDisplayPreference DisplayPreference)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void(class UTexture2D* Image, class FText Title, class FText Subtitle, EFortAnnouncementDisplayPreference DisplayPreference)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortUIBlueprintFunctionLibrary::BindToOnShouldOpenTalkingHead(class UUserWidget* Context, const TDelegate<void(class UTexture2D* Image, class FText Title, class FText Subtitle, EFortAnnouncementDisplayPreference DisplayPreference)>& Delegate)
+void UFortUIBlueprintFunctionLibrary::BindToOnShouldOpenTalkingHead(class UUserWidget* Context, const TDynamicDelegate<void(class UTexture2D* Image, class FText Title, class FText Subtitle, EFortAnnouncementDisplayPreference DisplayPreference)>& Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -152309,9 +152309,9 @@ void UFortUINotificationQueue::QueueNotification(class UFortUINotification* Noti
 // Function FortniteUI.FortUINotificationQueue.RegisterToReceiveNotifications
 // (Final, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const TDelegate<void()>&                NotificationDelegate                                   (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const TDynamicDelegate<void()>&                NotificationDelegate                                   (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
-void UFortUINotificationQueue::RegisterToReceiveNotifications(const TDelegate<void()>& NotificationDelegate)
+void UFortUINotificationQueue::RegisterToReceiveNotifications(const TDynamicDelegate<void()>& NotificationDelegate)
 {
 	static class UFunction* Func = nullptr;
 

@@ -66,7 +66,7 @@ public:
 	bool                                          CallFunc_BooleanAND_ReturnValue_3;                 // 0x00E1(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	uint8                                         Pad_E2[0x6];                                       // 0x00E2(0x0006)(Fixing Size After Last Property [ Dumper-8 ])
 	class UClass*                                 K2Node_Select_Default;                             // 0x00E8(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	TDelegate<void(class UCommonButtonLegacy* Button, bool Selected)> K2Node_CreateDelegate_OutputDelegate; // 0x00F0(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(class UCommonButtonLegacy* Button, bool Selected)> K2Node_CreateDelegate_OutputDelegate; // 0x00F0(0x0010)(ZeroConstructor, NoDestructor)
 };
 
 // Function TopBarTabButton.TopBarTabButton_C.HandleSelectionChangedVisuals

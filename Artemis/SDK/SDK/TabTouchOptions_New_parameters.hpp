@@ -27,7 +27,7 @@ struct TabTouchOptions_New_C_ExecuteUbergraph_TabTouchOptions_New final
 {
 public:
 	int32                                         EntryPoint;                                        // 0x0000(0x0004)(BlueprintVisible, BlueprintReadOnly, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	TDelegate<void(class UUserWidget* UserWidget)> K2Node_CreateDelegate_OutputDelegate;             // 0x0004(0x0010)(ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(class UUserWidget* UserWidget)> K2Node_CreateDelegate_OutputDelegate;             // 0x0004(0x0010)(ZeroConstructor, NoDestructor)
 	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
 	class UUserWidget*                            K2Node_CustomEvent_UserWidget;                     // 0x0018(0x0008)(ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	class UUserWidget*                            Temp_object_Variable;                              // 0x0020(0x0008)(ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash)

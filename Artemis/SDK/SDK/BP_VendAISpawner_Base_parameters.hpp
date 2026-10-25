@@ -23,7 +23,7 @@ public:
 	bool                                          CallFunc_HasAuthority_ReturnValue;                 // 0x0004(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	bool                                          CallFunc_IsValid_ReturnValue;                      // 0x0005(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	uint8                                         Pad_6[0x2];                                        // 0x0006(0x0002)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void(const TArray<class AActor*>& SpawnedActors, bool bSuccess)> Temp_delegate_Variable; // 0x0008(0x0010)(ConstParm, ZeroConstructor, NoDestructor)
+	TDynamicDelegate<void(const TArray<class AActor*>& SpawnedActors, bool bSuccess)> Temp_delegate_Variable; // 0x0008(0x0010)(ConstParm, ZeroConstructor, NoDestructor)
 	uint8                                         Pad_18[0x8];                                       // 0x0018(0x0008)(Fixing Size After Last Property [ Dumper-8 ])
 	struct FTransform                             CallFunc_GetTransform_ReturnValue;                 // 0x0020(0x0030)(ConstParm, IsPlainOldData, NoDestructor)
 	class AFortGameStateAthena*                   CallFunc_GetGameStateAthenaFromContext_ReturnValue; // 0x0050(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)

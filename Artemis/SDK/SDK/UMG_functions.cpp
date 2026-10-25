@@ -316,9 +316,9 @@ void UWidget::SetNavigationRuleBase(EUINavigation Direction, EUINavigationRule R
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
 // EUINavigation                           Direction                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(EUINavigation Navigation)>InCustomDelegate                                       (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(EUINavigation Navigation)>InCustomDelegate                                       (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UWidget::SetNavigationRuleCustom(EUINavigation Direction, TDelegate<void(EUINavigation Navigation)> InCustomDelegate)
+void UWidget::SetNavigationRuleCustom(EUINavigation Direction, TDynamicDelegate<void(EUINavigation Navigation)> InCustomDelegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -343,9 +343,9 @@ void UWidget::SetNavigationRuleCustom(EUINavigation Direction, TDelegate<void(EU
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
 // EUINavigation                           Direction                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void(EUINavigation Navigation)>InCustomDelegate                                       (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void(EUINavigation Navigation)>InCustomDelegate                                       (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UWidget::SetNavigationRuleCustomBoundary(EUINavigation Direction, TDelegate<void(EUINavigation Navigation)> InCustomDelegate)
+void UWidget::SetNavigationRuleCustomBoundary(EUINavigation Direction, TDynamicDelegate<void(EUINavigation Navigation)> InCustomDelegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -2639,9 +2639,9 @@ void UCircularThrobber::SetRadius(float InRadius)
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
 // class UUserWidget*                      Widget                                                 (Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UWidgetAnimation::BindToAnimationFinished(class UUserWidget* Widget, TDelegate<void()> Delegate)
+void UWidgetAnimation::BindToAnimationFinished(class UUserWidget* Widget, TDynamicDelegate<void()> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -2666,9 +2666,9 @@ void UWidgetAnimation::BindToAnimationFinished(class UUserWidget* Widget, TDeleg
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
 // class UUserWidget*                      Widget                                                 (Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UWidgetAnimation::BindToAnimationStarted(class UUserWidget* Widget, TDelegate<void()> Delegate)
+void UWidgetAnimation::BindToAnimationStarted(class UUserWidget* Widget, TDynamicDelegate<void()> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -2743,9 +2743,9 @@ void UWidgetAnimation::UnbindAllFromAnimationStarted(class UUserWidget* Widget)
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
 // class UUserWidget*                      Widget                                                 (Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UWidgetAnimation::UnbindFromAnimationFinished(class UUserWidget* Widget, TDelegate<void()> Delegate)
+void UWidgetAnimation::UnbindFromAnimationFinished(class UUserWidget* Widget, TDynamicDelegate<void()> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -2770,9 +2770,9 @@ void UWidgetAnimation::UnbindFromAnimationFinished(class UUserWidget* Widget, TD
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
 // class UUserWidget*                      Widget                                                 (Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UWidgetAnimation::UnbindFromAnimationStarted(class UUserWidget* Widget, TDelegate<void()> Delegate)
+void UWidgetAnimation::UnbindFromAnimationStarted(class UUserWidget* Widget, TDynamicDelegate<void()> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -2925,11 +2925,11 @@ void UUserWidget::AddToViewport(int32 ZOrder)
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
 // class UWidgetAnimation*                 Animation                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 // EWidgetAnimationEvent                   AnimationEvent                                         (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             UserTag                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UUserWidget::BindToAnimationEvent(class UWidgetAnimation* Animation, TDelegate<void()> Delegate, EWidgetAnimationEvent AnimationEvent, class FName UserTag)
+void UUserWidget::BindToAnimationEvent(class UWidgetAnimation* Animation, TDynamicDelegate<void()> Delegate, EWidgetAnimationEvent AnimationEvent, class FName UserTag)
 {
 	static class UFunction* Func = nullptr;
 
@@ -2956,9 +2956,9 @@ void UUserWidget::BindToAnimationEvent(class UWidgetAnimation* Animation, TDeleg
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
 // class UWidgetAnimation*                 Animation                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UUserWidget::BindToAnimationFinished(class UWidgetAnimation* Animation, TDelegate<void()> Delegate)
+void UUserWidget::BindToAnimationFinished(class UWidgetAnimation* Animation, TDynamicDelegate<void()> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -2983,9 +2983,9 @@ void UUserWidget::BindToAnimationFinished(class UWidgetAnimation* Animation, TDe
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
 // class UWidgetAnimation*                 Animation                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UUserWidget::BindToAnimationStarted(class UWidgetAnimation* Animation, TDelegate<void()> Delegate)
+void UUserWidget::BindToAnimationStarted(class UWidgetAnimation* Animation, TDynamicDelegate<void()> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -3106,9 +3106,9 @@ bool UUserWidget::IsAnimationPlayingForward(const class UWidgetAnimation* InAnim
 // class FName                             ActionName                                             (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // EInputEvent                             EventType                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // bool                                    bConsume                                               (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void()>                       Callback                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Callback                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UUserWidget::ListenForInputAction(class FName ActionName, EInputEvent EventType, bool bConsume, TDelegate<void()> Callback)
+void UUserWidget::ListenForInputAction(class FName ActionName, EInputEvent EventType, bool bConsume, TDynamicDelegate<void()> Callback)
 {
 	static class UFunction* Func = nullptr;
 
@@ -4705,9 +4705,9 @@ void UUserWidget::UnbindAllFromAnimationStarted(class UWidgetAnimation* Animatio
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
 // class UWidgetAnimation*                 Animation                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UUserWidget::UnbindFromAnimationFinished(class UWidgetAnimation* Animation, TDelegate<void()> Delegate)
+void UUserWidget::UnbindFromAnimationFinished(class UWidgetAnimation* Animation, TDynamicDelegate<void()> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -4732,9 +4732,9 @@ void UUserWidget::UnbindFromAnimationFinished(class UWidgetAnimation* Animation,
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
 // class UWidgetAnimation*                 Animation                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// TDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UUserWidget::UnbindFromAnimationStarted(class UWidgetAnimation* Animation, TDelegate<void()> Delegate)
+void UUserWidget::UnbindFromAnimationStarted(class UWidgetAnimation* Animation, TDynamicDelegate<void()> Delegate)
 {
 	static class UFunction* Func = nullptr;
 
@@ -17339,9 +17339,9 @@ void UWidgetBlueprintLibrary::SetWindowTitleBarCloseButtonActive(bool bActive)
 // Function UMG.WidgetBlueprintLibrary.SetWindowTitleBarOnCloseClickedDelegate
 // (Final, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// TDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// TDynamicDelegate<void()>                       Delegate                                               (Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 
-void UWidgetBlueprintLibrary::SetWindowTitleBarOnCloseClickedDelegate(TDelegate<void()> Delegate)
+void UWidgetBlueprintLibrary::SetWindowTitleBarOnCloseClickedDelegate(TDynamicDelegate<void()> Delegate)
 {
 	static class UFunction* Func = nullptr;
 

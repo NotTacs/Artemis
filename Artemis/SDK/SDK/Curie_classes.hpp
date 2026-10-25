@@ -269,21 +269,21 @@ public:
 	uint8                                         Pad_558[0x58];                                     // 0x0558(0x0058)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
-	void BindDelegateForCurieElementAttached(class UObject* CurieOwner, const TDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& ElementIdentifier)>& Delegate);
-	void BindDelegateForCurieElementBeginInteract(class UObject* CurieOwner, const TDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& ElementIdentifier)>& Delegate);
-	void BindDelegateForCurieElementDetached(class UObject* CurieOwner, const TDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& ElementIdentifier)>& Delegate);
-	void BindDelegateForCurieElementEndInteract(class UObject* CurieOwner, const TDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& ElementIdentifier)>& Delegate);
-	void BindDelegateForCurieElementInteract(class UObject* CurieOwner, const TDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& ElementIdentifier)>& Delegate);
-	void BindDelegateForCurieStateAttached(class UObject* CurieOwner, const TDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& StateIdentifier)>& Delegate);
-	void BindDelegateForCurieStateDetached(class UObject* CurieOwner, const TDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& StateIdentifier)>& Delegate);
+	void BindDelegateForCurieElementAttached(class UObject* CurieOwner, const TDynamicDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& ElementIdentifier)>& Delegate);
+	void BindDelegateForCurieElementBeginInteract(class UObject* CurieOwner, const TDynamicDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& ElementIdentifier)>& Delegate);
+	void BindDelegateForCurieElementDetached(class UObject* CurieOwner, const TDynamicDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& ElementIdentifier)>& Delegate);
+	void BindDelegateForCurieElementEndInteract(class UObject* CurieOwner, const TDynamicDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& ElementIdentifier)>& Delegate);
+	void BindDelegateForCurieElementInteract(class UObject* CurieOwner, const TDynamicDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& ElementIdentifier)>& Delegate);
+	void BindDelegateForCurieStateAttached(class UObject* CurieOwner, const TDynamicDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& StateIdentifier)>& Delegate);
+	void BindDelegateForCurieStateDetached(class UObject* CurieOwner, const TDynamicDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& StateIdentifier)>& Delegate);
 	void HandleContainerOwnerDestroyed(class AActor* OwnerActor);
-	void UnbindDelegateForCurieElementAttached(class UObject* CurieOwner, const TDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& ElementIdentifier)>& Delegate);
-	void UnbindDelegateForCurieElementBeginInteract(class UObject* CurieOwner, const TDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& ElementIdentifier)>& Delegate);
-	void UnbindDelegateForCurieElementDetached(class UObject* CurieOwner, const TDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& ElementIdentifier)>& Delegate);
-	void UnbindDelegateForCurieElementEndInteract(class UObject* CurieOwner, const TDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& ElementIdentifier)>& Delegate);
-	void UnbindDelegateForCurieElementInteract(class UObject* CurieOwner, const TDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& ElementIdentifier)>& Delegate);
-	void UnbindDelegateForCurieStateAttached(class UObject* CurieOwner, const TDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& StateIdentifier)>& Delegate);
-	void UnbindDelegateForCurieStateDetached(class UObject* CurieOwner, const TDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& StateIdentifier)>& Delegate);
+	void UnbindDelegateForCurieElementAttached(class UObject* CurieOwner, const TDynamicDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& ElementIdentifier)>& Delegate);
+	void UnbindDelegateForCurieElementBeginInteract(class UObject* CurieOwner, const TDynamicDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& ElementIdentifier)>& Delegate);
+	void UnbindDelegateForCurieElementDetached(class UObject* CurieOwner, const TDynamicDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& ElementIdentifier)>& Delegate);
+	void UnbindDelegateForCurieElementEndInteract(class UObject* CurieOwner, const TDynamicDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& ElementIdentifier)>& Delegate);
+	void UnbindDelegateForCurieElementInteract(class UObject* CurieOwner, const TDynamicDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& ElementIdentifier)>& Delegate);
+	void UnbindDelegateForCurieStateAttached(class UObject* CurieOwner, const TDynamicDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& StateIdentifier)>& Delegate);
+	void UnbindDelegateForCurieStateDetached(class UObject* CurieOwner, const TDynamicDelegate<void(class UObject* Owner, const struct FCurieContainerHandle& ContainerHandle, const struct FGameplayTag& StateIdentifier)>& Delegate);
 
 public:
 	static class UClass* StaticClass()

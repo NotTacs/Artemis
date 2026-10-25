@@ -2059,7 +2059,7 @@ public:
 struct AthenaItemShopOfferDetailsWidgetBase_PurchaseOffer final
 {
 public:
-	TDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)> Callback; // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)> Callback; // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 	int32                                         Quantity;                                          // 0x0010(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
 
@@ -4067,8 +4067,8 @@ public:
 	class UObject*                                ObjectData;                                        // 0x0018(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class FName                                   IdData;                                            // 0x0020(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	int32                                         IntData;                                           // 0x0028(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void(const struct FUINavigationData& Data)> OnNavigateTo;                              // 0x002C(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	TDelegate<void(const struct FUINavigationData& Data)> OnNavigateFrom;                            // 0x003C(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const struct FUINavigationData& Data)> OnNavigateTo;                              // 0x002C(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const struct FUINavigationData& Data)> OnNavigateFrom;                            // 0x003C(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 	uint8                                         Pad_4C[0x4];                                       // 0x004C(0x0004)(Fixing Struct Size After Last Property [ Dumper-8 ])
 };
 
@@ -11026,7 +11026,7 @@ public:
 struct FortStoreFrontOfferDetailsWidgetBase_PurchaseOffer final
 {
 public:
-	TDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)> Callback; // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(bool bSuccess, const TArray<struct FPurchasedItemInfo>& PurchasedItems, const class FString& OfferId)> Callback; // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 	int32                                         Quantity;                                          // 0x0010(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
 
@@ -16815,7 +16815,7 @@ public:
 	class UWidget*                                Widget;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class UAbilitySystemComponent*                ASC;                                               // 0x0008(0x0008)(Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	struct FGameplayAttribute                     Attribute;                                         // 0x0010(0x0038)(Parm, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             Callback;                                          // 0x0048(0x0010)(Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             Callback;                                          // 0x0048(0x0010)(Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function FortniteUI.FortAbilitySystemContext.RemoveDelegatesFromWidget
@@ -23276,7 +23276,7 @@ struct FortRewardNotificationSubWidget_AddInputActionHandler final
 public:
 	class UDataTable*                             DataTable;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class FName                                   RowName;                                           // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void(bool* bPassThrough)>           CommittedEvent;                                    // 0x0010(0x0010)(Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(bool* bPassThrough)>           CommittedEvent;                                    // 0x0010(0x0010)(Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function FortniteUI.FortRewardNotificationSubWidget.Init
@@ -28022,7 +28022,7 @@ public:
 struct FortTimerTimespanDataSource_SetTimespanSource final
 {
 public:
-	TDelegate<void(struct FTimespan* Result)>     Value;                                             // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(struct FTimespan* Result)>     Value;                                             // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function FortniteUI.FortTimerTimespanDataSource.StartTimer
@@ -28324,7 +28324,7 @@ public:
 struct FortLegacySlateBridgeWidget_SetOnCloseHandler final
 {
 public:
-	TDelegate<void()>                             OnCloseHandler;                                    // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             OnCloseHandler;                                    // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function FortniteUI.FortLegacySlateBridgeWidget.UpdateSlateWidget
@@ -30695,7 +30695,7 @@ public:
 struct FortStoreRootBase_PopulatePrerollOffers final
 {
 public:
-	TDelegate<void(bool bSuccess)>                Callback;                                          // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(bool bSuccess)>                Callback;                                          // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function FortniteUI.FortEliminationScreen.SetContinueButtonText
@@ -31536,7 +31536,7 @@ public:
 struct FortGlobalActionDetailsDataSource_AddOnChangeDelegate final
 {
 public:
-	TDelegate<void(class UObject* Source)>        InDelegate;                                        // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(class UObject* Source)>        InDelegate;                                        // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function FortniteUI.FortGlobalActionDetailsDataSource.RemoveOnChangeDelegate
@@ -31544,7 +31544,7 @@ public:
 struct FortGlobalActionDetailsDataSource_RemoveOnChangeDelegate final
 {
 public:
-	TDelegate<void(class UObject* Source)>        InDelegate;                                        // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(class UObject* Source)>        InDelegate;                                        // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function FortniteUI.FortGlobalActionDetailsDataSource.GetValue
@@ -31580,7 +31580,7 @@ struct FortGlobalUIContext_BindToFeatureStateAndInitialize final
 public:
 	EFortUIFeature                                Feature;                                           // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_1[0x3];                                        // 0x0001(0x0003)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void(EFortUIFeature ChangedFeature, EFortUIFeatureState NewState, EFortUIFeatureStateReason StateReason)> Delegate; // 0x0004(0x0010)(Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(EFortUIFeature ChangedFeature, EFortUIFeatureState NewState, EFortUIFeatureStateReason StateReason)> Delegate; // 0x0004(0x0010)(Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function FortniteUI.FortGlobalUIContext.CanMatchmake
@@ -31727,7 +31727,7 @@ struct FortGlobalUIContext_RegisterInputAction final
 public:
 	const class UUserWidget*                      UserWidget;                                        // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	struct FDataTableRowHandle                    InputActionRow;                                    // 0x0008(0x0010)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	TDelegate<void(bool* bPassThrough)>           CommitedEvent;                                     // 0x0018(0x0010)(Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(bool* bPassThrough)>           CommitedEvent;                                     // 0x0018(0x0010)(Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 	int32                                         InFilterPriority;                                  // 0x0028(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-8 ])
 };
@@ -31832,7 +31832,7 @@ struct FortGlobalUIContext_ShowConsoleAccountPicker final
 {
 public:
 	int32                                         ControllerIndex;                                   // 0x0000(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void(const int32 ControllerIndex, const bool bUserSwitched)> CompletionDelegate;       // 0x0004(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(const int32 ControllerIndex, const bool bUserSwitched)> CompletionDelegate;       // 0x0004(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function FortniteUI.FortGlobalUIContext.ShowCreativeContentDownloadDialog
@@ -31840,8 +31840,8 @@ public:
 struct FortGlobalUIContext_ShowCreativeContentDownloadDialog final
 {
 public:
-	TDelegate<void()>                             OnSubGameContentReadyCallback;                     // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             OnSubGameContentCanceledCallback;                  // 0x0010(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             OnSubGameContentReadyCallback;                     // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             OnSubGameContentCanceledCallback;                  // 0x0010(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 	bool                                          ReturnValue;                                       // 0x0020(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_21[0x3];                                       // 0x0021(0x0003)(Fixing Struct Size After Last Property [ Dumper-8 ])
 };
@@ -31872,7 +31872,7 @@ struct FortGlobalUIContext_UnbindToFeatureState final
 public:
 	EFortUIFeature                                Feature;                                           // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_1[0x3];                                        // 0x0001(0x0003)(Fixing Size After Last Property [ Dumper-8 ])
-	TDelegate<void(EFortUIFeature ChangedFeature, EFortUIFeatureState NewState, EFortUIFeatureStateReason StateReason)> Delegate; // 0x0004(0x0010)(Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(EFortUIFeature ChangedFeature, EFortUIFeatureState NewState, EFortUIFeatureStateReason StateReason)> Delegate; // 0x0004(0x0010)(Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function FortniteUI.FortGlobalUIContext.UnregisterInputAction
@@ -33232,7 +33232,7 @@ public:
 struct FortTimespanDataSource_AddOnChangeDelegate final
 {
 public:
-	TDelegate<void(class UObject* Source)>        InDelegate;                                        // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(class UObject* Source)>        InDelegate;                                        // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function FortniteUI.FortTimespanDataSource.RemoveOnChangeDelegate
@@ -33240,7 +33240,7 @@ public:
 struct FortTimespanDataSource_RemoveOnChangeDelegate final
 {
 public:
-	TDelegate<void(class UObject* Source)>        InDelegate;                                        // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(class UObject* Source)>        InDelegate;                                        // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function FortniteUI.FortTimespanDataSource.GetValue
@@ -34073,7 +34073,7 @@ public:
 struct FortItemWidget_SetOnGetItemToCompareDelegate final
 {
 public:
-	TDelegate<void(class UFortItem** ItemToCompare)> InDelegate;                                     // 0x0000(0x0010)(Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(class UFortItem** ItemToCompare)> InDelegate;                                     // 0x0000(0x0010)(Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function FortniteUI.FortItemWidget.GetDescription
@@ -41761,7 +41761,7 @@ struct FortUIBlueprintFunctionLibrary_BindToOnEndSpokenDialog final
 {
 public:
 	class UUserWidget*                            Context;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             Delegate;                                          // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             Delegate;                                          // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function FortniteUI.FortUIBlueprintFunctionLibrary.BindToOnShouldBlockSubtitlePortraitChanged
@@ -41770,7 +41770,7 @@ struct FortUIBlueprintFunctionLibrary_BindToOnShouldBlockSubtitlePortraitChanged
 {
 public:
 	class UUserWidget*                            Context;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void(bool bShouldBlockSubtitlePortrait)> Delegate;                                     // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(bool bShouldBlockSubtitlePortrait)> Delegate;                                     // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function FortniteUI.FortUIBlueprintFunctionLibrary.BindToOnShouldCloseTalkingHead
@@ -41779,7 +41779,7 @@ struct FortUIBlueprintFunctionLibrary_BindToOnShouldCloseTalkingHead final
 {
 public:
 	class UUserWidget*                            Context;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             Delegate;                                          // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             Delegate;                                          // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function FortniteUI.FortUIBlueprintFunctionLibrary.BindToOnShouldOpenTalkingHead
@@ -41788,7 +41788,7 @@ struct FortUIBlueprintFunctionLibrary_BindToOnShouldOpenTalkingHead final
 {
 public:
 	class UUserWidget*                            Context;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void(class UTexture2D* Image, class FText Title, class FText Subtitle, EFortAnnouncementDisplayPreference DisplayPreference)> Delegate; // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void(class UTexture2D* Image, class FText Title, class FText Subtitle, EFortAnnouncementDisplayPreference DisplayPreference)> Delegate; // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function FortniteUI.FortUIBlueprintFunctionLibrary.CenterWidget
@@ -42420,7 +42420,7 @@ public:
 struct FortUINotificationQueue_RegisterToReceiveNotifications final
 {
 public:
-	TDelegate<void()>                             NotificationDelegate;                              // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TDynamicDelegate<void()>                             NotificationDelegate;                              // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 };
 
 // Function FortniteUI.FortUINotificationQueue.RemoveNotification

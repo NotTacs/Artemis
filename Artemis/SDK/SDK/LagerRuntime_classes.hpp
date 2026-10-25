@@ -251,7 +251,7 @@ public:
 	int32 QueryEventBudget(const struct FDataTableRowHandle& EventEntry, const class AActor* SpawnLocation);
 	void RequestEventGeneration();
 	class UFortAthenaLivingWorldEncounterInstance* StartEncounter(const TSoftObjectPtr<class UFortAthenaLivingWorldEncounter> EncounterType, const TArray<TScriptInterface<class IFortAthenaLivingWorldPointProviderInterface>>& EncounterPointProviders, class AActor* ActorDensityReservoir);
-	bool TrySpawnEvent(const struct FDataTableRowHandle& EventEntry, const struct FTransform& SpawnLocation, const TDelegate<void(const TArray<class AActor*>& SpawnedActors, bool bSuccess)>& OnRequestFinished);
+	bool TrySpawnEvent(const struct FDataTableRowHandle& EventEntry, const struct FTransform& SpawnLocation, const TDynamicDelegate<void(const TArray<class AActor*>& SpawnedActors, bool bSuccess)>& OnRequestFinished);
 
 public:
 	static class UClass* StaticClass()

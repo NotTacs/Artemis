@@ -509,7 +509,7 @@ public:
 	bool                                          bOverrideAttenuation;                              // 0x02FA(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 	uint8                                         Pad_2FB[0x5];                                      // 0x02FB(0x0005)(Fixing Size After Last Property [ Dumper-8 ])
 	class USoundAttenuation*                      AttenuationSettings;                               // 0x0300(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	TDelegate<void(const TArray<struct FSubtitleCue>& Subtitles, float CueDuration)> OnQueueSubtitles; // 0x0308(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
+	TDynamicDelegate<void(const TArray<struct FSubtitleCue>& Subtitles, float CueDuration)> OnQueueSubtitles; // 0x0308(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, NativeAccessSpecifierPrivate)
 	TMulticastInlineDelegate<void()>              OnAudioFinished;                                   // 0x0318(0x0010)(ZeroConstructor, InstancedReference, NativeAccessSpecifierPrivate)
 	TMulticastInlineDelegate<void(const class USoundWave* PlayingSoundWave, const float PlaybackPercent)> OnAudioPlaybackPercent; // 0x0328(0x0010)(ZeroConstructor, InstancedReference, NativeAccessSpecifierPrivate)
 

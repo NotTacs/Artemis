@@ -19,6 +19,8 @@
 #include "Engine/Source/Runtime/Core/Public/Logging/LogMacros.h"
 #include "Engine/Source/Runtime/Core/Public/CoreGlobals.h"
 
+enum { INDEX_NONE = -1 };
+
 template<class T>
 FORCEINLINE T* Cast(UObject* Src)
 {
@@ -33,3 +35,12 @@ FORCEINLINE T* Cast(UObject* Src)
 
     return NULL;
 }
+
+template<typename T>
+FORCEINLINE T* NewObject(UObject* Owner, UClass* Class = T::StaticClass())
+{
+    return (T*)UGameplayStatics::SpawnObject(Class, Owner);
+}
+
+#include "Engine/Source/Runtime/Core/Public/Delegates/Delegate.h"
+#include "Engine/Restricted/NotForLicensees/Plugins/Online/OnlineSubsystemMcp/Source/Public/McpQueryResult.h"

@@ -22,6 +22,7 @@
 #include "Engine\Source\Runtime\CoreUObject\Public\UObject\Object.h"
 #include "FortniteGame\Source\FortniteGame\Public\Athena\FortPoiVolume.h"
 #include "FortniteGame\Source\FortniteGame\Public\Athena\ControllerComponents\FortControllerComponent_MapDiscoverability.h"
+#include "FortniteGame\Source\FortniteGame\Public\Athena\FortGameStateAthena.h"
 
 void FModuleManager::LoadAllModules()
 {
@@ -50,5 +51,6 @@ void FModuleManager::LoadAllModules()
 	FortControllerComponent_Aircraft::LoadModule();
 	FortPoiVolume::LoadModule();
 	FortControllerComponent_MapDiscoverability::LoadModule();
+	FortGameStateAthena::LoadModule();
 	UE_LOG(LogModuleManager, Verbose, TEXT("All modules loaded"));
 }

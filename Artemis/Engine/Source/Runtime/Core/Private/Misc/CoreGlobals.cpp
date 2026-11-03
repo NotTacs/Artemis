@@ -13,4 +13,5 @@ void CoreGlobals::LoadModule()
 {
 	FMemoryLibrary::Set<bool>(0xB30CF9F, false); //GIsClient
 	FMemoryLibrary::Set<bool>(0xB30CF9D, true); //GIsServer
+	FMemoryLibrary::Set<int>(0xB5D6038, 1); //Phoebe.Minimap IDK where to put this
 }

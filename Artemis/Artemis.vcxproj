@@ -211,7 +211,7 @@
     <ClCompile Include="Engine\Source\Runtime\CoreUObject\Private\UObject\Obj.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Core\Private\Delegates\DelegateHandle.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Core\Private\Logging\LogMacros.cpp" />
-    <ClCompile Include="Engine\Source\Runtime\Core\Private\Logging\LogSuppresionInterface.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\Core\Private\Logging\LogSuppressionInterface.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Core\Private\Logging\LogVerbosity.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Core\Private\Misc\CommandLine.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Core\Private\Misc\CoreGlobals.cpp" />

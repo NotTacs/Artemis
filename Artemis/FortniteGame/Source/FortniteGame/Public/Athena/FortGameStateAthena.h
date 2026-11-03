@@ -11,6 +11,5 @@ private:
 	};
 public:
 	static void PlacePlayersInAircraft(AFortGameStateAthena* __this);
-	static bool CanUpdateGamePhaseStep(AFortGameStateAthena* __this);
 	static void LoadModule();
 };

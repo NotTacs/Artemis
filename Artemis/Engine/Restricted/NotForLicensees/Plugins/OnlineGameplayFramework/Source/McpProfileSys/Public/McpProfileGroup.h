@@ -4,6 +4,7 @@
 
 class McpProfileGroup
 {
+private:
 	class Originals
 	{
 	public:

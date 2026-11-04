@@ -65,7 +65,8 @@ void FortGameMode::ProcessContestedBuildingRequests(AFortGameMode* __this)
 					continue;
 				}
 
-				if (FortPlayerController::ServerCreateBuildingActorInternal(RequesterPC, Request.BuildingClassData, Request.BuildLoc, Request.BuildRot, Request.bMirrored))
+				if (FortPlayerController::ServerCreateBuildingActorInternal(RequesterPC, Request.BuildingClassData, Request.BuildLoc, Request.BuildRot, Request.bMirrored,
+					UGameplayStatics::GetTimeSeconds(UWorld::GetWorld()), false, false, true))
 				{
 					bBuilt = true;
 					break;
@@ -80,7 +81,8 @@ void FortGameMode::ProcessContestedBuildingRequests(AFortGameMode* __this)
 			Requests.Remove(WinnerIndex);
 
 			AFortPlayerController* RequesterPC = Winner.Requester.Get();
-			bBuilt = RequesterPC && FortPlayerController::ServerCreateBuildingActorInternal(RequesterPC, Winner.BuildingClassData, Winner.BuildLoc, Winner.BuildRot, Winner.bMirrored);
+			bBuilt = RequesterPC && FortPlayerController::ServerCreateBuildingActorInternal(RequesterPC, Winner.BuildingClassData, Winner.BuildLoc, Winner.BuildRot, Winner.bMirrored,
+				UGameplayStatics::GetTimeSeconds(UWorld::GetWorld()), false, false, true) != nullptr;
 		}
 
 		__this->ContestedBuildingRequests().RemoveAt(i);

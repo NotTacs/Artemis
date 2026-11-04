@@ -3000,6 +3000,12 @@ public:
 		return Ret;
 	}
 
+	void DoEditBuildingActorAnalytics(class ABuildingSMActor* EditedBuilding)
+	{
+		void (*DoEditBuildingActorAnalyticsInternal)(AFortPlayerController * __this, ABuildingSMActor * EditedBuilding) = decltype(DoEditBuildingActorAnalyticsInternal)(VTable[0x3C7]);
+		DoEditBuildingActorAnalyticsInternal(this, EditedBuilding);
+	}
+
 public:
 	static class UClass* StaticClass()
 	{

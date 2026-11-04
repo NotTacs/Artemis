@@ -72,6 +72,13 @@ bool FortGameModeAthena::ReadyToStartMatch_Implementation(AFortGameModeAthena* _
 APawn* FortGameModeAthena::SpawnDefaultPawnFor_Implementation(AFortGameModeAthena* __this, AFortPlayerControllerAthena* NewPlayer, AActor* StartSpot)
 {
 	static APawn* (*FortGameMode__SpawnDefaultPawnFor)(AFortGameMode * __this, AFortPlayerControllerAthena * NewPlayer, AActor * StartSpot) = decltype(FortGameMode__SpawnDefaultPawnFor)(AFortGameMode::GetDefaultObj()->VTable[0xD8]);
+
+	AFortPlayerState* FortPlayerState = Cast<AFortPlayerState>(NewPlayer->PlayerState);
+	if (FortPlayerState && FortPlayerState->WorldPlayerId == -1)
+	{
+		FortPlayerState->WorldPlayerId = (int16)FortPlayerState->PlayerId;
+	}
+
 	return FortGameMode__SpawnDefaultPawnFor(__this, NewPlayer, StartSpot);
 }
 
@@ -115,6 +122,9 @@ void FortGameModeAthena::FinishRestartPlayer(AFortGameModeAthena* __this, AContr
 		FFortAthenaLoadout CosmeticLoadout = ((AFortPlayerControllerAthena*)NewPlayer)->CosmeticLoadoutPC;
 		FFortItemEntry ItemEntry = FFortItemEntry(CosmeticLoadout.Pickaxe->WeaponDefinition, 1);
 		FortInventoryOwnerInterface::GiveInventoryItem(InventoryOwner, ItemEntry);
+
+		FFortItemEntry TestEntry = FFortItemEntry(UObject::StaticLoadObject<UFortItemDefinition>("/Game/Items/ResourcePickups/WoodItemData.WoodItemData"), 500);
+		FortInventoryOwnerInterface::GiveInventoryItem(InventoryOwner, TestEntry);
 	}
 
 	static bool bFirst = false;

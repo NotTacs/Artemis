@@ -17,8 +17,7 @@
 #include "FortniteGame\Source\FortniteGame\Public\Athena\FortGameStateAthena.h"
 #include "FortniteGame\Source\FortniteAI\Public\Athena\AI\FortAthenaAISpawnerDataComponent_AIBotCosmeticBase.h"
 #include "Engine\Restricted\NotForLicensees\Plugins\OnlineGameplayFramework\Source\McpProfileSys\Public\McpProfileGroup.h"
-
-
+#include "FortniteGame\Source\FortniteGame\Public\Player\FortPlayerController.h"
 
 DWORD WINAPI Main(LPVOID lpThread)
 {
@@ -48,12 +47,12 @@ DWORD WINAPI Main(LPVOID lpThread)
     FortAthenaAISpawnerDataComponent_AIBotCosmeticBase::LoadModule();
     McpProfileGroup::LoadModule();
     FMemoryLibrary::Set<int>(0xB5D6038, 1); //Phoebe.Minimap
+    FortPlayerController::LoadModule();
     UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"log LogAthenaBots VeryVerbose | log LogFortQuest VeryVerbose | log LogFort VeryVerbose", nullptr);
     UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"log LogFortUIDirector", nullptr);
     /* THIS IS SKUNKY WE NEED TO DO PROPER */
     UWorld::GetWorld()->OwningGameInstance->LocalPlayers[0]->PlayerController->SwitchLevel(L"Artemis_Terrain");
     UWorld::GetWorld()->OwningGameInstance->LocalPlayers.Remove(0);
-
     return 0;
 }
 

@@ -987,6 +987,11 @@ public:
 		return X == Other.X && Y == Other.Y && Z == Other.Z;
 	}
 
+	std::wstring ToWString() const
+	{
+		return std::format(L"X: {:.2f}, Y: {:.2f}, Z: {:.2f}", X, Y, Z);
+	}
+
 	std::string ToString() const
 	{
 		return std::format("X: {:.2f}, Y: {:.2f}, Z: {:.2f}", X, Y, Z);
@@ -1612,6 +1617,17 @@ public:
 	float                                         Pitch;                                             // 0x0000(0x0004)(Edit, BlueprintVisible, ZeroConstructor, SaveGame, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	float                                         Yaw;                                               // 0x0004(0x0004)(Edit, BlueprintVisible, ZeroConstructor, SaveGame, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	float                                         Roll;                                              // 0x0008(0x0004)(Edit, BlueprintVisible, ZeroConstructor, SaveGame, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+public:
+	bool operator !=(const FRotator& Other)
+	{
+		return this->Pitch != Other.Pitch || this->Yaw != Other.Yaw || this->Roll != Other.Roll;
+	}
+
+	std::wstring ToWString() const
+	{
+		return std::format(L"Pitch: {:.2f}, Yaw: {:.2f}, Roll: {:.2f}", Pitch, Yaw, Roll);
+	}
 };
 
 // ScriptStruct CoreUObject.SoftClassPath

@@ -5,6 +5,7 @@
 #include <atomic>
 #include <type_traits>
 #include "MemoryOps.h"
+#include "Invoke.h"
 #define TSAN_SAFE
 #define TSAN_SAFE_UNSAFEPTR TSAN_SAFE
 

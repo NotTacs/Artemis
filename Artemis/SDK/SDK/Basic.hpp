@@ -21,6 +21,9 @@
 
 using namespace UC;
 
+// TSharedRef for FText/FTextFormat; only needs the UC integer types
+#include "../../Engine/Source/Runtime/Core/Public/Templates/SharedPointer.h"
+
 #include "../NameCollisions.inl"
 
 /*
@@ -1441,7 +1444,7 @@ public:
 	{
 	}
 
-	inline UClass* Get()
+	inline UClass* Get() const
 	{
 		return ClassPtr;
 	}
@@ -1457,7 +1460,7 @@ public:
 		return ClassPtr;
 	}
 
-	inline UClass* operator->()
+	inline UClass* operator->() const
 	{
 		return ClassPtr;
 	}
@@ -1488,6 +1491,16 @@ public:
 	{
 		return ClassPtr != Other;
 	}
+
+	TSubclassOf(const TSubclassOf&) = default;
+	TSubclassOf& operator=(const TSubclassOf&) = default;
+
+	template<typename OtherType, typename = std::enable_if_t<std::is_base_of_v<ClassType, OtherType>>>
+	inline TSubclassOf& operator=(const TSubclassOf<OtherType>& Other)
+	{
+		ClassPtr = Other.Get();
+		return *this;
+	}
 };
 namespace FTextImpl
 {
@@ -1501,6 +1514,9 @@ public:
 };
 }
 
+class FTextFormat;
+class FFormatArgumentValue;
+
 // Predefined struct FText
 // 0x0018 (0x0018 - 0x0000)
 class FText final
@@ -1510,6 +1526,11 @@ public:
 	uint8                                         Pad_8[0x10];                                       // 0x0008(0x0010)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
+	static FText Format(const FTextFormat& Fmt, struct FFormatOrderedArguments&& Args);
+
+	template<typename... ArgTypes>
+	static FText Format(const FTextFormat& Fmt, ArgTypes&&... Args);
+
 	const class FString& GetStringRef() const
 	{
 		return TextData->TextSource;
@@ -1519,6 +1540,156 @@ public:
 		return TextData->TextSource.ToString();
 	}
 };
+
+struct FTextFormatPatternDefinition {};
+struct FExpressionToken {};
+
+struct FTextFormatData
+{
+	uint8 SourceType;
+	uint8 Pad_01[0x7];
+	TSharedRef<const FTextFormatPatternDefinition> PatternDef;
+	FText SourceText;
+	uint8 CompiledDataCS[0x28];
+	FString SourceExpression;
+	TArray<FExpressionToken> LexedExpression;
+	uint8 CompiledTextSnapshot[0x28];
+	uint8 CompiledExpressionType;
+	uint8 Pad_A1[0x7];
+	FString LastCompileError;
+	int32 BaseFormatStringLength;
+	int32 FormatArgumentEstimateMultiplier;
+};
+static_assert(sizeof(FTextFormatData) == 0xC0);
+
+class FTextFormat
+{
+public:
+	TSharedRef<FTextFormatData, ESPMode::ThreadSafe> TextFormatData;
+
+	FTextFormat() = default;
+
+	FTextFormat(const FText& Text)
+	{
+		static void (*FTextFormatConstructor)(FTextFormat* This, const FText& Text) = decltype(FTextFormatConstructor)(InSDKUtils::GetImageBase() + 0x101E238);
+		FTextFormatConstructor(this, Text);
+	}
+};
+
+class FFormatArgumentValue
+{
+public:
+	enum EType : int32
+	{
+		Int,
+		UInt,
+		Float,
+		Double,
+		Text,
+		Gender,
+	};
+
+public:
+	EType Type;
+	uint8 Pad_04[0x4];
+	union
+	{
+		int64  IntValue;
+		uint64 UIntValue;
+		float  FloatValue;
+		double DoubleValue;
+		uint8  GenderValue;
+	};
+	FText TextValue;                                  // TOptional<FText>
+	bool bTextValueIsSet;
+	uint8 Pad_29[0x7];
+
+public:
+	FFormatArgumentValue(int32 Value)  : FFormatArgumentValue(EType::Int) { IntValue = Value; }
+	FFormatArgumentValue(int64 Value)  : FFormatArgumentValue(EType::Int) { IntValue = Value; }
+	FFormatArgumentValue(uint32 Value) : FFormatArgumentValue(EType::UInt) { UIntValue = Value; }
+	FFormatArgumentValue(uint64 Value) : FFormatArgumentValue(EType::UInt) { UIntValue = Value; }
+	FFormatArgumentValue(float Value)  : FFormatArgumentValue(EType::Float) { FloatValue = Value; }
+	FFormatArgumentValue(double Value) : FFormatArgumentValue(EType::Double) { DoubleValue = Value; }
+
+	FFormatArgumentValue(const FText& Value)
+		: FFormatArgumentValue(EType::Text)
+	{
+		// Borrowed reference, the caller keeps Value alive for the Format call and the game takes its own refs
+		TextValue = Value;
+		bTextValueIsSet = true;
+	}
+
+private:
+	explicit FFormatArgumentValue(EType InType)
+	{
+		memset(this, 0, sizeof(*this));
+		Type = InType;
+	}
+};
+static_assert(sizeof(FFormatArgumentValue) == 0x30);
+
+struct FFormatOrderedArguments
+{
+	FFormatArgumentValue* Data;
+	int32 ArrayNum;
+	int32 ArrayMax;
+};
+static_assert(sizeof(FFormatOrderedArguments) == 0x10);
+
+inline FText FText::Format(const FTextFormat& Fmt, FFormatOrderedArguments&& Args)
+{
+	FText* (*FormatInternal)(FText* OutResult, FTextFormat* FmtByValue, FFormatOrderedArguments* Args) = decltype(FormatInternal)(InSDKUtils::GetImageBase() + 0x101D400);
+
+	alignas(FTextFormat) uint8 FmtCopy[sizeof(FTextFormat)];
+	FText Result{};
+	FormatInternal(&Result, new (FmtCopy) FTextFormat(Fmt), &Args);
+
+	return Result;
+}
+
+template<typename... ArgTypes>
+inline FText FText::Format(const FTextFormat& Fmt, ArgTypes&&... Args)
+{
+	constexpr int32 NumArgs = sizeof...(ArgTypes);
+
+	FFormatOrderedArguments OrderedArgs{};
+
+	if constexpr (NumArgs > 0)
+	{
+		OrderedArgs.Data = static_cast<FFormatArgumentValue*>(FMemory::Realloc(nullptr, NumArgs * sizeof(FFormatArgumentValue), alignof(FFormatArgumentValue)));
+		OrderedArgs.ArrayNum = NumArgs;
+		OrderedArgs.ArrayMax = NumArgs;
+
+		int32 Index = 0;
+		((new (&OrderedArgs.Data[Index++]) FFormatArgumentValue(std::forward<ArgTypes>(Args))), ...);
+	}
+
+	FText Result = Format(Fmt, std::move(OrderedArgs));
+
+	// Args stay caller-owned, the argument texts are borrowed so only the buffer needs freeing
+	if (OrderedArgs.Data)
+	{
+		FMemory::Free(OrderedArgs.Data);
+	}
+	return Result;
+}
+
+class FInternationalization
+{
+public:
+	static FText ForUseOnlyByLocMacroAndGraphNodeTextLiterals_CreateText(const wchar_t* InTextLiteral, const wchar_t* InNamespace, const wchar_t* InKey)
+	{
+		static FText* (*CreateText)(FText* OutResult, const wchar_t* InTextLiteral, const wchar_t* InNamespace, const wchar_t* InKey) = decltype(CreateText)(InSDKUtils::GetImageBase() + 0xC8D458);
+
+		FText Result{};
+		CreateText(&Result, InTextLiteral, InNamespace, InKey);
+		return Result;
+	}
+};
+
+#define LOCTEXT(InKey, InTextLiteral) FInternationalization::ForUseOnlyByLocMacroAndGraphNodeTextLiterals_CreateText(L"" InTextLiteral, L"" LOCTEXT_NAMESPACE, L"" InKey)
+#define NSLOCTEXT(InNamespace, InKey, InTextLiteral) FInternationalization::ForUseOnlyByLocMacroAndGraphNodeTextLiterals_CreateText(L"" InTextLiteral, L"" InNamespace, L"" InKey)
 
 // Predefined struct FWeakObjectPtr
 // 0x0008 (0x0008 - 0x0000)
@@ -1566,6 +1737,85 @@ public:
 	UEType* operator->() const
 	{
 		return reinterpret_cast<UEType*>(FWeakObjectPtr::Get());
+	}
+};
+
+// Predefined struct FObjectKey
+// 0x0008 (0x0008 - 0x0000)
+class FObjectKey
+{
+public:
+	int32                                         ObjectIndex;                                       // 0x0000(0x0004)(NOT AUTO-GENERATED PROPERTY)
+	int32                                         ObjectSerialNumber;                                // 0x0004(0x0004)(NOT AUTO-GENERATED PROPERTY)
+
+public:
+	FObjectKey()
+		: ObjectIndex(-1), ObjectSerialNumber(0)
+	{
+	}
+
+	FObjectKey(const class UObject* Object)
+		: ObjectIndex(-1), ObjectSerialNumber(0)
+	{
+		if (Object)
+		{
+			FWeakObjectPtr Weak;
+			Weak = Object;
+			ObjectIndex = Weak.ObjectIndex;
+			ObjectSerialNumber = Weak.ObjectSerialNumber;
+		}
+	}
+
+	class UObject* ResolveObjectPtr() const
+	{
+		FWeakObjectPtr Weak;
+		Weak.ObjectIndex = ObjectIndex;
+		Weak.ObjectSerialNumber = ObjectSerialNumber;
+		return Weak.Get();
+	}
+
+	template<typename T>
+	T* ResolveObjectPtr() const
+	{
+		TWeakObjectPtr<T> Weak;
+		Weak.ObjectIndex = ObjectIndex;
+		Weak.ObjectSerialNumber = ObjectSerialNumber;
+		return Weak.Get();
+	}
+
+	bool operator==(const FObjectKey& Other) const
+	{
+		return ObjectIndex == Other.ObjectIndex && ObjectSerialNumber == Other.ObjectSerialNumber;
+	}
+	bool operator!=(const FObjectKey& Other) const
+	{
+		return !(*this == Other);
+	}
+	bool operator<(const FObjectKey& Other) const
+	{
+		return ObjectIndex < Other.ObjectIndex || (ObjectIndex == Other.ObjectIndex && ObjectSerialNumber < Other.ObjectSerialNumber);
+	}
+};
+
+inline uint32 GetTypeHash(const FObjectKey& Key)
+{
+	return HashCombine(uint32(Key.ObjectIndex), uint32(Key.ObjectSerialNumber));
+}
+
+template<typename UEType>
+class TObjectKey : public FObjectKey
+{
+public:
+	TObjectKey() = default;
+
+	TObjectKey(const UEType* Object)
+		: FObjectKey(reinterpret_cast<const class UObject*>(Object))
+	{
+	}
+
+	UEType* ResolveObjectPtr() const
+	{
+		return reinterpret_cast<UEType*>(FObjectKey::ResolveObjectPtr());
 	}
 };
 
@@ -1786,12 +2036,8 @@ public:
 	FName                                         FunctionName;                                      // 0x0008(0x0008)(NOT AUTO-GENERATED PROPERTY)
 };
 
-// TDelegate is the engine's native delegate (Delegates/Delegate.h), included by SDK.hpp once UObject exists
-
 // Predefined struct TDynamicDelegate
 // 0x0010 (0x0010 - 0x0000)
-// Dumper-8's old TDelegate: single-cast dynamic delegates (FDelegateProperty fields and UFunction params) are an
-// FScriptDelegate (object + function name), not a native TDelegate, even though both are 0x10 bytes
 template<typename FunctionSignature>
 class TDynamicDelegate
 {

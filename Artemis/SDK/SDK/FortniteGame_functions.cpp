@@ -17908,6 +17908,24 @@ bool AFortPlayerController::ShouldShowInfoIndicator(const class AActor* TestActo
 	return Parms.ReturnValue;
 }
 
+uint8 AFortPlayerController::GetTeam()
+{
+	return Cast<AFortPlayerStateAthena>(this->PlayerState)->TeamIndex;
+}
+
+bool AFortPlayerController::HasRequiredBuildingLevel(const struct FBuildingClassData& BuildingClassData) const
+{
+	if (!BuildingClassData.BuildingClass || !BuildingClassData.BuildingClass->IsSubclassOf(ABuildingActor::StaticClass()))
+	{
+		return false;
+	}
+	if (!BuildingClassData.BuildingClass->DefaultObject)
+	{
+		BuildingClassData.BuildingClass->CreateDefaultObject();
+	}
+	const ABuildingSMActor* BuildingCDO = Cast< ABuildingSMActor>(BuildingClassData.BuildingClass->DefaultObject);
+	return HasRequiredBuildingLevel(BuildingClassData.UpgradeLevel, BuildingCDO->ResourceType);
+}
 
 // Function FortniteGame.FortPlayerControllerGameplay.ActivateCreativePreviewScreenshot
 // (Final, Native, Public, BlueprintCallable)

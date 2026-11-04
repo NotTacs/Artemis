@@ -845,6 +845,30 @@ namespace UC
 
 		inline void* GetElementMemory(int32 Index) { return &Data.GetUnsafe(Index).ElementData; }
 
+		/* Pushes the slot onto the free list; the element must already be destructed. */
+		inline void RemoveAtUninitialized(int32 Index)
+		{
+			VerifyIndex(Index);
+
+			FElementOrFreeListLink& IndexData = Data.GetUnsafe(Index);
+
+			if (NumFreeIndices > 0)
+				Data.GetUnsafe(FirstFreeIndex).PrevFreeIndex = Index;
+
+			IndexData.PrevFreeIndex = -1;
+			IndexData.NextFreeIndex = NumFreeIndices > 0 ? FirstFreeIndex : -1;
+			FirstFreeIndex = Index;
+			++NumFreeIndices;
+
+			AllocationFlags.SetBit(Index, false);
+		}
+
+		inline void RemoveAt(int32 Index)
+		{
+			(*this)[Index].~SparseArrayElementType();
+			RemoveAtUninitialized(Index);
+		}
+
 	public:
 		inline       SparseArrayElementType& operator[](int32 Index) { VerifyIndex(Index); return *reinterpret_cast<SparseArrayElementType*>(&Data.GetUnsafe(Index).ElementData); }
 		inline const SparseArrayElementType& operator[](int32 Index) const { VerifyIndex(Index); return *reinterpret_cast<const SparseArrayElementType*>(&Data.GetUnsafe(Index).ElementData); }
@@ -1256,7 +1280,32 @@ namespace UC
 		}
 
 	public:
-		inline       SetElementType& operator[] (int32 Index) { return Elements[Index].Value; }
+		inline bool RemoveAt(int32 ElementId)
+		{
+			if (!IsValidIndex(ElementId))
+				return false;
+
+			if (HashSize > 0)
+			{
+				const SetDataType& ElementBeingRemoved = Elements[ElementId];
+
+				/* Unlink from the bucket chain so lookups don't walk into the freed slot. */
+				for (int32* NextElementId = &GetTypedHash(ElementBeingRemoved.HashIndex); *NextElementId != -1; NextElementId = &Elements[*NextElementId].HashNextId)
+				{
+					if (*NextElementId == ElementId)
+					{
+						*NextElementId = ElementBeingRemoved.HashNextId;
+						break;
+					}
+				}
+			}
+
+			Elements.RemoveAt(ElementId);
+			return true;
+		}
+
+	public:
+		inline       SetElementType& operator[] (int32 Index)       { return Elements[Index].Value; }
 		inline const SetElementType& operator[] (int32 Index) const { return Elements[Index].Value; }
 
 		inline bool operator==(const TSet<SetElementType>& Other) const { return Elements == Other.Elements; }
@@ -1334,6 +1383,8 @@ namespace UC
 
 			return Elements[Elements.AddByHash(GetKeyHash(Key), ElementType(Key, ValueElementType{}), GetElementKeyHash)].Value();
 		}
+
+		inline bool RemoveAt(int32 Index) { return Elements.RemoveAt(Index); }
 
 	public:
 		inline decltype(auto) Find(const KeyElementType& Key, bool(*Equals)(const KeyElementType& LeftKey, const KeyElementType& RightKey))

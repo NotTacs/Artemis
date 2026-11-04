@@ -417,7 +417,34 @@ public:
 	bool ShouldDisplayMobileInteractPrompt() const;
 	bool ShouldDisplaySecondInteractPrompt(const class AFortPawn* InteractingPawn, const ETInteractionType InteractionType) const;
 	bool UseDefaultHealthBar() const;
+public:
+	void Die(struct FGameplayTag DeathReason, class AController* Killer, class AActor* DamageCauser, const struct FGameplayEffectContextHandle* OptionalEffectContext)
+	{
+		void (*DieInternal)(ABuildingActor * __this, FGameplayTag DeathReason, AController * Killer, AActor * DamageCauser, const FGameplayEffectContextHandle * OptionalEffectContext) = decltype(DieInternal)(VTable[0x122]);
+		DieInternal(this, DeathReason, Killer, DamageCauser, OptionalEffectContext);
+	}
 
+	void PostInitializeSpawnedBuildingActor(EFortBuildingInitializationReason InitializationReason)
+	{
+		void (*PostInitializeSpawnedBuildingActorInternal)(ABuildingActor* __this,EFortBuildingInitializationReason InitializationReason) = decltype(PostInitializeSpawnedBuildingActorInternal)(VTable[0x128]);
+		PostInitializeSpawnedBuildingActorInternal(this, InitializationReason);
+	}
+
+	void InitializeBuildingActor(
+		EFortBuildingInitializationReason Reason,
+		int16 InOwnerPersistentID,
+		ABuildingActor* BuildingOwner,
+		const ABuildingActor* ReplacedBuilding,
+		bool bForcePlayBuildUpAnim)
+	{
+		void (*InitializeBuildingActorInternal)(ABuildingActor * __this,
+			EFortBuildingInitializationReason Reason,
+			int16 InOwnerPersistentID,
+			ABuildingActor * BuildingOwner,
+			const ABuildingActor * ReplacedBuilding,
+			bool bSomething) = decltype(InitializeBuildingActorInternal)(VTable[0x127]);
+		return InitializeBuildingActorInternal(this, Reason, InOwnerPersistentID, BuildingOwner, ReplacedBuilding, bForcePlayBuildUpAnim);
+	}
 public:
 	static class UClass* StaticClass()
 	{
@@ -2912,6 +2939,71 @@ public:
 	{
 		return *reinterpret_cast<FRotator*>(__int64(this) + 0x890);
 	}
+	uint8 GetTeam();
+	enum class EFortStructuralGridQueryResults CanPlaceBuildableClassInStructuralGrid(
+		TSubclassOf<class ABuildingActor> ClassToBuild,
+		const struct FVector& WorldLocation,
+		const struct FRotator& WorldRotation,
+		bool bMirrored,
+		TArray<class ABuildingActor*>& ExistingBuildings,
+		enum class EFortBuildPreviewMarkerOptionalAdjustment& MarkerOptionalAdjustment) const
+	{
+		EFortStructuralGridQueryResults(*CanPlaceBuildableClassInStructuralGridInternal)(const AFortPlayerController* __this,
+			TSubclassOf<ABuildingActor> ClassToBuild,
+			const FVector & WorldLocation,
+			const FRotator & WorldRotation,
+			bool bMirrored,
+			TArray<ABuildingActor*>&ExistingBuildings,
+			EFortBuildPreviewMarkerOptionalAdjustment & MarkerOptionalAdjustment) = decltype(CanPlaceBuildableClassInStructuralGridInternal)(VTable[0x370]);
+		return CanPlaceBuildableClassInStructuralGridInternal(this, ClassToBuild, WorldLocation, WorldRotation, bMirrored, ExistingBuildings, MarkerOptionalAdjustment);
+	}
+
+	bool CanPerformNativeAction(const FGameplayTag& ActionTag) const
+	{
+		bool (*CanPerformNativeActionInternal)(const AFortPlayerController * __this, const FGameplayTag & ActionTag) = decltype(CanPerformNativeActionInternal)(VTable[0x2E9]);
+		return CanPerformNativeActionInternal(this, ActionTag);
+	}
+
+	bool IsBuildingRestricted(const FBuildingClassData& BuildingClassData, const FVector& WorldLocation, const FRotator& WorldRotation) const
+	{
+		bool (*IsBuildingRestrictedInternal)(const AFortPlayerController * __this, const FBuildingClassData & BuildingClassData, const FVector & WorldLocation, const FRotator & WorldRotation) = decltype(IsBuildingRestrictedInternal)(VTable[0x363]);
+		return IsBuildingRestrictedInternal(this, BuildingClassData, WorldLocation, WorldRotation);
+	}
+
+	bool CanAffordToPlaceBuildableClass(FBuildingClassData BuildingClassData)
+	{
+		bool (*CanAffordToPlaceBuildableClassInternal)(void* __this, FBuildingClassData BuildingClassData) = decltype(CanAffordToPlaceBuildableClassInternal)(VTable[0x361]);
+		return CanAffordToPlaceBuildableClassInternal(this, BuildingClassData);
+	}
+
+	bool HasRequiredBuildingLevel(const struct FBuildingClassData& BuildingClassData) const;
+
+	bool HasRequiredBuildingLevel(int32 Level, EFortResourceType ResourceType) const
+	{
+		bool (*HasRequiredBuildingLevelInternal)(const AFortPlayerController * __this, int32 Level, EFortResourceType ResourceType) = decltype(HasRequiredBuildingLevelInternal)(VTable[0x364]);
+		return HasRequiredBuildingLevelInternal(this, Level, ResourceType);
+	}
+
+	int32 PayBuildableClassPlacementCost(FBuildingClassData BuildingClassData)
+	{
+		int32(*PayBuildableClassPlacementCostInternal)(AFortPlayerController * __this, FBuildingClassData BuildingClassData) = decltype(PayBuildableClassPlacementCostInternal)(VTable[0x36D]);
+		return PayBuildableClassPlacementCostInternal(this, BuildingClassData);
+	}
+
+	void DoCreateBuildingAnalytics(ABuildingSMActor* BuildingActorToCreate, int32 ResourcesSpent)
+	{
+		void (*DoCreateBuildingAnalyticsInternal)(void*, ABuildingSMActor * BuildingActorToCreate, int32 ResourcesSpent) = decltype(DoCreateBuildingAnalyticsInternal)(VTable[0x3C6]);
+		return DoCreateBuildingAnalyticsInternal(this, BuildingActorToCreate, ResourcesSpent);
+	}
+
+	FText GetErrorMessageFromStructuralQuery(EFortStructuralGridQueryResults Result)
+	{
+		FText* (*GetErrorMessageFromStructuralQueryInternal)(AFortPlayerController * __this, FText * OutResult, EFortStructuralGridQueryResults Result) = decltype(GetErrorMessageFromStructuralQueryInternal)(VTable[0x36F]);
+		FText Ret{};
+		GetErrorMessageFromStructuralQueryInternal(this, &Ret, Result);
+		return Ret;
+	}
+
 public:
 	static class UClass* StaticClass()
 	{
@@ -5196,7 +5288,12 @@ public:
 	void ListCharacterParts(const class FString& GenderAndOrPartString) const;
 	bool ShouldAllowShadowStanceMaterialsForPartType(EFortCustomPartType PartType) const;
 	bool ShouldDriverHaveReticle() const;
-
+public:
+	void PlayBlueprintPlaceAnimation()
+	{
+		static void (*PlayBlueprintPlaceAnimationInternal)(AFortPlayerPawn*) = decltype(PlayBlueprintPlaceAnimationInternal)(InSDKUtils::GetImageBase() + 0x6737140);
+		return PlayBlueprintPlaceAnimationInternal(this);
+	}
 public:
 	static class UClass* StaticClass()
 	{
@@ -5821,6 +5918,12 @@ public:
 	bool IsUnderConstruction() const;
 	bool WillRegisterWithStructuralGrid() const;
 
+public:
+	void SetEditingPlayer(class AFortPlayerStateZone* NewEditingPlayer)
+	{
+		void (*SetEditingPlayerInternal)(ABuildingSMActor * __this, AFortPlayerStateZone * NewEditingPlayer) = decltype(SetEditingPlayerInternal)(this->VTable[0x194]);
+		SetEditingPlayerInternal(this, NewEditingPlayer);
+	}
 public:
 	static class UClass* StaticClass()
 	{
@@ -51106,6 +51209,12 @@ public:
 	bool ShouldDisablePlayerTeleportingDuringMissionResults() const;
 
 public:
+	bool GetPlayerBuildableClasses(TArray<struct TSubclassOf<class ABuildingSMActor>>& OutClasses, const struct FPlayerBuildableClassFilter& Filter)
+	{
+		static bool (*GetPlayerBuildableClassesInternal)(void* __this, TArray<TSubclassOf<ABuildingSMActor>>&OutClasses, const FPlayerBuildableClassFilter & Filter) = decltype(GetPlayerBuildableClassesInternal)(InSDKUtils::GetImageBase() + 0x63ea9dc);
+		return GetPlayerBuildableClassesInternal(this, OutClasses, Filter);
+	}
+public:
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"FortGameStateZone">();
@@ -53745,6 +53854,18 @@ public:
 	void OnEndOfDay();
 
 	void DumpReservations() const;
+
+public:
+	TMap<FObjectKey, TArray<struct FContestedBuildingRequest>>& ContestedBuildingRequests()
+	{
+		return *reinterpret_cast<TMap<FObjectKey, TArray<struct FContestedBuildingRequest>>*>(__int64(this) + 0x618);
+	}
+
+	void ScoreBuildingConstruction(AController* ConstructingController, ABuildingSMActor* ConstructedBuilding)
+	{
+		void (*ScoreBuildingConstructionInternal)(AFortGameMode* __this, AController * ConstructingController, ABuildingSMActor * ConstructedBuilding) = decltype(ScoreBuildingConstructionInternal)(VTable[0x150]);
+		return ScoreBuildingConstructionInternal(this, ConstructingController, ConstructedBuilding);
+	}
 
 public:
 	static class UClass* StaticClass()
@@ -79101,6 +79222,15 @@ public:
 	{
 		return UFortAssetManager::Get()->GameDataCommon;
 	}
+
+public:
+	FText GetResourceDisplayName(EFortResourceType ResourceType)
+	{
+		static FText& (*GetResourceDisplayNameInternal)(UFortGameData* __this, FText & Result, EFortResourceType) = decltype(GetResourceDisplayNameInternal)(InSDKUtils::GetImageBase() + 0x63B4D90);
+		FText Ret{};
+		GetResourceDisplayNameInternal(this, Ret, ResourceType);
+		return Ret;
+	}
 public:
 	static class UClass* StaticClass()
 	{
@@ -85516,6 +85646,20 @@ public:
 	}
 };
 
+struct FFortGlobalGameplayTags
+{
+public:
+	struct FGameplayTag& DeathCauseReplaced()
+	{
+		return *reinterpret_cast<FGameplayTag*>(__int64(this) + 0x488);
+	}
+
+	struct FGameplayTag& NativeActionBuild()
+	{
+		return *reinterpret_cast<FGameplayTag*>(__int64(this) + 0x780);
+	}
+};
+
 // Class FortniteGame.FortGlobals
 // 0x0350 (0x0378 - 0x0028)
 class UFortGlobals final : public UObject
@@ -85770,6 +85914,12 @@ public:
 	static bool UseElectraForReplayCinematic();
 	static bool UseElectraForWatchBattlePassMovie();
 
+public:
+	static FFortGlobalGameplayTags* GameplayTags()
+	{
+		FFortGlobalGameplayTags* (*GameplayTagsInternal)() = decltype(GameplayTagsInternal)(InSDKUtils::GetImageBase() + 0xC904C4);
+		return GameplayTagsInternal();
+	}
 public:
 	static class UClass* StaticClass()
 	{
@@ -86856,8 +87006,20 @@ public:
 
 	UObject* _getUObject()
 	{
-		UObject* (*_getUObject)(void*) = decltype(_getUObject)(VTable[1]);
-		return _getUObject(this);
+		UObject* (*_getUObjectInternal)(void*) = decltype(_getUObjectInternal)(VTable[1]);
+		return _getUObjectInternal(this);
+	}
+
+	class AFortInventory* GetWorldInventory()
+	{
+		AFortInventory* (*_GetWorldInventory)(void*) = decltype(_GetWorldInventory)(VTable[0xB]);
+		return _GetWorldInventory(this);
+	}
+
+	class UFortItem* FindExistingItemForDefinition(const struct FItemVariantHandle& ItemVariantHandle, bool bInStorageVault)
+	{
+		UFortItem* (*FindExistingItemForDefinitionInternal)(void*, const FItemVariantHandle*, bool) = decltype(FindExistingItemForDefinitionInternal)(VTable[0x2C]);
+		return FindExistingItemForDefinitionInternal(this, &ItemVariantHandle, bInStorageVault);
 	}
 };
 
@@ -112366,7 +112528,6 @@ public:
 public:
 	void OnBlueprintPaperPulseUpdate(float InCurveVal);
 	void OnRep_DefaultMetadata(class UBuildingEditModeMetadata* OldMetadata);
-
 public:
 	static class UClass* StaticClass()
 	{

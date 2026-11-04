@@ -38482,8 +38482,14 @@ public:
 struct alignas(0x08) FContestedBuildingRequest final
 {
 public:
-	uint8                                         Pad_0[0x38];                                       // 0x0000(0x0038)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	TWeakObjectPtr<AFortPlayerController> Requester;
+	FBuildingClassData BuildingClassData;
+	FVector BuildLoc;
+	FRotator BuildRot;
+	bool bMirrored;
+	uint8 Pad_31[0x7];
 };
+static_assert(sizeof(FContestedBuildingRequest) == 0x38);
 
 // ScriptStruct FortniteGame.ServerMigrationAlertData
 // 0x0010 (0x0010 - 0x0000)

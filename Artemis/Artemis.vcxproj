@@ -201,6 +201,8 @@
     <ClInclude Include="SDK\SDK\Basic.hpp" />
     <ClInclude Include="SDK\SDK\FortniteGame_classes.hpp" />
     <ClInclude Include="SDK\UnrealContainers.hpp" />
+    <ClInclude Include="FortniteGame\Source\FortniteGame\Public\FortGameMode.h" />
+    <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Player\FortPlayerController.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -247,6 +249,8 @@
     <ClCompile Include="SDK\SDK\Engine_functions.cpp" />
     <ClCompile Include="SDK\SDK\FortniteGame_functions.cpp" />
     <ClCompile Include="SDK\SDK\GameplayAbilities_functions.cpp" />
+    <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Athena\FortGameMode.cpp" />
+    <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Player\FortPlayerController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Engine\Source\Runtime\Core\Public\Delegates\DelegateSignatureImpl.inl" />

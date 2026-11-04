@@ -8101,6 +8101,37 @@ public:
 	}
 };
 
+// Predefined struct FActorSpawnParameters
+// 0x0038 (0x0038 - 0x0000)
+struct FActorSpawnParameters final
+{
+public:
+	enum class ESpawnActorNameMode : uint8
+	{
+		Required_Fatal,
+		Required_ErrorAndReturnNull,
+		Required_ReturnNull,
+		Requested
+	};
+
+public:
+	class FName                                   Name{};                                            // 0x0000(0x0008)(NOT AUTO-GENERATED PROPERTY)
+	class AActor*                                 Template = nullptr;                                // 0x0008(0x0008)(NOT AUTO-GENERATED PROPERTY)
+	class AActor*                                 Owner = nullptr;                                   // 0x0010(0x0008)(NOT AUTO-GENERATED PROPERTY)
+	class APawn*                                  Instigator = nullptr;                              // 0x0018(0x0008)(NOT AUTO-GENERATED PROPERTY)
+	class ULevel*                                 OverrideLevel = nullptr;                           // 0x0020(0x0008)(NOT AUTO-GENERATED PROPERTY)
+	class UChildActorComponent*                   OverrideParentComponent = nullptr;                 // 0x0028(0x0008)(NOT AUTO-GENERATED PROPERTY)
+	ESpawnActorCollisionHandlingMethod            SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::Undefined; // 0x0030(0x0001)(NOT AUTO-GENERATED PROPERTY)
+	uint8                                         bRemoteOwned : 1 = false;                          // 0x0031(0x0001)(NOT AUTO-GENERATED PROPERTY)
+	uint8                                         bNoFail : 1 = false;                               // 0x0031(0x0001)(NOT AUTO-GENERATED PROPERTY)
+	uint8                                         bDeferConstruction : 1 = false;                    // 0x0031(0x0001)(NOT AUTO-GENERATED PROPERTY)
+	uint8                                         bAllowDuringConstructionScript : 1 = false;        // 0x0031(0x0001)(NOT AUTO-GENERATED PROPERTY)
+	ESpawnActorNameMode                           NameMode = ESpawnActorNameMode::Required_Fatal;    // 0x0032(0x0001)(NOT AUTO-GENERATED PROPERTY)
+	uint8                                         Pad_33[0x1];                                       // 0x0033(0x0001)(Fixing Size After Last Property [ Dumper-8 ])
+	EObjectFlags                                  ObjectFlags = EObjectFlags::Transactional;         // 0x0034(0x0004)(NOT AUTO-GENERATED PROPERTY)
+};
+static_assert(sizeof(FActorSpawnParameters) == 0x38);
+
 // Class Engine.World
 // 0x07C0 (0x07E8 - 0x0028)
 class UWorld final : public UObject
@@ -8161,6 +8192,56 @@ public:
 
 	void HandleTimelineScrubbed();
 	class AWorldSettings* K2_GetWorldSettings();
+
+public:
+	class AActor* SpawnActor(class UClass* Class, const struct FVector* Location = nullptr, const struct FRotator* Rotation = nullptr, const struct FActorSpawnParameters& SpawnParameters = FActorSpawnParameters())
+	{
+		static class AActor* (*SpawnActorInternal)(UWorld* __this, class UClass* Class, const struct FVector* Location, const struct FRotator* Rotation, const struct FActorSpawnParameters& SpawnParameters) = decltype(SpawnActorInternal)(InSDKUtils::GetImageBase() + 0x12AA2FC);
+		return SpawnActorInternal(this, Class, Location, Rotation, SpawnParameters);
+	}
+
+	class AActor* SpawnActor(class UClass* Class, const struct FTransform* Transform, const struct FActorSpawnParameters& SpawnParameters = FActorSpawnParameters())
+	{
+		static class AActor* (*SpawnActorInternal)(UWorld* __this, class UClass* Class, const struct FTransform* Transform, const struct FActorSpawnParameters& SpawnParameters) = decltype(SpawnActorInternal)(InSDKUtils::GetImageBase() + 0xD70E2C);
+		return SpawnActorInternal(this, Class, Transform, SpawnParameters);
+	}
+
+	template<class T>
+	T* SpawnActor(const struct FActorSpawnParameters& SpawnParameters = FActorSpawnParameters())
+	{
+		return SpawnActorAs<T>(SpawnActor(T::StaticClass(), nullptr, nullptr, SpawnParameters));
+	}
+
+	template<class T>
+	T* SpawnActor(const struct FVector& Location, const struct FRotator& Rotation, const struct FActorSpawnParameters& SpawnParameters = FActorSpawnParameters())
+	{
+		return SpawnActorAs<T>(SpawnActor(T::StaticClass(), &Location, &Rotation, SpawnParameters));
+	}
+
+	template<class T>
+	T* SpawnActor(class UClass* Class, const struct FActorSpawnParameters& SpawnParameters = FActorSpawnParameters())
+	{
+		return SpawnActorAs<T>(SpawnActor(Class, nullptr, nullptr, SpawnParameters));
+	}
+
+	template<class T>
+	T* SpawnActor(class UClass* Class, const struct FVector& Location, const struct FRotator& Rotation, const struct FActorSpawnParameters& SpawnParameters = FActorSpawnParameters())
+	{
+		return SpawnActorAs<T>(SpawnActor(Class, &Location, &Rotation, SpawnParameters));
+	}
+
+	template<class T>
+	T* SpawnActor(class UClass* Class, const struct FTransform& Transform, const struct FActorSpawnParameters& SpawnParameters = FActorSpawnParameters())
+	{
+		return SpawnActorAs<T>(SpawnActor(Class, &Transform, SpawnParameters));
+	}
+
+private:
+	template<class T>
+	static T* SpawnActorAs(class AActor* Actor)
+	{
+		return Actor && Actor->IsA(T::StaticClass()) ? static_cast<T*>(Actor) : nullptr;
+	}
 
 public:
 	static class UClass* StaticClass()

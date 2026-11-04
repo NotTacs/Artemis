@@ -61,7 +61,7 @@ void FortPlayerController::ServerCreateBuildingActor_Implementation(AFortPlayerC
 		}
 	}
 
-	ServerCreateBuildingActorInternal(__this, BuildingClassData, BuildLoc, BuildRot, bMirrored);
+	ServerCreateBuildingActorInternal(__this, BuildingClassData, BuildLoc, BuildRot, bMirrored, CreateBuildingData.SyncKey, false, false, false);
 }
 
 bool FortPlayerController::FixUpCreateBuildingClassData(AFortPlayerController* __this, FBuildingClassData& BuildingClassData)
@@ -112,20 +112,21 @@ bool FortPlayerController::FixUpCreateBuildingClassData(AFortPlayerController* _
 }
 
 
-bool FortPlayerController::ServerCreateBuildingActorInternal(AFortPlayerController* __this, FBuildingClassData& BuildingClassData, FVector& BuildLoc, FRotator& BuildRot, bool bMirrored)
+ABuildingSMActor* FortPlayerController::ServerCreateBuildingActorInternal(AFortPlayerController* __this, FBuildingClassData& BuildingClassData, FVector& BuildLoc, FRotator& BuildRot, bool bMirrored,
+	float SyncKey, bool bIgnoreNativeActionCheck, bool bIgnoreCanAffordCheck, bool bIgnoreBuildingValidityCheck)
 {
 	TSubclassOf<ABuildingSMActor> ClassToBuild = BuildingClassData.BuildingClass.Get();
 	if (!ClassToBuild)
 	{
-		return false;
+		return nullptr;
 	}
 
-	if (!__this->CanPerformNativeAction(UFortGlobals::GameplayTags()->NativeActionBuild()))
+	if (!bIgnoreNativeActionCheck && !__this->CanPerformNativeAction(UFortGlobals::GameplayTags()->NativeActionBuild()))
 	{
-		return false;
+		return nullptr;
 	}
 
-	const bool bIsRestricted = __this->IsBuildingRestricted(BuildingClassData, BuildLoc, BuildRot);
+	const bool bIsRestricted = !bIgnoreBuildingValidityCheck && __this->IsBuildingRestricted(BuildingClassData, BuildLoc, BuildRot);
 
 	bool bCanAfford = false;
 	EFortStructuralGridQueryResults StructuralGridResult = EFortStructuralGridQueryResults::CanAdd;
@@ -133,7 +134,7 @@ bool FortPlayerController::ServerCreateBuildingActorInternal(AFortPlayerControll
 
 	if (!bIsRestricted)
 	{
-		bCanAfford = __this->CanAffordToPlaceBuildableClass(BuildingClassData);
+		bCanAfford = bIgnoreCanAffordCheck || __this->CanAffordToPlaceBuildableClass(BuildingClassData);
 		const bool bHasRequiredLevel = __this->HasRequiredBuildingLevel(BuildingClassData);
 
 		const FVector OriginalBuildLoc = BuildLoc;
@@ -141,6 +142,10 @@ bool FortPlayerController::ServerCreateBuildingActorInternal(AFortPlayerControll
 
 		EFortBuildPreviewMarkerOptionalAdjustment MarkerOptionalAdjustment;
 		StructuralGridResult = __this->CanPlaceBuildableClassInStructuralGrid(ClassToBuild, BuildLoc, BuildRot, bMirrored, ExistingBuildings, MarkerOptionalAdjustment);
+		if (bIgnoreBuildingValidityCheck)
+		{
+			StructuralGridResult = EFortStructuralGridQueryResults::CanAdd;
+		}
 
 		if (BuildLoc != OriginalBuildLoc || BuildRot != OriginalBuildRot)
 		{
@@ -163,7 +168,7 @@ bool FortPlayerController::ServerCreateBuildingActorInternal(AFortPlayerControll
 			ABuildingSMActor* NewBuilding = __this->GetWorld()->SpawnActor<ABuildingSMActor>(ClassToBuild, BuildLoc, BuildRot, SpawnInfo);
 			if (!NewBuilding)
 			{
-				return false;
+				return nullptr;
 			}
 
 			NewBuilding->CurrentBuildingLevel = BuildingClassData.UpgradeLevel;
@@ -171,7 +176,7 @@ bool FortPlayerController::ServerCreateBuildingActorInternal(AFortPlayerControll
 
 			NewBuilding->InitializeKismetSpawnedBuildingActor(NewBuilding, __this, true, nullptr);
 
-			const int32 PlacementCost = __this->PayBuildableClassPlacementCost(BuildingClassData);
+			const int32 PlacementCost = bIgnoreCanAffordCheck ? 0 : __this->PayBuildableClassPlacementCost(BuildingClassData);
 			__this->DoCreateBuildingAnalytics(NewBuilding, PlacementCost);
 
 			if (AFortGameMode* FortGameMode = Cast<AFortGameMode>(__this->GetWorld()->AuthorityGameMode))
@@ -190,7 +195,7 @@ bool FortPlayerController::ServerCreateBuildingActorInternal(AFortPlayerControll
 				}
 			}
 
-			return true;
+			return NewBuilding;
 		}
 	}
 
@@ -222,7 +227,7 @@ bool FortPlayerController::ServerCreateBuildingActorInternal(AFortPlayerControll
 	}
 
 	__this->ClientTriggerUIFeedbackEvent(!bIsRestricted && !bCanAfford ? FName(TEXT("BuildPreviewUnableToAfford"), EFindName::FNAME_Add) : FName(TEXT("BuildPreviewUnableToPlace"), EFindName::FNAME_Add));
-	return false;
+	return nullptr;
 }
 
 void FortPlayerController::ServerBeginEditingBuildingActor_Implementation(AFortPlayerController* __this, ABuildingSMActor* BuildingActorToEdit)
@@ -290,8 +295,7 @@ void FortPlayerController::ServerEditBuildingActor_Implementation(AFortPlayerCon
 	ABuildingSMActor* (*ReplaceBuildingActor)(ABuildingSMActor* __this, EBuildingReplacementType ReplacementType, UClass* ClassToReplaceWith, int32 BuildingLevel, int32 RotationIterations, bool bMirrored, AFortPlayerController* Instigator) = decltype(ReplaceBuildingActor)(BuildingActorToEdit->VTable[0x18F]);
 	ReplaceBuildingActor(BuildingActorToEdit, EBuildingReplacementType::BRT_Edited, NewBuildingClass, BuildingActorToEdit->GetCurrentBuildingLevel(), RotationIterations, bMirrored, __this);
 
-	void (*DoEditBuildingActorAnalytics)(AFortPlayerController* __this, ABuildingSMActor* EditedBuilding) = decltype(DoEditBuildingActorAnalytics)(__this->VTable[0x3C7]);
-	DoEditBuildingActorAnalytics(__this, BuildingActorToEdit);
+	__this->DoEditBuildingActorAnalytics(BuildingActorToEdit);
 
 	if (AFortGameMode* FortGameMode = Cast<AFortGameMode>(__this->GetWorld()->AuthorityGameMode))
 	{

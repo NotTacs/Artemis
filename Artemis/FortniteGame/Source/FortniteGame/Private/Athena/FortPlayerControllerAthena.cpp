@@ -29,9 +29,9 @@ void FortPlayerControllerAthena::RemoveAllInventoryItems(AFortPlayerControllerAt
 	if (!WorldInventory)
 		return;
 
-	WorldInventory->Inventory.ReplicatedEntries.Free();
-	WorldInventory->Inventory.MarkArrayDirty();
-	WorldInventory->HandleInventoryLocalUpdate();
+	//WorldInventory->Inventory.ReplicatedEntries.Free();
+	//WorldInventory->Inventory.MarkArrayDirty();
+	//WorldInventory->HandleInventoryLocalUpdate();
 }
 
 void FortPlayerControllerAthena::RemoveAllInventoryItemsThenReset(AFortPlayerControllerAthena* __this)

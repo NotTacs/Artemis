@@ -8,6 +8,7 @@ DEFINE_LOG_CATEGORY(LogInventory);
 DEFINE_LOG_CATEGORY(LogAthenaAIServicePlayerBots);
 DEFINE_LOG_CATEGORY(LogFort);
 DEFINE_LOG_CATEGORY(LogBackend);
+DEFINE_LOG_CATEGORY(LogFortInventory);
 
 void CoreGlobals::LoadModule()
 {

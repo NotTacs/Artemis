@@ -18,6 +18,8 @@
 #include "FortniteGame\Source\FortniteAI\Public\Athena\AI\FortAthenaAISpawnerDataComponent_AIBotCosmeticBase.h"
 #include "Engine\Restricted\NotForLicensees\Plugins\OnlineGameplayFramework\Source\McpProfileSys\Public\McpProfileGroup.h"
 #include "FortniteGame\Source\FortniteGame\Public\Player\FortPlayerController.h"
+#include "FortniteGame\Source\FortniteGame\Public\Items\FortInventoryOwnerInterface.h"
+#include "FortniteGame\Source\FortniteGame\Public\FortKismetLibrary.h"
 
 DWORD WINAPI Main(LPVOID lpThread)
 {
@@ -48,7 +50,9 @@ DWORD WINAPI Main(LPVOID lpThread)
     McpProfileGroup::LoadModule();
     FMemoryLibrary::Set<int>(0xB5D6038, 1); //Phoebe.Minimap
     FortPlayerController::LoadModule();
-    UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"log LogAthenaBots VeryVerbose | log LogFortQuest VeryVerbose | log LogFort VeryVerbose", nullptr);
+    FortInventoryOwnerInterface::LoadModule();
+    FortKismetLibrary::LoadModule();
+    UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"log LogFortQuest VeryVerbose | log LogFort VeryVerbose", nullptr);
     UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"log LogFortUIDirector", nullptr);
     /* THIS IS SKUNKY WE NEED TO DO PROPER */
     UWorld::GetWorld()->OwningGameInstance->LocalPlayers[0]->PlayerController->SwitchLevel(L"Artemis_Terrain");

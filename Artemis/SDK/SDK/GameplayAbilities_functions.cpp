@@ -9415,3 +9415,41 @@ void UMovieSceneGameplayCueTrack::SetSequencerTrackHandler(TDynamicDelegate<void
 	Func->FunctionFlags = Flgs;
 }
 
+static UGameplayAbility* GetAbilityDefaultObject(TSubclassOf<UGameplayAbility> AbilityClass)
+{
+	UClass* Class = AbilityClass.Get();
+	if (!Class)
+	{
+		return nullptr;
+	}
+
+	if (!Class->DefaultObject)
+	{
+		Class->CreateDefaultObject();
+	}
+
+	return Cast<UGameplayAbility>(Class->DefaultObject);
+}
+
+FGameplayAbilitySpec::FGameplayAbilitySpec(UGameplayAbility* InAbility, int32 InLevel, int32 InInputID, UObject* InSourceObject)
+{
+	memset(this, 0, sizeof(FGameplayAbilitySpec));
+	ReplicationID = -1;
+	ReplicationKey = -1;
+	MostRecentArrayReplicationKey = -1;
+	Ability = InAbility;
+	Level = InLevel;
+	InputID = InInputID;
+	SourceObject = InSourceObject;
+	GameplayEffectHandle.Handle = -1;
+	*reinterpret_cast<int32*>(reinterpret_cast<uint8*>(&SetByCallerTagMagnitudes) + 0x2C) = 128;
+	*reinterpret_cast<int32*>(reinterpret_cast<uint8*>(&SetByCallerTagMagnitudes) + 0x30) = -1;
+
+	static int32* GHandle = reinterpret_cast<int32*>(InSDKUtils::GetImageBase() + 0xae33f24);
+	Handle.Handle = (*GHandle)++;
+}
+
+FGameplayAbilitySpec::FGameplayAbilitySpec(TSubclassOf<UGameplayAbility> InAbilityClass, int32 InLevel, int32 InInputID, UObject* InSourceObject)
+	: FGameplayAbilitySpec(GetAbilityDefaultObject(InAbilityClass), InLevel, InInputID, InSourceObject)
+{
+}

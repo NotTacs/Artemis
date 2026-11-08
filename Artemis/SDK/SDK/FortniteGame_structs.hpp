@@ -14957,6 +14957,13 @@ public:
 	uint8                                         Pad_4[0x4];                                        // 0x0004(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
 	class UFortItemDefinition*                    Item;                                              // 0x0008(0x0008)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	struct FGuid                                  ItemVariantGuid;                                   // 0x0010(0x0010)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+	FItemAndCount() = default;
+
+	FItemAndCount(const int32& Count, UFortItemDefinition* Item)
+		: Count(Count), Item(Item)
+	{
+	}
 };
 
 // ScriptStruct FortniteGame.ItemLoadoutContainer
@@ -18263,6 +18270,17 @@ public:
 	class FName                                   NameValue;                                         // 0x0004(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 	EFortItemEntryState                           StateType;                                         // 0x000C(0x0001)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 	uint8                                         Pad_D[0x3];                                        // 0x000D(0x0003)(Fixing Struct Size After Last Property [ Dumper-8 ])
+
+public:
+	FFortItemEntryStateValue()
+		: IntValue(0), NameValue(), StateType(EFortItemEntryState::NoneState), Pad_D{}
+	{
+	}
+
+	explicit FFortItemEntryStateValue(EFortItemEntryState InStateType)
+		: IntValue(0), NameValue(), StateType(InStateType), Pad_D{}
+	{
+	}
 };
 
 // ScriptStruct FortniteGame.FortWeaponModSlot
@@ -18290,9 +18308,9 @@ public:
 		static FFortItemEntry* (*constOtherConstrucer)(FFortItemEntry*, const FFortItemEntry*) = decltype(constOtherConstrucer)(InSDKUtils::GetImageBase() + 0x2125b58);
 		constOtherConstrucer(this, &OtherEntry);
 	}
-	FFortItemEntry(class UFortItemDefinition* InDefinition, int InCount, int InLevel = 0, struct FGuid ItemVariantGuid = {})
+	FFortItemEntry(const class UFortItemDefinition* InDefinition, int InCount, int InLevel = 0, struct FGuid ItemVariantGuid = {})
 	{
-		static FFortItemEntry* (*Constructer)(FFortItemEntry*, class UFortItemDefinition* InDefinition, int InCount, int InLevel, struct FGuid* ItemVariantGuid) = decltype(Constructer)(InSDKUtils::GetImageBase() + 0x15319c0);
+		static FFortItemEntry* (*Constructer)(FFortItemEntry*, const class UFortItemDefinition* InDefinition, int InCount, int InLevel, struct FGuid* ItemVariantGuid) = decltype(Constructer)(InSDKUtils::GetImageBase() + 0x15319c0);
 		Constructer(this, InDefinition, InCount, InLevel, &ItemVariantGuid);
 	}
 	~FFortItemEntry()
@@ -18350,6 +18368,39 @@ public:
 		static bool (*OperatorEqualEqual)(FFortItemEntry*, const FFortItemEntry * Other) = decltype(OperatorEqualEqual)(InSDKUtils::GetImageBase() + 0x64dad4c);
 		return OperatorEqualEqual(this, &Other);
 	}
+
+	template<typename T>
+	void SetStateValue(EFortItemEntryState StateType, int32 InValue);
+
+	void SetToDirty()
+	{
+		static void (*SetToDirtyOriginal)(FFortItemEntry*) = decltype(SetToDirtyOriginal)(InSDKUtils::GetImageBase() + 0x64e78c8);
+		SetToDirtyOriginal(this);
+	}
+
+	void SetCount(int32 NewCount)
+	{
+		static void (*SetCountOriginal)(FFortItemEntry*, int32) = decltype(SetCountOriginal)(InSDKUtils::GetImageBase() + 0x64e6ac4);
+		SetCountOriginal(this, NewCount);
+	}
+	void SetItemGuid(const struct FGuid& Guid)
+	{
+		static void (*SetItemGuidOriginal)(FFortItemEntry*, const FGuid*) = decltype(SetItemGuidOriginal)(InSDKUtils::GetImageBase() + 0x64e6cb0);
+		SetItemGuidOriginal(this, &Guid);
+	}
+
+	void CreateNewGuid()
+	{
+		static void (*CreateNewGuidOriginal)(FFortItemEntry*) = decltype(CreateNewGuidOriginal)(InSDKUtils::GetImageBase() + 0x64dd2c8);
+		CreateNewGuidOriginal(this);
+	}
+
+	void SetParentInventory(class AFortInventory* InParentInventory, bool InIsReplicatedCopy)
+	{
+		static void (*SetParentInventoryOriginal)(FFortItemEntry*, AFortInventory*, bool) = decltype(SetParentInventoryOriginal)(InSDKUtils::GetImageBase() + 0x64e7078);
+		SetParentInventoryOriginal(this, InParentInventory, InIsReplicatedCopy);
+	}
+	void SetInInventoryOverflow(bool bOverflow);
 };
 
 // ScriptStruct FortniteGame.GliderTrailParticleDefinition
@@ -22117,7 +22168,9 @@ struct FFortBotInventoryInfo final
 public:
 	class UFortItemDefinition*                    ItemDefinition;                                    // 0x0000(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 	class UFortWorldItem*                         FortItem;                                          // 0x0008(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_10[0x8];                                       // 0x0010(0x0008)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	EFortItemType                                 ItemType;                                          // 0x0010(0x0001)(Native, default EFortItemType::Max_None)
+	EFortWeaponType                               WeaponType;                                        // 0x0011(0x0001)(Native, default EFortWeaponType::None)
+	uint8                                         Pad_12[0x6];                                       // 0x0012(0x0006)(Fixing Struct Size After Last Property [ Dumper-8 ])
 };
 
 // ScriptStruct FortniteGame.CustomFeedMessageContext
@@ -31895,13 +31948,68 @@ public:
 	int32                                         Unattainable;                                      // 0x0024(0x0004)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 };
 
+// Native struct FAttributeDelegateData (not reflected; layout from DevDump, no doubles)
+// 0x0048 (0x0048 - 0x0000)
+struct FAttributeDelegateData final
+{
+public:
+	TWeakObjectPtr<class UAbilitySystemComponent> ASC;                                               // 0x0000(0x0008)(Native)
+	struct FGameplayAttribute                     Attribute;                                         // 0x0008(0x0038)(Native)
+	FDelegateHandle                               Handle;                                            // 0x0040(0x0008)(Native)
+};
+
+// Native struct FFortAISightClamp (not reflected; layout from DevDump, no doubles)
+// 0x0014 (0x0014 - 0x0000)
+struct FFortAISightClamp final
+{
+public:
+	TWeakObjectPtr<class UObject>                 WeakOwner;                                         // 0x0000(0x0008)(Native)
+	float                                         SightRadiusClamp;                                  // 0x0008(0x0004)(Native)
+	float                                         LoseSightRadiusClamp;                              // 0x000C(0x0004)(Native)
+	uint8                                         Priority;                                          // 0x0010(0x0001)(Native)
+	uint8                                         Pad_11[0x3];                                       // 0x0011(0x0003)(Fixing Struct Size After Last Property)
+};
+
+// Native struct FFortGameplayAbilityQueryObserverData (not reflected; layout from DevDump, no doubles)
+// 0x0038 (0x0038 - 0x0000)
+struct FFortGameplayAbilityQueryObserverData final
+{
+public:
+	struct FGameplayTagContainer                  GameplayAbilityTags;                               // 0x0000(0x0020)(Native)
+	struct FGameplayAbilitySpecHandle             GameplayAbilitySpecHandle;                         // 0x0020(0x0004)(Native)
+	uint8                                         bTestingUsingActorTarget : 1;                      // 0x0024(0x0001)(BitIndex: 0x00, Native)
+	uint8                                         BitPad_24_1 : 7;                                   // 0x0024(0x0001)(Fixing Bit-Field Size)
+	uint8                                         ActorTargetBlackboardKey;                          // 0x0025(0x0001)(Native)
+	uint8                                         Pad_26[0x2];                                       // 0x0026(0x0002)(Alignment)
+	class UFortBTDecorator_QueryGameplayAbility*  ObservingQueryGameplayAbilityDecorator;            // 0x0028(0x0008)(Native)
+	int32                                         GameplayAbilityObserverHandle;                     // 0x0030(0x0004)(Native)
+	uint8                                         Pad_34[0x4];                                       // 0x0034(0x0004)(Fixing Struct Size After Last Property)
+};
+
 // ScriptStruct FortniteGame.FortBotTargetHandler
 // 0x0028 (0x0028 - 0x0000)
 struct FFortBotTargetHandler final
 {
 public:
-	uint8                                         Pad_0[0x18];                                       // 0x0000(0x0018)(Fixing Size After Last Property [ Dumper-8 ])
+	int32                                         CurrentTargetIdx;                                  // 0x0000(0x0004)(Native, default -1)
+	int32                                         CurrentThreatIdx;                                  // 0x0004(0x0004)(Native, default -1)
+	int32                                         IncomingObstacleIdx;                               // 0x0008(0x0004)(Native, default -1)
+	int32                                         BlockingObstacleIdx;                               // 0x000C(0x0004)(Native, default -1)
+	int32                                         TrapIdx;                                           // 0x0010(0x0004)(Native, default -1)
+	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
 	TArray<struct FFortBotTargetInfo>             Targets;                                           // 0x0018(0x0010)(ZeroConstructor, Transient, NativeAccessSpecifierPrivate)
+
+public:
+	struct FFortBotTargetInfo* GetTargetInfo(int32 TargetIndex)
+	{
+		static FFortBotTargetInfo* (*GetTargetInfoOriginal)(FFortBotTargetHandler*, int32) = decltype(GetTargetInfoOriginal)(InSDKUtils::GetImageBase() + 0x5ebe398);
+		return GetTargetInfoOriginal(this, TargetIndex);
+	}
+
+	const struct FFortBotTargetInfo* GetTargetInfo(int32 TargetIndex) const
+	{
+		return const_cast<FFortBotTargetHandler*>(this)->GetTargetInfo(TargetIndex);
+	}
 };
 
 // ScriptStruct FortniteGame.BotDelayedStimulus

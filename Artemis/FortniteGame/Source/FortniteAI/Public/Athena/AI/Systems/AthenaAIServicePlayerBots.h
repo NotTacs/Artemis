@@ -33,7 +33,6 @@ public:
 	static void WaitForMatchAssignmentReady(UAthenaAIServicePlayerBots* __this, FFlowHandleSharedPtr* FlowHandle);
 	static void TickPendingMatchAssignment();
 	static void PlacePlayerBotsInAircraft(UAthenaAIServicePlayerBots* __this, const TArray<AFortAthenaAircraft*> Aircrafts);
-	static void CachePointsOnNavMesh(UAthenaAIServicePlayerBots* __this, __int64 FlowHandle);
 	static void OnPlayerBotSpawned(UAthenaAIServicePlayerBots* __this, AActor* Actor, const int SpawnRequestID, double PawnMMR);
 	static void LoadModule();
 };

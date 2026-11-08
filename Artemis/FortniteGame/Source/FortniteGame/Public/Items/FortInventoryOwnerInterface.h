@@ -4,7 +4,8 @@
 class FortInventoryOwnerInterface
 {
 public:
-	static void GiveInventoryItem(IFortInventoryOwnerInterface* __this, FFortItemEntry& ItemEntry);
-	static void RemoveInventoryItem(IFortInventoryOwnerInterface* __this, const FGuid& ItemGuid);
+	static bool CreateInventory(IFortInventoryOwnerInterface* __this);
+	static void InitializeInventory(IFortInventoryOwnerInterface* __this, const TArray<FItemAndCount>& ItemList);
+	static bool RemoveInventoryItem(IFortInventoryOwnerInterface* __this, FGuid ItemGuid, int32 Count, bool bForceRemoveFromQuickBars, bool bForceRemoval);
 	static void LoadModule();
 };

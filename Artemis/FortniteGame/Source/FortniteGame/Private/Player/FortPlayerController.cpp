@@ -325,6 +325,64 @@ void FortPlayerController::ServerEndEditingBuildingActor_Implementation(AFortPla
 	}
 }
 
+void FortPlayerController::ServerPlayEmoteItem_Implementation(AFortPlayerController* __this, const UFortMontageItemDefinitionBase* EmoteAsset, float EmoteRandomNumber)
+{
+	UE_LOG(LogFort, Log, L"ServerPlayEmoteItem_Implementation called.");
+	if (!EmoteAsset || !__this->MyFortPawn)
+	{
+		return;
+	}
+
+	UAbilitySystemComponent* AbilitySystemComponent = __this->MyFortPawn->AbilitySystemComponent;
+	if (!AbilitySystemComponent || !__this->CanPerformNativeAction(EmoteAsset->GetAssociatedAbilityTag()))
+	{
+		return;
+	}
+
+	FGameplayTagContainer FailureTags;
+	if (!EmoteAsset->CanActivateMontageItem(__this, &FailureTags))
+	{
+		return;
+	}
+
+	FFortAssets::GetAsset<UAnimMontage>(EmoteAsset->Animation, true);
+
+	__this->MyFortPawn->EmoteRandomNum = EmoteRandomNumber;
+
+	UE_LOG(LogFort, Log, TEXT("EmoteGameplayAbility: %s"), *UGameDataCosmetics::Get()->EmoteGameplayAbility.ObjectID.AssetPathName.ToFString());
+	TSubclassOf<UClass> EmoteAbilityClass = FFortAssets::GetSubclassOf(UGameDataCosmetics::Get()->EmoteGameplayAbility);
+	if (EmoteAsset->IsA<UAthenaSprayItemDefinition>())
+	{
+		if (TSubclassOf<UClass> SprayAbility = FFortAssets::GetSubclassOf(UGameDataCosmetics::Get()->SprayGameplayAbility))
+		{
+			EmoteAbilityClass = SprayAbility;
+		}
+	}
+	else if (const UAthenaToyItemDefinition* ToyItemDefinition = Cast<UAthenaToyItemDefinition>(EmoteAsset))
+	{
+		if (TSubclassOf<UClass> ToySpawnAbility = FFortAssets::GetSubclassOf(ToyItemDefinition->ToySpawnAbility))
+		{
+			EmoteAbilityClass = ToySpawnAbility;
+		}
+	}
+	else if (const UAthenaDanceItemDefinition* DanceItemDefinition = Cast<UAthenaDanceItemDefinition>(EmoteAsset))
+	{
+		if (TSubclassOf<UClass> CustomDanceAbility = FFortAssets::GetSubclassOf(DanceItemDefinition->CustomDanceAbility))
+		{
+			EmoteAbilityClass = CustomDanceAbility;
+		}
+	}
+
+	if (!EmoteAbilityClass)
+	{
+		UE_LOG(LogFort, Log, L"Failed to find EmoteAbilityClass.");
+		return;
+	}
+
+	FGameplayAbilitySpec Spec(EmoteAbilityClass->GetDefaultObject<UFortGameplayAbility>(), 1, INDEX_NONE, const_cast<UFortMontageItemDefinitionBase*>(EmoteAsset));
+	AbilitySystemComponent->GiveAbilityAndActivateOnce(Spec);
+}
+
 void FortPlayerController::LoadModule()
 {
 	FMemoryLibrary::VFTHook(AFortPlayerController::GetDefaultObj()->VTable, 0x24D, ServerCreateBuildingActor_Implementation);
@@ -336,4 +394,7 @@ void FortPlayerController::LoadModule()
 	FMemoryLibrary::VFTHook(AFortPlayerControllerAthena::GetDefaultObj()->VTable, 0x24F, ServerEditBuildingActor_Implementation);
 	FMemoryLibrary::VFTHook(AFortPlayerController::GetDefaultObj()->VTable, 0x252, ServerEndEditingBuildingActor_Implementation);
 	FMemoryLibrary::VFTHook(AFortPlayerControllerAthena::GetDefaultObj()->VTable, 0x252, ServerEndEditingBuildingActor_Implementation);
+
+	FMemoryLibrary::VFTHook(AFortPlayerControllerAthena::GetDefaultObj()->VTable, 0x1E8, ServerPlayEmoteItem_Implementation);
+	FMemoryLibrary::VFTHook(AFortPlayerController::GetDefaultObj()->VTable, 0x1E8, ServerPlayEmoteItem_Implementation);
 }

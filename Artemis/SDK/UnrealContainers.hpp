@@ -527,6 +527,16 @@ namespace UC
 		}
 
 
+		inline ArrayElementType& Add_GetRef(const ArrayElementType& Element)
+		{
+
+			ResizeTo((NumElements + 1));
+			new (&Data[NumElements]) ArrayElementType(Element);
+			NumElements++;
+
+			return Data[NumElements - 1];
+		}
+
 		inline ArrayElementType& AddImproper(const ArrayElementType& Element)
 		{
 			ResizeTo((NumElements + 1));

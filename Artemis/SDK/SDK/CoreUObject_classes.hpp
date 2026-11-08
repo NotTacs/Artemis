@@ -32,10 +32,18 @@ public:
 	static class UObject* FindObjectImpl(const std::string& FullName, EClassCastFlags RequiredType = EClassCastFlags::None);
 
 	std::string GetFullName() const;
+	std::wstring GetFullNameW() const;
 	FAllocatedString GetName() const;
 	bool HasTypeFlag(EClassCastFlags TypeFlags) const;
 	bool IsA(EClassCastFlags TypeFlags) const;
 	bool IsA(class UClass* TypeClass) const;
+
+	template<typename T>
+	bool IsA(UClass* Class = T::StaticClass()) const
+	{
+		return IsA(Class);
+	}
+
 	bool IsDefaultObject() const;
 
 	void ExecuteUbergraph(int32 EntryPoint);
@@ -311,7 +319,8 @@ public:
 	class FField*                                 ChildProperties;                                   // 0x0050(0x0008)(NOT AUTO-GENERATED PROPERTY)
 	int32                                         Size;                                              // 0x0058(0x0004)(NOT AUTO-GENERATED PROPERTY)
 	int32                                         MinAlignemnt;                                      // 0x005C(0x0004)(NOT AUTO-GENERATED PROPERTY)
-	uint8                                         Pad_60[0x50];                                      // 0x0060(0x0050)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	TArray<uint8>                                 Script;                                            // 0x0060(0x0010)(NOT AUTO-GENERATED PROPERTY: Kismet bytecode, read by FFrame / UObject::ProcessEvent)
+	uint8                                         Pad_70[0x40];                                      // 0x0070(0x0040)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
 	bool IsSubclassOf(const UStruct* Base) const;
@@ -358,10 +367,19 @@ public:
 
 public:
 	class UFunction* GetFunction(const std::string& ClassName, const std::string& FuncName) const;
+	class UFunction* FindFunctionByName(struct FName InName);
 	UObject* CreateDefaultObject()
 	{
 		UObject* (*CreateDefaultObjectInternal)(UClass*) = decltype(CreateDefaultObjectInternal)(VTable[0x7C]);
 		return CreateDefaultObjectInternal(this);
+	}
+
+	template<typename T>
+	T* GetDefaultObject()
+	{
+		if (!DefaultObject)
+			CreateDefaultObject();
+		return static_cast<T*>(DefaultObject);
 	}
 public:
 	static class UClass* StaticClass()

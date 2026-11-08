@@ -100,7 +100,6 @@ void FortGameModeAthena::StartNewSafeZonePhase(AFortGameModeAthena* __this, int3
 
 void FortGameModeAthena::FinishRestartPlayer(AFortGameModeAthena* __this, AController* NewPlayer, const FRotator& StartRotation)
 {
-	printf(__FUNCTION__"\n");
 	Originals::FinishRestartPlayer(__this, NewPlayer, StartRotation);
 	if (NewPlayer->IsA(AFortAthenaAIBotController::StaticClass()))
 		return;
@@ -113,18 +112,14 @@ void FortGameModeAthena::FinishRestartPlayer(AFortGameModeAthena* __this, AContr
 		if (StartingItem.Count > 0 && StartingItem.Item) {
 			if (NewPlayer->IsA(AFortPlayerControllerAthena::StaticClass()) && StartingItem.Item->IsA(UFortSmartBuildingItemDefinition::StaticClass()))
 				continue;
-			FFortItemEntry ItemEntry = FFortItemEntry(StartingItem.Item, StartingItem.Count);
-			FortInventoryOwnerInterface::GiveInventoryItem(InventoryOwner, ItemEntry);
+			UFortKismetLibrary::GiveItemToInventoryOwner(InventoryOwner, Cast<UFortWorldItemDefinition>(StartingItem.Item), {}, StartingItem.Count, false, -1, -1, false);
 		}
 	}
 	if (NewPlayer->IsA(AFortPlayerControllerAthena::StaticClass()))
 	{
 		FFortAthenaLoadout CosmeticLoadout = ((AFortPlayerControllerAthena*)NewPlayer)->CosmeticLoadoutPC;
-		FFortItemEntry ItemEntry = FFortItemEntry(CosmeticLoadout.Pickaxe->WeaponDefinition, 1);
-		FortInventoryOwnerInterface::GiveInventoryItem(InventoryOwner, ItemEntry);
-
-		FFortItemEntry TestEntry = FFortItemEntry(UObject::StaticLoadObject<UFortItemDefinition>("/Game/Items/ResourcePickups/WoodItemData.WoodItemData"), 500);
-		FortInventoryOwnerInterface::GiveInventoryItem(InventoryOwner, TestEntry);
+		UFortKismetLibrary::GiveItemToInventoryOwner(InventoryOwner, CosmeticLoadout.Pickaxe->WeaponDefinition, {}, 1, false, -1, -1, false);
+		UFortKismetLibrary::GiveItemToInventoryOwner(InventoryOwner, UObject::StaticLoadObject<UFortWorldItemDefinition>("/Game/Items/ResourcePickups/WoodItemData.WoodItemData"), {}, 250, true, -1, -1, false);
 	}
 
 	static bool bFirst = false;

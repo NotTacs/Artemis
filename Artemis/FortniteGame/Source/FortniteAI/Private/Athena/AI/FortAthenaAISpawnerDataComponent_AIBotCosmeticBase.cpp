@@ -7,6 +7,7 @@ void FortAthenaAISpawnerDataComponent_AIBotCosmeticBase::GetLoadout_Implementati
 	printf(__FUNCTION__"\n");
 	/*TODO: Make this proper and not be scuffed.*/
 	OutLoadout->Character = UObject::StaticLoadObject<UAthenaCharacterItemDefinition>("/Game/Athena/Items/Cosmetics/Characters/CID_001_Athena_Commando_F_Default.CID_001_Athena_Commando_F_Default");
+	OutLoadout->Pickaxe = UObject::StaticLoadObject<UAthenaPickaxeItemDefinition>("/Game/Athena/Items/Cosmetics/Pickaxes/DefaultPickaxe.DefaultPickaxe");
 }
 
 void FortAthenaAISpawnerDataComponent_AIBotCosmeticBase::LoadModule()

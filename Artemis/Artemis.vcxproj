@@ -154,6 +154,22 @@
     <ClInclude Include="Engine\Restricted\NotForLicensees\Plugins\OnlineGameplayFramework\Source\McpProfileSys\Public\McpProfileGroup.h" />
     <ClInclude Include="Engine\Restricted\NotForLicensees\Plugins\Online\OnlineSubsystemMcp\Source\Public\McpQueryResult.h" />
     <ClInclude Include="Engine\Source\Runtime\CoreUObject\Public\UObject\Object.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Misc\OutputDevice.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Containers\StringConv.h" />
+    <ClInclude Include="Engine\Source\Runtime\CoreUObject\Public\UObject\Script.h" />
+    <ClInclude Include="Engine\Source\Runtime\CoreUObject\Public\UObject\Stack.h" />
+    <ClInclude Include="Engine\Source\Runtime\CoreUObject\Public\UObject\UnrealType.h" />
+    <ClInclude Include="Engine\Source\Runtime\CoreUObject\Public\UObject\ScriptMacros.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Templates\Tuple.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Templates\EnableIf.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Templates\AndOrNot.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Templates\IsConstructible.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Templates\RemoveCV.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Templates\Decay.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Templates\CopyQualifiersFromTo.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Templates\CopyQualifiersAndRefsFromTo.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Templates\TypeHash.h" />
+    <ClInclude Include="Engine\Source\Runtime\Core\Public\Delegates\IntegerSequence.h" />
     <ClInclude Include="Engine\Source\Runtime\Core\Public\Templates\AreTypesEqual.h" />
     <ClInclude Include="Engine\Source\Runtime\Core\Public\Templates\Identity.h" />
     <ClInclude Include="Engine\Source\Runtime\Core\Public\Templates\IsTrivallyDestructible.h" />
@@ -180,6 +196,7 @@
     <ClInclude Include="Engine\Source\Runtime\Json\Public\Dom\JsonValue.h" />
     <ClInclude Include="Engine\Source\Runtime\Json\Public\Serialization\JsonTypes.h" />
     <ClInclude Include="Engine\Source\Runtime\Online\HTTP\Public\Interfaces\IHttpRequest.h" />
+    <ClInclude Include="FortniteGame\Source\FortniteAI\Public\AI\FortAthenaAIBotController.h" />
     <ClInclude Include="FortniteGame\Source\FortniteAI\Public\AI\Navigation\AthenaNavSystem.h" />
     <ClInclude Include="FortniteGame\Source\FortniteAI\Public\Athena\AI\FortAthenaAISpawnerDataComponent_AIBotCosmeticBase.h" />
     <ClInclude Include="FortniteGame\Source\FortniteAI\Public\Athena\AI\Systems\AthenaAIServicePlayerBots.h" />
@@ -195,11 +212,14 @@
     <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Athena\FortPoiVolume.h" />
     <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Components\FortControllerComponent_Aircraft.h" />
     <ClInclude Include="FortniteGame\Source\FortniteGame\Public\FortGameMode.h" />
+    <ClInclude Include="FortniteGame\Source\FortniteGame\Public\FortAssets.h" />
+    <ClInclude Include="FortniteGame\Source\FortniteGame\Public\FortKismetLibrary.h" />
     <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Items\FortInventoryOwnerInterface.h" />
     <ClInclude Include="FortniteGame\Source\FortniteGame\Public\Player\FortPlayerController.h" />
     <ClInclude Include="httplib.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="SDK\SDK\AIModule_classes.hpp" />
     <ClInclude Include="SDK\SDK\Basic.hpp" />
     <ClInclude Include="SDK\UnrealContainers.hpp" />
   </ItemGroup>
@@ -209,6 +229,7 @@
     <ClCompile Include="Backend\Private\BackendHttpServer.cpp" />
     <ClCompile Include="Engine\Restricted\NotForLicensees\Plugins\OnlineGameplayFramework\Source\McpProfileSys\Private\McpProfileGroup.cpp" />
     <ClCompile Include="Engine\Source\Runtime\CoreUObject\Private\UObject\Obj.cpp" />
+    <ClCompile Include="Engine\Source\Runtime\CoreUObject\Private\UObject\ScriptCore.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Core\Private\Logging\LogMacros.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Core\Private\Logging\LogSuppressionInterface.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Core\Private\Logging\LogVerbosity.cpp" />
@@ -218,6 +239,7 @@
     <ClCompile Include="Engine\Source\Runtime\Engine\Private\UnrealEngine.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Core\Private\Delegates\DelegateHandle.cpp" />
     <ClCompile Include="Engine\Source\Runtime\Engine\Private\World.cpp" />
+    <ClCompile Include="FortniteGame\Source\FortniteAI\Private\AI\FortAthenaAIBotController.cpp" />
     <ClCompile Include="FortniteGame\Source\FortniteAI\Private\AI\Navigation\AthenaNavSystem.cpp" />
     <ClCompile Include="FortniteGame\Source\FortniteAI\Private\Athena\AI\FortAthenaAISpawnerDataComponent_AIBotCosmeticBase.cpp" />
     <ClCompile Include="FortniteGame\Source\FortniteAI\Private\Athena\AI\Systems\AthenaAIServicePlayerBots.cpp" />
@@ -228,6 +250,8 @@
     <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Athena\FortPlayerControllerAthena.cpp" />
     <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Athena\FortPoiVolume.cpp" />
     <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Components\FortControllerComponent_Aircraft.cpp" />
+    <ClCompile Include="FortniteGame\Source\FortniteGame\Private\FortAssets.cpp" />
+    <ClCompile Include="FortniteGame\Source\FortniteGame\Private\FortKismetLibrary.cpp" />
     <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Items\FortInventoryOwnerInterface.cpp" />
     <ClCompile Include="FortniteGame\Source\FortniteGame\Private\Player\FortPlayerController.cpp" />
     <ClCompile Include="pch.cpp">

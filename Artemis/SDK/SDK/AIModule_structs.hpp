@@ -13,6 +13,12 @@
 #include "CoreUObject_structs.hpp"
 #include "Engine_structs.hpp"
 
+namespace FBlackboard
+{
+	typedef uint8 FKey;
+	const FKey InvalidKey = FKey(-1);
+}
+
 
 
 // Enum AIModule.EPathFollowingResult

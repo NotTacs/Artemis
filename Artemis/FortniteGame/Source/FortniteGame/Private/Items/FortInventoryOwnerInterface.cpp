@@ -1,73 +1,222 @@
 ﻿#include "pch.h"
 #include "../../Public/Items/FortInventoryOwnerInterface.h"
+#include "FortniteGame/Source/FortniteAI/Public/AI/FortAthenaAIBotController.h"
+#include "Engine/Source/Runtime/Engine/Classes/Kismet/MemoryLibrary.h"
 
-void FortInventoryOwnerInterface::GiveInventoryItem(IFortInventoryOwnerInterface* __this, FFortItemEntry& ItemEntry)
+bool FortInventoryOwnerInterface::CreateInventory(IFortInventoryOwnerInterface* __this)
 {
-	if (!__this || ItemEntry.Count < 0 || ItemEntry.ItemDefinition == nullptr)
-		return;
-	UObject* Owner = __this->_getUObject();
-	/* THIS BLOCK WILL BE REPLACED WITH GetWorldInventory*/
-	AFortInventory* OwnerInventory = nullptr;
-	if (AFortPlayerControllerAthena* FortPlayerController = Cast<AFortPlayerControllerAthena>(Owner))
+	AFortAthenaAIBotController* FortAIController = Cast<AFortAthenaAIBotController>(__this->_getUObject());
+	if (!FortAIController)
 	{
-		OwnerInventory = FortPlayerController->WorldInventory;
+		return false;
 	}
-	else if (AFortAthenaAIBotController* FortAIController = Cast<AFortAthenaAIBotController>(Owner))
-	{
-		OwnerInventory = FortAIController->Inventory;
-	}
-	if (!OwnerInventory)
-	{
-		UE_LOG(LogInventory, Error, TEXT("IFortInventoryOwnerInterface::GiveInventoryItem() : Failed to find OwnerInventory."));
-		return;
-	}
-	ItemEntry.ParentInventory = OwnerInventory;
 
-	OwnerInventory->Inventory.ReplicatedEntries.Add(ItemEntry);
-	OwnerInventory->Inventory.MarkArrayDirty();
-	OwnerInventory->HandleInventoryLocalUpdate();
+	if (!FortAIController->Inventory)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = FortAIController;
+		SpawnParams.Instigator = FortAIController->PlayerBotPawn;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		FortAIController->Inventory = FortAIController->GetWorld()->SpawnActor<AFortInventory>(AFortInventory::StaticClass(), SpawnParams);
+		if (FortAIController->Inventory)
+		{
+			FortAIController->Inventory->InventoryType = EFortInventoryType::World;
+		}
+	}
+
+	return FortAIController->Inventory != nullptr;
 }
 
-void FortInventoryOwnerInterface::RemoveInventoryItem(IFortInventoryOwnerInterface* __this, const FGuid& ItemGuid)
+void FortInventoryOwnerInterface::InitializeInventory(IFortInventoryOwnerInterface* __this, const TArray<FItemAndCount>& ItemList)
 {
-	if (!__this)
-		return;
-	AFortInventory* OwnerInventory = __this->GetWorldInventory();
-	if (!OwnerInventory)
-	{
-		UE_LOG(LogInventory, Error, TEXT("IFortInventoryOwnerInterface::RemoveInventoryItem() : Failed to find OwnerInventory."));
-		return;
-	}
-	FFortItemEntry RemovedItemEntry;
-	for (int32 EntryIndex = 0; EntryIndex < OwnerInventory->Inventory.ReplicatedEntries.Num(); EntryIndex++)
-	{
-		if (ItemGuid == OwnerInventory->Inventory.ReplicatedEntries[EntryIndex].ItemGuid)
-		{
-			RemovedItemEntry = OwnerInventory->Inventory.ReplicatedEntries[EntryIndex];
-			OwnerInventory->Inventory.ReplicatedEntries.Remove(EntryIndex);
-			break;
-		}
-	}
+	AFortAthenaAIBotController* FortAIController = Cast<AFortAthenaAIBotController>(__this->_getUObject());
 
-	int32 PickupInstigatorHandle = -1;
-	/*TODO: ADD GetStateValue*/
-	bool bHasPickupInstigatorHandle = false;
-	for (auto& StateValue : RemovedItemEntry.StateValues)
+	if (FortAIController)
 	{
-		if (StateValue.StateType == EFortItemEntryState::PickupInstigatorHandle)
+		if (FortAIController->StartupInventory && &FortAIController->StartupInventory->Items != &ItemList)
 		{
-			PickupInstigatorHandle = StateValue.IntValue;
-			bHasPickupInstigatorHandle = true;
-			break;
+			TArray<FItemAndCount>& StartupItems = FortAIController->StartupInventory->Items;
+			StartupItems.Free();
+			for (const FItemAndCount& Item : ItemList)
+			{
+				StartupItems.Add(Item);
+			}
 		}
-	}
-	if (bHasPickupInstigatorHandle && PickupInstigatorHandle != -1)
-	{
-		if (APlayerController* PlayerController = Cast<APlayerController>(__this->_getUObject()))
-		{
-			/*if (UFortPickupInstigatorRegistryComponent* PickupRegistry = UFortPickupInstigatorRegistryComponent)*/
-		}
-	}
 
-	OwnerInventory->HandleInventoryLocalUpdate();
+		if (!FortAIController->Inventory)
+		{
+			FortInventoryOwnerInterface::CreateInventory(__this);
+		}
+
+		bool bShouldIgnoreInventoryRestrictions = false;
+		if (FortAIController->CachedAIRuntimeParametersComponent)
+		{
+			UFortAthenaAIRuntimeParameters_Inventory* InventoryRuntimeParameters = Cast<UFortAthenaAIRuntimeParameters_Inventory>(UFortAIFunctionLibrary::GetOrCreateAIRuntimeParameters(FortAIController, UFortAthenaAIRuntimeParameters_Inventory::StaticClass()));
+			if (InventoryRuntimeParameters)
+			{
+				if (InventoryRuntimeParameters->bSkipInventoryInitialization)
+				{
+					return;
+				}
+
+				bShouldIgnoreInventoryRestrictions = InventoryRuntimeParameters->bDefaultInventoryIgnoresRestrictions;
+			}
+		}
+
+		FortAIController->bIgnoreInventoryRestrictions = bShouldIgnoreInventoryRestrictions;
+
+		if (FortAIController->Inventory)
+		{
+			if (FortAIController->Blackboard)
+			{
+				FortAIController->Blackboard->SetValue<UBlackboardKeyType_Object>(FortAIController->WeaponKey, nullptr);
+			}
+
+			for (FFortBotInventoryInfo& SlotItem : FortAIController->SlotItems)
+			{
+				SlotItem.ItemDefinition = nullptr;
+				SlotItem.FortItem = nullptr;
+				SlotItem.ItemType = EFortItemType::Max_None;
+				SlotItem.WeaponType = AFortWeapon::FindWeaponTypeForStats(nullptr);
+			}
+
+			FortAthenaAIBotController::GiveInventory(FortAIController, const_cast<TArray<FItemAndCount>&>(ItemList));
+
+			const FFortBotTargetInfo* TargetInfo = FortAIController->TargetHandler.CurrentTargetIdx != INDEX_NONE ? FortAIController->TargetHandler.GetTargetInfo(FortAIController->TargetHandler.CurrentTargetIdx) : nullptr;
+			FortAIController->EquipWeapon(FortAIController->GetBestWeaponForTargetInfo(TargetInfo, false, false));
+		}
+
+		FortAIController->bIgnoreInventoryRestrictions = false;
+	}
+}
+
+bool FortInventoryOwnerInterface::RemoveInventoryItem(IFortInventoryOwnerInterface* __this, FGuid ItemGuid, int32 Count, bool bForceRemoval, bool bForcePersistWhenEmpty)
+{
+	UE_LOG(LogFortInventory, Log, TEXT("%s called."), ANSI_TO_TCHAR(__FUNCTION__));
+	UObject* InventoryOwner = __this->_getUObject();
+	if (auto FortPlayerController = Cast<AFortPlayerController>(InventoryOwner))
+	{
+		if (FortPlayerController->GetLocalRole() != ENetRole::ROLE_Authority)
+		{
+			FortPlayerController->ServerRemoveInventoryItem(ItemGuid, Count, bForceRemoval, false, false);
+			return false;
+		}
+
+		AFortInventory* WorldInventory = FortPlayerController->WorldInventory;
+
+		if (!WorldInventory || Count == 0)
+		{
+			return false;
+		}
+
+		UFortWorldItem* Item = WorldInventory->GetItem(ItemGuid);
+		FFortItemEntry* ItemEntry = WorldInventory->GetReplicatedItemEntry(ItemGuid);
+		if (!Item || !ItemEntry)
+		{
+			UE_LOG(LogFortInventory, Log, TEXT("Cannot find replicated ItemInstance or Entry"));
+			return false;
+		}
+
+		if (Count > 0 && Count < ItemEntry->Count)
+		{
+			ItemEntry->SetCount(ItemEntry->Count - Count);
+			WorldInventory->Inventory.MarkItemDirty(*ItemEntry);
+			WorldInventory->HandleInventoryLocalUpdate();
+			return true;
+		}
+
+		const UFortWorldItemDefinition* ItemDefinition = Cast<UFortWorldItemDefinition>(Item->ItemEntry.ItemDefinition);
+		if (bForcePersistWhenEmpty || (ItemDefinition && ItemDefinition->ShouldPersistInInventoryWhenFinalStackEmpty()))
+		{
+			ItemEntry->SetCount(0);
+			WorldInventory->Inventory.MarkItemDirty(*ItemEntry);
+			WorldInventory->HandleInventoryLocalUpdate();
+			return true;
+		}
+
+		WorldInventory->OnRemoveItemStack(Item, ItemGuid);
+		Item->RemoveFromInventory();
+		WorldInventory->HandleInventoryLocalUpdate();
+
+		FortPlayerController->OnInventoryItemRemoved(WorldInventory, ItemGuid);
+		return true;
+	}
+	else if (auto FortAIController = Cast<AFortAthenaAIBotController>(InventoryOwner))
+	{
+		if (!FortAIController->HasAuthority() || !FortAIController->Inventory || Count == 0)
+		{
+			return false;
+		}
+
+		AFortInventory* Inventory = FortAIController->Inventory;
+
+		UFortWorldItem* Item = Inventory->GetItem(ItemGuid);
+		FFortItemEntry* ItemEntry = Inventory->GetReplicatedItemEntry(ItemGuid);
+		if (!Item || !ItemEntry)
+		{
+			return false;
+		}
+
+		if (Count > 0 && Count < ItemEntry->Count)
+		{
+			ItemEntry->SetCount(ItemEntry->Count - Count);
+			Inventory->Inventory.MarkItemDirty(*ItemEntry);
+			Inventory->HandleInventoryLocalUpdate();
+			return true;
+		}
+
+		for (FFortBotInventoryInfo& SlotItem : FortAIController->SlotItems)
+		{
+			if (SlotItem.FortItem == Item)
+			{
+				SlotItem.ItemDefinition = nullptr;
+				SlotItem.FortItem = nullptr;
+				SlotItem.ItemType = EFortItemType::Max_None;
+				SlotItem.WeaponType = AFortWeapon::FindWeaponTypeForStats(nullptr);
+			}
+		}
+
+		Inventory->OnRemoveItemStack(Item, ItemGuid);
+		Item->RemoveFromInventory();
+		Inventory->HandleInventoryLocalUpdate();
+		return true;
+	}
+	else if (auto FortAIPawn = Cast<AFortAIPawn>(InventoryOwner))
+	{
+		if (!FortAIPawn->HasAuthority() || !FortAIPawn->bHasInventory || !FortAIPawn->Inventory || Count == 0)
+		{
+			return false;
+		}
+
+		UFortWorldItem* Item = FortAIPawn->Inventory->GetItem(ItemGuid);
+		FFortItemEntry* ItemEntry = FortAIPawn->Inventory->GetReplicatedItemEntry(ItemGuid);
+		if (!Item || !ItemEntry)
+		{
+			return false;
+		}
+
+		if (Count > 0 && Count < ItemEntry->Count)
+		{
+			ItemEntry->SetCount(ItemEntry->Count - Count);
+			FortAIPawn->Inventory->Inventory.MarkItemDirty(*ItemEntry);
+			FortAIPawn->Inventory->HandleInventoryLocalUpdate();
+			return true;
+		}
+
+		FortAIPawn->Inventory->OnRemoveItemStack(Item, ItemGuid);
+		Item->RemoveFromInventory();
+		FortAIPawn->Inventory->HandleInventoryLocalUpdate();
+		return true;
+	}
+	return false;
+}
+
+void FortInventoryOwnerInterface::LoadModule()
+{
+	FMemoryLibrary::VFTHook(Cast<IFortInventoryOwnerInterface>(AFortAthenaAIBotController::GetDefaultObj())->VTable, 0x3, CreateInventory);
+	FMemoryLibrary::VFTHook(Cast<IFortInventoryOwnerInterface>(AFortAthenaAIBotController::GetDefaultObj())->VTable, 0x4, InitializeInventory);
+	FMemoryLibrary::VFTHook(Cast<IFortInventoryOwnerInterface>(AFortAthenaAIBotController::GetDefaultObj())->VTable, 0x2F, RemoveInventoryItem);
+	FMemoryLibrary::VFTHook(Cast<IFortInventoryOwnerInterface>(AFortAIPawn::GetDefaultObj())->VTable, 0x2F, RemoveInventoryItem);
+	FMemoryLibrary::VFTHook(Cast<IFortInventoryOwnerInterface>(AFortPlayerControllerAthena::GetDefaultObj())->VTable, 0x2F, RemoveInventoryItem);
+	FMemoryLibrary::VFTHook(Cast<IFortInventoryOwnerInterface>(AFortPlayerController::GetDefaultObj())->VTable, 0x2F, RemoveInventoryItem);
 }

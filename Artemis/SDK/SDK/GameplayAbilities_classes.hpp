@@ -266,6 +266,30 @@ public:
 		static bool (*InternalTryActivateAbilityOriginal)(void*, FGameplayAbilitySpecHandle Handle, FPredictionKey InPredictionKey, UGameplayAbility * *OutInstancedAbility, void* OnGameplayAbilityEndedDelegate, const FGameplayEventData * TriggerEventData) = decltype(InternalTryActivateAbilityOriginal)(InSDKUtils::GetImageBase() + 0x4e02108);
 		return InternalTryActivateAbilityOriginal(this, Handle, InPredictionKey, OutInstancedAbility, OnGameplayAbilityEndedDelegate, TriggerEventData);
 	}
+	FGameplayAbilitySpecHandle GiveAbility(const FGameplayAbilitySpec& AbilitySpec)
+	{
+		static FGameplayAbilitySpecHandle* (*GiveAbilityOriginal)(void*, FGameplayAbilitySpecHandle*, const FGameplayAbilitySpec*) = decltype(GiveAbilityOriginal)(InSDKUtils::GetImageBase() + 0x1210B88);
+		FGameplayAbilitySpecHandle Result;
+		GiveAbilityOriginal(this, &Result, &AbilitySpec);
+		return Result;
+	}
+	FGameplayAbilitySpecHandle GiveAbilityAndActivateOnce(FGameplayAbilitySpec& AbilitySpec, const FGameplayEventData* GameplayEventData = nullptr)
+	{
+		static FGameplayAbilitySpecHandle* (*GiveAbilityAndActivateOnceOriginal)(void*, FGameplayAbilitySpecHandle*, FGameplayAbilitySpec*, const FGameplayEventData*) = decltype(GiveAbilityAndActivateOnceOriginal)(InSDKUtils::GetImageBase() + 0x4E01290);
+		FGameplayAbilitySpecHandle Result;
+		Result.Handle = -1;
+		if (!AbilitySpec.Ability)
+		{
+			return Result;
+		}
+		GiveAbilityAndActivateOnceOriginal(this, &Result, &AbilitySpec, GameplayEventData);
+		return Result;
+	}
+	void ClearAbility(const FGameplayAbilitySpecHandle& Handle)
+	{
+		static void (*ClearAbilityOriginal)(void*, const FGameplayAbilitySpecHandle*) = decltype(ClearAbilityOriginal)(InSDKUtils::GetImageBase() + 0x4DFD34C);
+		ClearAbilityOriginal(this, &Handle);
+	}
 public:
 	static class UClass* StaticClass()
 	{

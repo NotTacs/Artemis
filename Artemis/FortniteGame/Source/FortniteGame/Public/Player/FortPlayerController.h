@@ -12,5 +12,6 @@ public:
 	static void ServerBeginEditingBuildingActor_Implementation(AFortPlayerController* __this, ABuildingSMActor* BuildingActorToEdit);
 	static void ServerEditBuildingActor_Implementation(AFortPlayerController* __this, ABuildingSMActor* BuildingActorToEdit, UClass* NewBuildingClass, uint8 RotationIterations, bool bMirrored);
 	static void ServerEndEditingBuildingActor_Implementation(AFortPlayerController* __this, ABuildingSMActor* BuildingActorToStopEditing);
+	static void ServerPlayEmoteItem_Implementation(AFortPlayerController* __this, const UFortMontageItemDefinitionBase* EmoteAsset, float EmoteRandomNumber);
 	static void LoadModule();
 };

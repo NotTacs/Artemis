@@ -611,7 +611,17 @@ public:
 class UBlackboardKeyType : public UObject
 {
 public:
-	uint8                                         Pad_28[0x8];                                       // 0x0028(0x0008)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	uint16                                        ValueSize;                                         // 0x0028(0x0002)(Native)
+	uint8                                         SupportedOp;                                       // 0x002A(0x0001)(Native: TEnumAsByte<EBlackboardKeyOperation::Type>)
+	uint8                                         bIsInstanced : 1;                                  // 0x002B(0x0001)(BitIndex: 0x00, Native)
+	uint8                                         bCreateKeyInstance : 1;                            // 0x002B(0x0001)(BitIndex: 0x01, Native)
+	uint8                                         BitPad_2B_2 : 6;                                   // 0x002B(0x0001)(Fixing Bit-Field Size)
+	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-8 ])
+
+public:
+	bool HasInstance() const { return bCreateKeyInstance; }
+	bool IsInstanced() const { return bIsInstanced; }
+	uint16 GetValueSize() const { return ValueSize; }
 
 public:
 	static class UClass* StaticClass()
@@ -1897,7 +1907,8 @@ public:
 	class UBrainComponent*                        BrainComp;                                         // 0x00B0(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, IsPlainOldData, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class UBlackboardData*                        DefaultBlackboardAsset;                            // 0x00B8(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class UBlackboardData*                        BlackboardAsset;                                   // 0x00C0(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_C8[0x20];                                      // 0x00C8(0x0020)(Fixing Size After Last Property [ Dumper-8 ])
+	TArray<uint8>                                 ValueMemory;                                       // 0x00C8(0x0010)(Native)
+	TArray<uint16>                                ValueOffsets;                                      // 0x00D8(0x0010)(Native)
 	TArray<class UBlackboardKeyType*>             KeyInstances;                                      // 0x00E8(0x0010)(ZeroConstructor, Transient, Protected, UObjectWrapper, NativeAccessSpecifierProtected)
 	uint8                                         Pad_F8[0xC0];                                      // 0x00F8(0x00C0)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
@@ -1929,6 +1940,35 @@ public:
 	bool IsVectorValueSet(const class FName& KeyName) const;
 
 public:
+	FBlackboard::FKey GetKeyID(const class FName& KeyName) const
+	{
+		static FBlackboard::FKey (*GetKeyIDOriginal)(const UBlackboardComponent*, const FName*) = decltype(GetKeyIDOriginal)(InSDKUtils::GetImageBase() + 0x7c995d4);
+		return GetKeyIDOriginal(this, &KeyName);
+	}
+
+	class UBlackboardData* GetBlackboardAsset() const { return BlackboardAsset; }
+
+	uint8* GetKeyRawData(FBlackboard::FKey KeyID) { return ValueMemory.Num() && KeyID < ValueOffsets.Num() ? (const_cast<uint8*>(ValueMemory.GetDataPtr()) + ValueOffsets.GetDataPtr()[KeyID]) : nullptr; }
+	const uint8* GetKeyRawData(FBlackboard::FKey KeyID) const { return ValueMemory.Num() && KeyID < ValueOffsets.Num() ? (ValueMemory.GetDataPtr() + ValueOffsets.GetDataPtr()[KeyID]) : nullptr; }
+	uint8* GetKeyRawData(const class FName& KeyName) { return GetKeyRawData(GetKeyID(KeyName)); }
+	const uint8* GetKeyRawData(const class FName& KeyName) const { return GetKeyRawData(GetKeyID(KeyName)); }
+
+	template<class TDataClass>
+	bool IsKeyOfType(FBlackboard::FKey KeyID) const;
+
+	template<class TDataClass>
+	bool SetValue(const class FName& KeyName, typename TDataClass::FDataType Value);
+
+	template<class TDataClass>
+	bool SetValue(FBlackboard::FKey KeyID, typename TDataClass::FDataType Value);
+
+	template<class TDataClass>
+	typename TDataClass::FDataType GetValue(const class FName& KeyName) const;
+
+	template<class TDataClass>
+	typename TDataClass::FDataType GetValue(FBlackboard::FKey KeyID) const;
+
+public:
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"BlackboardComponent">();
@@ -1947,7 +1987,26 @@ public:
 	class UBlackboardData*                        Parent;                                            // 0x0030(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	TArray<struct FBlackboardEntry>               Keys;                                              // 0x0038(0x0010)(Edit, ZeroConstructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
 	uint8                                         bHasSynchronizedKeys : 1;                          // 0x0048(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate))
-	uint8                                         Pad_49[0x7];                                       // 0x0049(0x0007)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	uint8                                         Pad_49[0x3];                                       // 0x0049(0x0003)(Fixing Size After Last Property [ Dumper-8 ])
+	FBlackboard::FKey                             FirstKeyID;                                        // 0x004C(0x0001)(Native)
+	uint8                                         Pad_4D[0x3];                                       // 0x004D(0x0003)(Fixing Struct Size After Last Property [ Dumper-8 ])
+
+public:
+	const struct FBlackboardEntry* GetKey(FBlackboard::FKey KeyID) const
+	{
+		static const FBlackboardEntry* (*GetKeyOriginal)(const UBlackboardData*, FBlackboard::FKey) = decltype(GetKeyOriginal)(InSDKUtils::GetImageBase() + 0x7c995a0);
+		return GetKeyOriginal(this, KeyID);
+	}
+
+	FBlackboard::FKey GetKeyID(const class FName& KeyName) const
+	{
+		static FBlackboard::FKey (*InternalGetKeyIDOriginal)(const UBlackboardData*, const FName*, int32) = decltype(InternalGetKeyIDOriginal)(InSDKUtils::GetImageBase() + 0x1d9de10);
+		return InternalGetKeyIDOriginal(this, &KeyName, 0);
+	}
+
+	FBlackboard::FKey GetFirstKeyID() const { return FirstKeyID; }
+	bool HasSynchronizedKeys() const { return bHasSynchronizedKeys; }
+	const TArray<struct FBlackboardEntry>& GetKeys() const { return Keys; }
 
 public:
 	static class UClass* StaticClass()
@@ -1965,6 +2024,9 @@ public:
 class UBlackboardKeyType_Bool final : public UBlackboardKeyType
 {
 public:
+	typedef bool FDataType;
+	static inline const FDataType InvalidValue = false;
+
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"BlackboardKeyType_Bool">();
@@ -1980,6 +2042,9 @@ public:
 class UBlackboardKeyType_Class final : public UBlackboardKeyType
 {
 public:
+	typedef class UClass* FDataType;
+	static inline const FDataType InvalidValue = nullptr;
+
 	TSubclassOf<class UObject>                    BASEClass;                                         // 0x0030(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 public:
@@ -1998,6 +2063,9 @@ public:
 class UBlackboardKeyType_Enum final : public UBlackboardKeyType
 {
 public:
+	typedef uint8 FDataType;
+	static inline const FDataType InvalidValue = uint8(0xFF);
+
 	class UEnum*                                  EnumType;                                          // 0x0030(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class FString                                 EnumName;                                          // 0x0038(0x0010)(Edit, ZeroConstructor, DisableEditOnInstance, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         bIsEnumNameValid : 1;                              // 0x0048(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (Edit, DisableEditOnInstance, EditConst, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
@@ -2019,6 +2087,9 @@ public:
 class UBlackboardKeyType_Float final : public UBlackboardKeyType
 {
 public:
+	typedef float FDataType;
+	static inline const FDataType InvalidValue = 0.0f;
+
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"BlackboardKeyType_Float">();
@@ -2034,6 +2105,9 @@ public:
 class UBlackboardKeyType_Int final : public UBlackboardKeyType
 {
 public:
+	typedef int32 FDataType;
+	static inline const FDataType InvalidValue = 0;
+
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"BlackboardKeyType_Int">();
@@ -2049,6 +2123,9 @@ public:
 class UBlackboardKeyType_Name final : public UBlackboardKeyType
 {
 public:
+	typedef class FName FDataType;
+	static inline const FDataType InvalidValue = FName();
+
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"BlackboardKeyType_Name">();
@@ -2064,6 +2141,9 @@ public:
 class UBlackboardKeyType_NativeEnum final : public UBlackboardKeyType
 {
 public:
+	typedef uint8 FDataType;
+	static inline const FDataType InvalidValue = uint8(0xFF);
+
 	class FString                                 EnumName;                                          // 0x0030(0x0010)(Edit, ZeroConstructor, DisableEditOnInstance, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class UEnum*                                  EnumType;                                          // 0x0040(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
@@ -2083,6 +2163,9 @@ public:
 class UBlackboardKeyType_Object final : public UBlackboardKeyType
 {
 public:
+	typedef class UObject* FDataType;
+	static inline const FDataType InvalidValue = nullptr;
+
 	TSubclassOf<class UObject>                    BASEClass;                                         // 0x0030(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 public:
@@ -2101,6 +2184,9 @@ public:
 class UBlackboardKeyType_Rotator final : public UBlackboardKeyType
 {
 public:
+	typedef struct FRotator FDataType;
+	static inline const FDataType InvalidValue = FRotator{ 3.402823466e+38f, 3.402823466e+38f, 3.402823466e+38f };
+
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"BlackboardKeyType_Rotator">();
@@ -2116,6 +2202,9 @@ public:
 class UBlackboardKeyType_String final : public UBlackboardKeyType
 {
 public:
+	typedef class FString FDataType;
+	static inline const FDataType InvalidValue = FString();
+
 	class FString                                 StringValue;                                       // 0x0030(0x0010)(ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 public:
@@ -2134,6 +2223,9 @@ public:
 class UBlackboardKeyType_Vector final : public UBlackboardKeyType
 {
 public:
+	typedef struct FVector FDataType;
+	static inline const FDataType InvalidValue = FVector{ 3.402823466e+38f, 3.402823466e+38f, 3.402823466e+38f };
+
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"BlackboardKeyType_Vector">();
@@ -3826,3 +3918,146 @@ public:
 		return GetDefaultObjImpl<UVisualLoggerExtension>();
 	}
 };
+
+
+/*-----------------------------------------------------------------------------
+	UBlackboardComponent::SetValue / GetValue (UE 5.0 BlackboardComponent.h).
+
+	The FName overloads are the engine's, verbatim. The FBlackboard::FKey overloads call the
+	game's own compiled instantiation of the engine template for each key type (19.10), so the
+	type check, raw-memory write, NotifyObservers and synced-key propagation are exactly the game's.
+-----------------------------------------------------------------------------*/
+
+namespace BlackboardComponentImpl
+{
+	template<class TDataClass>
+	struct TKeyTypeFuncs
+	{
+		static_assert(sizeof(TDataClass) == 0, "No 19.10 instantiation of UBlackboardComponent::SetValue/GetValue for this key type");
+	};
+
+	template<typename FuncType>
+	FORCEINLINE FuncType GameFunc(uintptr_t Offset)
+	{
+		return reinterpret_cast<FuncType>(InSDKUtils::GetImageBase() + Offset);
+	}
+
+	/** Key types whose value is passed and returned in a register. */
+	template<typename TValue, uintptr_t SetOffset, uintptr_t GetOffset>
+	struct TScalarKeyTypeFuncs
+	{
+		static bool SetValue(UBlackboardComponent* BB, FBlackboard::FKey KeyID, TValue Value)
+		{
+			return GameFunc<bool(*)(UBlackboardComponent*, FBlackboard::FKey, TValue)>(SetOffset)(BB, KeyID, Value);
+		}
+		static TValue GetValue(const UBlackboardComponent* BB, FBlackboard::FKey KeyID)
+		{
+			return GameFunc<TValue(*)(const UBlackboardComponent*, FBlackboard::FKey)>(GetOffset)(BB, KeyID);
+		}
+	};
+
+	/** Key types whose value is a 12-byte struct: passed by pointer, returned through a hidden result pointer. */
+	template<typename TValue, uintptr_t SetOffset, uintptr_t GetOffset>
+	struct TStructKeyTypeFuncs
+	{
+		static bool SetValue(UBlackboardComponent* BB, FBlackboard::FKey KeyID, const TValue& Value)
+		{
+			TValue Copy = Value;
+			return GameFunc<bool(*)(UBlackboardComponent*, FBlackboard::FKey, TValue*)>(SetOffset)(BB, KeyID, &Copy);
+		}
+		static TValue GetValue(const UBlackboardComponent* BB, FBlackboard::FKey KeyID)
+		{
+			TValue Result;
+			GameFunc<TValue*(*)(const UBlackboardComponent*, TValue*, FBlackboard::FKey)>(GetOffset)(BB, &Result, KeyID);
+			return Result;
+		}
+	};
+
+	template<> struct TKeyTypeFuncs<UBlackboardKeyType_Object>  : TScalarKeyTypeFuncs<UObject*, 0x5c9d1c8, 0x54fed28> {};
+	template<> struct TKeyTypeFuncs<UBlackboardKeyType_Class>   : TScalarKeyTypeFuncs<UClass*,  0x7c912f8, 0x7c8ffac> {};
+	template<> struct TKeyTypeFuncs<UBlackboardKeyType_Enum>    : TScalarKeyTypeFuncs<uint8,    0x54ff234, 0x5e7ddd4> {};
+	template<> struct TKeyTypeFuncs<UBlackboardKeyType_Int>     : TScalarKeyTypeFuncs<int32,    0x54ff580, 0x5cfb11c> {};
+	template<> struct TKeyTypeFuncs<UBlackboardKeyType_Float>   : TScalarKeyTypeFuncs<float,    0x5cd9d64, 0x5e7de7c> {};
+	template<> struct TKeyTypeFuncs<UBlackboardKeyType_Bool>    : TScalarKeyTypeFuncs<bool,     0x5c9ce7c, 0x5c9b2b0> {};
+	template<> struct TKeyTypeFuncs<UBlackboardKeyType_Vector>  : TStructKeyTypeFuncs<FVector,  0x5c9d908, 0x54fedd4> {};
+	template<> struct TKeyTypeFuncs<UBlackboardKeyType_Rotator> : TStructKeyTypeFuncs<FRotator, 0x5c9d530, 0x7c90170> {};
+
+	/** FName: 8 bytes, passed in a register; returned through a hidden result pointer (member function). */
+	template<> struct TKeyTypeFuncs<UBlackboardKeyType_Name>
+	{
+		static bool SetValue(UBlackboardComponent* BB, FBlackboard::FKey KeyID, FName Value)
+		{
+			static_assert(sizeof(FName) == sizeof(uint64), "FName must be 8 bytes");
+			uint64 Bits;
+			memcpy(&Bits, &Value, sizeof(Bits));
+			return GameFunc<bool(*)(UBlackboardComponent*, FBlackboard::FKey, uint64)>(0x7c91660)(BB, KeyID, Bits);
+		}
+		static FName GetValue(const UBlackboardComponent* BB, FBlackboard::FKey KeyID)
+		{
+			FName Result;
+			GameFunc<FName*(*)(const UBlackboardComponent*, FName*, FBlackboard::FKey)>(0x7c900b4)(BB, &Result, KeyID);
+			return Result;
+		}
+	};
+
+	/**
+	 * FString is passed by value, so the game function owns (and frees) its argument -> it must be an FMemory allocation.
+	 * GetValue returns an FMemory-allocated string that the caller owns (FMemory::Free(Result.CStr()) when done),
+	 * which is what the engine's FString return value is.
+	 */
+	template<> struct TKeyTypeFuncs<UBlackboardKeyType_String>
+	{
+		static bool SetValue(UBlackboardComponent* BB, FBlackboard::FKey KeyID, const FString& Value)
+		{
+			struct FRawString { wchar_t* Data; int32 Num; int32 Max; } Copy{ nullptr, 0, 0 };
+			const int32 Num = Value.Num();
+			if (Num > 0 && Value.CStr())
+			{
+				Copy.Data = static_cast<wchar_t*>(FMemory::Realloc(nullptr, sizeof(wchar_t) * Num, alignof(wchar_t)));
+				memcpy(Copy.Data, Value.CStr(), sizeof(wchar_t) * Num);
+				Copy.Num = Num;
+				Copy.Max = Num;
+			}
+			return GameFunc<bool(*)(UBlackboardComponent*, FBlackboard::FKey, FRawString*)>(0x7c919b4)(BB, KeyID, &Copy);
+		}
+		static FString GetValue(const UBlackboardComponent* BB, FBlackboard::FKey KeyID)
+		{
+			FString Result;
+			GameFunc<FString*(*)(const UBlackboardComponent*, FString*, FBlackboard::FKey)>(0x7c90264)(BB, &Result, KeyID);
+			return Result;
+		}
+	};
+}
+
+template<class TDataClass>
+bool UBlackboardComponent::IsKeyOfType(FBlackboard::FKey KeyID) const
+{
+	const FBlackboardEntry* EntryInfo = BlackboardAsset ? BlackboardAsset->GetKey(KeyID) : nullptr;
+	return (EntryInfo != nullptr) && (EntryInfo->KeyType != nullptr) && (EntryInfo->KeyType->Class == TDataClass::StaticClass());
+}
+
+template<class TDataClass>
+bool UBlackboardComponent::SetValue(const FName& KeyName, typename TDataClass::FDataType Value)
+{
+	const FBlackboard::FKey KeyID = GetKeyID(KeyName);
+	return SetValue<TDataClass>(KeyID, Value);
+}
+
+template<class TDataClass>
+bool UBlackboardComponent::SetValue(FBlackboard::FKey KeyID, typename TDataClass::FDataType Value)
+{
+	return BlackboardComponentImpl::TKeyTypeFuncs<TDataClass>::SetValue(this, KeyID, Value);
+}
+
+template<class TDataClass>
+typename TDataClass::FDataType UBlackboardComponent::GetValue(const FName& KeyName) const
+{
+	const FBlackboard::FKey KeyID = GetKeyID(KeyName);
+	return GetValue<TDataClass>(KeyID);
+}
+
+template<class TDataClass>
+typename TDataClass::FDataType UBlackboardComponent::GetValue(FBlackboard::FKey KeyID) const
+{
+	return BlackboardComponentImpl::TKeyTypeFuncs<TDataClass>::GetValue(this, KeyID);
+}

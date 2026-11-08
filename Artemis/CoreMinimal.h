@@ -18,6 +18,10 @@
 #include "MinHook.h"
 #include "Engine/Source/Runtime/Core/Public/Logging/LogMacros.h"
 #include "Engine/Source/Runtime/Core/Public/CoreGlobals.h"
+#include "Engine/Source/Runtime/Core/Public/Containers/StringConv.h"
+#include "Engine/Source/Runtime/CoreUObject/Public/UObject/Stack.h"
+#include "Engine/Source/Runtime/CoreUObject/Public/UObject/ScriptMacros.h"
+#include "FortniteGame/Source/FortniteGame/Public/FortAssets.h"
 
 enum { INDEX_NONE = -1 };
 
@@ -28,6 +32,21 @@ FORCEINLINE T* Cast(UObject* Src)
         return NULL;
 
     if (void* InterfaceAddress = Src->GetInterfaceAddress(T::StaticClass()))
+        return (T*)InterfaceAddress;
+
+    if (Src->IsA(T::StaticClass()))
+        return (T*)Src;
+
+    return NULL;
+}
+
+template<class T>
+FORCEINLINE T* Cast(const UObject* Src)
+{
+    if (Src == NULL)
+        return NULL;
+
+    if (void* InterfaceAddress = const_cast<UObject*>(Src)->GetInterfaceAddress(T::StaticClass()))
         return (T*)InterfaceAddress;
 
     if (Src->IsA(T::StaticClass()))

@@ -589,6 +589,8 @@ public:
 		static bool (*SetRootComponentInternal)(void*, void*) = decltype(SetRootComponentInternal)(InSDKUtils::GetImageBase() + 0x16d38e4);
 		return SetRootComponentInternal(this, NewRootComponent);
 	}
+
+	class UGameInstance* GetGameInstance() const;
 public:
 	static class UClass* StaticClass()
 	{
@@ -8253,6 +8255,12 @@ public:
 		return GetDefaultObjImpl<UWorld>();
 	}
 };
+
+inline class UGameInstance* AActor::GetGameInstance() const
+{
+	UWorld* World = const_cast<AActor*>(this)->GetWorld();
+	return World ? World->OwningGameInstance : nullptr;
+}
 
 // Class Engine.LevelScriptBlueprint
 // 0x0000 (0x00A0 - 0x00A0)

@@ -1939,6 +1939,30 @@ public:
 template<class InterfaceType>
 class TScriptInterface final : public FScriptInterface
 {
+public:
+	InterfaceType* GetInterface() const
+	{
+		return static_cast<InterfaceType*>(GetInterfaceRef());
+	}
+
+	void SetObject(UObject* InObject)
+	{
+		ObjectPointer = InObject;
+	}
+
+	void SetInterface(InterfaceType* InInterface)
+	{
+		InterfacePointer = static_cast<void*>(InInterface);
+	}
+
+
+	TScriptInterface() = default;
+	
+	TScriptInterface(InterfaceType* InInterface)
+	{
+		SetInterface(InInterface);
+		SetObject(InInterface->_getUObject());
+	}
 };
 
 // Predefined struct FFieldPath
@@ -2389,6 +2413,9 @@ public:
 class FByteProperty final : public FProperty
 {
 public:
+	using TCppType = uint8; // UE TProperty<uint8, FProperty>::TCppType (for P_GET_PROPERTY)
+	static TCppType GetDefaultPropertyValue() { return TCppType(); }
+
 	class UEnum*                                  Enum;                                              // 0x0078(0x0008)(NOT AUTO-GENERATED PROPERTY)
 };
 
@@ -2397,6 +2424,9 @@ public:
 class FBoolProperty final : public FProperty
 {
 public:
+	using TCppType = bool; // UE TProperty<bool, FProperty>::TCppType (for P_GET_PROPERTY)
+	static TCppType GetDefaultPropertyValue() { return TCppType(); }
+
 	uint8                                         FieldSize;                                         // 0x0078(0x0001)(NOT AUTO-GENERATED PROPERTY)
 	uint8                                         ByteOffset;                                        // 0x0079(0x0001)(NOT AUTO-GENERATED PROPERTY)
 	uint8                                         ByteMask;                                          // 0x007A(0x0001)(NOT AUTO-GENERATED PROPERTY)
@@ -2440,6 +2470,9 @@ public:
 class FDelegateProperty final : public FProperty
 {
 public:
+	using TCppType = FScriptDelegate; // UE TProperty<FScriptDelegate, FProperty>::TCppType (for P_GET_PROPERTY)
+	static TCppType GetDefaultPropertyValue() { return TCppType(); }
+
 	class UFunction*                              SignatureFunction;                                 // 0x0078(0x0008)(NOT AUTO-GENERATED PROPERTY)
 };
 
@@ -2474,6 +2507,9 @@ public:
 class FFieldPathProperty final : public FProperty
 {
 public:
+	using TCppType = FFieldPath; // UE TProperty<FFieldPath, FProperty>::TCppType (for P_GET_PROPERTY)
+	static TCppType GetDefaultPropertyValue() { return TCppType(); }
+
 	class FFieldClass*                            FieldClass;                                        // 0x0078(0x0008)(NOT AUTO-GENERATED PROPERTY)
 };
 

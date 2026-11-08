@@ -17927,6 +17927,114 @@ bool AFortPlayerController::HasRequiredBuildingLevel(const struct FBuildingClass
 	return HasRequiredBuildingLevel(BuildingClassData.UpgradeLevel, BuildingCDO->ResourceType);
 }
 
+bool AFortPlayerController::CanRemoveInventoryItem(FGuid ItemGuid)
+{
+	const UFortItem* Item = Cast<IFortInventoryOwnerInterface>(this)->GetInventoryItemWithGuid(ItemGuid);
+	if (!ClientQuickBars || !bIsQuickBarInitialized || !Item || !Item->CanBeDropped() || !Item->CanBeUnslotted())
+	{
+		return false;
+	}
+
+	return ClientQuickBars->ItemIsOnQuickBar(Item) == EFortQuickBars::Max_None || ClientQuickBars->CanRemoveItem(Item);
+}
+
+void AFortPlayerController::OnInventoryItemRemoved(AFortInventory* Inventory, FGuid ItemGuid)
+{
+	if (!Inventory || Inventory != WorldInventory || !StatManager || !MyPlayerInfo)
+	{
+		return;
+	}
+
+	if (Inventory->GetInventoryCapacity() > Inventory->GetInventoryUsed())
+	{
+		StatManager->ModifyStat(FName(TEXT("BackpackFull"),EFindName::FNAME_Add), 0, EStatMod::Set);
+	}
+}
+
+
+bool AFortQuickBars::Find(const UFortItem* Item, EFortQuickBars* OutQuickBar, int32* OutSlot) const
+{
+	static bool (*FindOriginal)(const AFortQuickBars*, const UFortItem*, EFortQuickBars*, int32*) = decltype(FindOriginal)(InSDKUtils::GetImageBase() + 0x64f24a8);
+	return FindOriginal(this, Item, OutQuickBar, OutSlot);
+}
+
+EFortQuickBars AFortQuickBars::ItemIsOnQuickBar(const UFortItem* Item) const
+{
+	static EFortQuickBars (*ItemIsOnQuickBarOriginal)(const AFortQuickBars*, const UFortItem*) = decltype(ItemIsOnQuickBarOriginal)(InSDKUtils::GetImageBase() + 0x64f7cac);
+	return ItemIsOnQuickBarOriginal(this, Item);
+}
+
+EFortQuickBars AFortQuickBars::ItemIsOnQuickBar(FGuid ItemGuid) const
+{
+	static EFortQuickBars (*ItemIsOnQuickBarOriginal)(const AFortQuickBars*, FGuid*) = decltype(ItemIsOnQuickBarOriginal)(InSDKUtils::GetImageBase() + 0x64f7d60);
+	return ItemIsOnQuickBarOriginal(this, &ItemGuid);
+}
+
+bool AFortQuickBars::CanRemoveItem(const UFortItem* Item) const
+{
+	static bool (*CanRemoveItemOriginal)(const AFortQuickBars*, const UFortItem*) = decltype(CanRemoveItemOriginal)(InSDKUtils::GetImageBase() + 0x64f0d44);
+	return CanRemoveItemOriginal(this, Item);
+}
+
+bool UBaseStatManager::ModifyStat(FName StatName, int32 Amount, EStatMod ModType)
+{
+	static bool (*ModifyStatOriginal)(UBaseStatManager*, FName, int32, EStatMod) = decltype(ModifyStatOriginal)(InSDKUtils::GetImageBase() + 0x14e38d8);
+	return ModifyStatOriginal(this, StatName, Amount, ModType);
+}
+
+UStat* UBaseStatManager::AddOrGetStat(FName StatName, EStatRecordingPeriod HighestPeriodToTrack)
+{
+	static UStat* (*AddOrGetStatOriginal)(UBaseStatManager*, FName, EStatRecordingPeriod) = decltype(AddOrGetStatOriginal)(InSDKUtils::GetImageBase() + 0x14e41d0);
+	return AddOrGetStatOriginal(this, StatName, HighestPeriodToTrack);
+}
+
+UStat* UBaseStatManager::MakeStat(FName StatName, EStatRecordingPeriod HighestPeriodToTrack)
+{
+	static UStat* (*MakeStatOriginal)(UBaseStatManager*, FName, EStatRecordingPeriod) = decltype(MakeStatOriginal)(InSDKUtils::GetImageBase() + 0x1c27cd4);
+	return MakeStatOriginal(this, StatName, HighestPeriodToTrack);
+}
+
+UStat* UBaseStatManager::GetStatByName(FName StatName) const
+{
+	UStat* const* Stat = StatLookup.Find(StatName);
+	return Stat ? *Stat : nullptr;
+}
+
+int32 UBaseStatManager::GetStatValue(const UStat* Stat, EStatRecordingPeriod Period) const
+{
+	const int32 PeriodIndex = static_cast<int32>(Period);
+	if (!Stat || PeriodIndex >= Stat->StatDataByPeriod.Num())
+	{
+		return 0;
+	}
+
+	return static_cast<int32>(std::floor(Stat->StatDataByPeriod[PeriodIndex] + 0.5));
+}
+
+int32 UBaseStatManager::GetStatValueByName(FName StatName, EStatRecordingPeriod Period) const
+{
+	static int32 (*GetStatValueByNameOriginal)(const UBaseStatManager*, FName, EStatRecordingPeriod) = decltype(GetStatValueByNameOriginal)(InSDKUtils::GetImageBase() + 0x68357ac);
+	return GetStatValueByNameOriginal(this, StatName, Period);
+}
+
+void UBaseStatManager::ClearPeriod(EStatRecordingPeriod Period)
+{
+	const int32 PeriodIndex = static_cast<int32>(Period);
+	for (UStat* Stat : Stats)
+	{
+		if (Stat && PeriodIndex < Stat->StatDataByPeriod.Num())
+		{
+			Stat->StatDataByPeriod[PeriodIndex] = 0.0;
+		}
+	}
+}
+
+void UStat::ModifyStat(double Amount, EStatMod ModType)
+{
+	static void (*ModifyStatOriginal)(UStat*, double, EStatMod) = decltype(ModifyStatOriginal)(InSDKUtils::GetImageBase() + 0x1c500bc);
+	ModifyStatOriginal(this, Amount, ModType);
+}
+
 // Function FortniteGame.FortPlayerControllerGameplay.ActivateCreativePreviewScreenshot
 // (Final, Native, Public, BlueprintCallable)
 // Parameters:
@@ -163542,6 +163650,13 @@ bool UFortWorldItem::SeenInFrontend() const
 	Func->FunctionFlags = Flgs;
 
 	return Parms.ReturnValue;
+}
+
+void UFortWorldItem::RemoveFromInventory()
+{
+	OwnerInventory = nullptr;
+	ItemEntry.SetParentInventory(nullptr, false);
+	bPendingPersistentDelete = true;
 }
 
 
@@ -330057,4 +330172,132 @@ UFortPlaylistAthena* UFortPlaylistManager::GetAthenaPlaylist(FName CurrentPlayli
 {
 	static UFortPlaylistAthena* (*GetAthenaPlaylistInternal)(UFortPlaylistManager*, struct FName) = decltype(GetAthenaPlaylistInternal)(InSDKUtils::GetImageBase() + 0x12bed3c);
 	return GetAthenaPlaylistInternal(this, CurrentPlaylistName);
+}
+
+template<typename T>
+void FFortItemEntry::SetStateValue(EFortItemEntryState StateType, int32 InValue)
+{
+	bool bFound = false;
+
+	for (FFortItemEntryStateValue& State : StateValues)
+	{
+		if (State.StateType == StateType)
+		{
+			State.IntValue = InValue;
+			bFound = true;
+			break;
+		}
+	}
+
+	if (!bFound)
+	{
+		FFortItemEntryStateValue NewState(StateType);
+		NewState.IntValue = InValue;
+		StateValues.Add(NewState);
+	}
+
+	SetToDirty();
+}
+
+template void FFortItemEntry::SetStateValue<int32>(EFortItemEntryState StateType, int32 InValue);
+
+FFortItemEntry* AFortInventory::GetReplicatedItemEntry(FGuid ItemGuid)
+{
+	FFortItemEntry** ItemEntryPtr = Inventory.ItemEntryMap.Find(ItemGuid);
+	return ItemEntryPtr ? *ItemEntryPtr : nullptr;
+}
+
+UFortWorldItem* AFortInventory::GetItem(struct FGuid ItemGuid)
+{
+	UFortWorldItem** ItemPtr = Inventory.ItemInstanceMap.Find(ItemGuid);
+	return ItemPtr ? *ItemPtr : nullptr;
+}
+
+void FFortItemEntry::SetInInventoryOverflow(bool bOverflow)
+{
+	if (inventory_overflow_date != bOverflow)
+	{
+		inventory_overflow_date = bOverflow;
+		if (AFortInventory* Parent = ParentInventory.Get())
+		{
+			Parent->SetItemRequiresUpdate(this);
+		}
+		bIsDirty = true;
+	}
+}
+
+void AFortInventory::OnRemoveItemStack(UFortWorldItem* ItemStackToRemove, const FGuid& ItemGuid)
+{
+	if (!ItemStackToRemove)
+	{
+		return;
+	}
+
+	const UFortWorldItemDefinition* ItemDefinition = Cast<UFortWorldItemDefinition>(ItemStackToRemove->ItemEntry.ItemDefinition);
+	if (ItemDefinition && ItemDefinition->bInventorySizeLimited)
+	{
+		if (!ItemStackToRemove->ItemEntry.inventory_overflow_date && !ItemStackToRemove->ItemEntry.bWasGifted)
+		{
+			for (UFortWorldItem* ItemInstance : Inventory.ItemInstances)
+			{
+				if (!ItemInstance)
+				{
+					continue;
+				}
+
+				const UFortWorldItemDefinition* InstanceDefinition = Cast<UFortWorldItemDefinition>(ItemInstance->ItemEntry.ItemDefinition);
+				if (ItemInstance->ItemEntry.inventory_overflow_date && InstanceDefinition && !InstanceDefinition->bForceStayInOverflow)
+				{
+					ItemInstance->ItemEntry.SetInInventoryOverflow(false);
+					break;
+				}
+			}
+		}
+
+		ItemStackToRemove->ItemEntry.SetInInventoryOverflow(false);
+	}
+
+	FFortItemEntry* Entries = const_cast<FFortItemEntry*>(Inventory.ReplicatedEntries.GetDataPtr());
+	for (int32 i = 0; i < Inventory.ReplicatedEntries.Num(); i++)
+	{
+		if (Entries[i].ItemGuid == ItemGuid)
+		{
+			const int32 LastIndex = Inventory.ReplicatedEntries.Num() - 1;
+			Entries[i].~FFortItemEntry();
+			if (i != LastIndex)
+			{
+				memcpy(&Entries[i], &Entries[LastIndex], sizeof(FFortItemEntry));
+			}
+			Inventory.ReplicatedEntries.Remove(LastIndex);
+			break;
+		}
+	}
+
+	static void (*UpdateItemInstances)(AFortInventory*) = decltype(UpdateItemInstances)(InSDKUtils::GetImageBase() + 0x1295cd8);
+	UpdateItemInstances(this);
+
+	void (*HandleInventoryItemRemoved)(AFortInventory*) = decltype(HandleInventoryItemRemoved)(VTable[0xD5]);
+	HandleInventoryItemRemoved(this);
+}
+
+int32 AFortInventory::GetInventoryCapacity(const IFortInventoryOwnerInterface* Owner, EFortInventoryType InventoryType)
+{
+	static int32 (*GetInventoryCapacityOriginal)(const IFortInventoryOwnerInterface*, EFortInventoryType) = decltype(GetInventoryCapacityOriginal)(InSDKUtils::GetImageBase() + 0x64cbc0c);
+	return GetInventoryCapacityOriginal(Owner, InventoryType);
+}
+
+int32 AFortInventory::GetInventoryUsed(const IFortInventoryOwnerInterface* Owner, EFortInventoryType InventoryType)
+{
+	static int32 (*GetInventoryUsedOriginal)(const IFortInventoryOwnerInterface*, EFortInventoryType) = decltype(GetInventoryUsedOriginal)(InSDKUtils::GetImageBase() + 0x64cc020);
+	return GetInventoryUsedOriginal(Owner, InventoryType);
+}
+
+int32 AFortInventory::GetInventoryCapacity() const
+{
+	return Cast<IFortInventoryInterface>(this)->GetInventoryCapacity();
+}
+
+int32 AFortInventory::GetInventoryUsed() const
+{
+	return Cast<IFortInventoryInterface>(this)->GetInventoryUsed();
 }

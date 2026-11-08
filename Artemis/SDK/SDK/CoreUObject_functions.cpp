@@ -81,6 +81,26 @@ std::string UObject::GetFullName() const
 	return "None";
 }
 
+std::wstring UObject::GetFullNameW() const
+{
+	if (this && Class)
+	{
+		std::wstring Temp;
+		for (UObject* NextOuter = Outer; NextOuter; NextOuter = NextOuter->Outer)
+		{
+			Temp = NextOuter->GetName().ToWString() + L"." + Temp;
+		}
+
+		std::wstring Name = Class->GetName().ToWString();
+		Name += L" ";
+		Name += Temp;
+		Name += GetName().ToWString();
+
+		return Name;
+	}
+
+	return L"None";
+}
 
 // Predefined Function
 // Retuns the name of this object
@@ -185,3 +205,16 @@ class UFunction* UClass::GetFunction(const std::string& ClassName, const std::st
 	return nullptr;
 }
 
+class UFunction* UClass::FindFunctionByName(struct FName InName)
+{
+	for (const UStruct* Clss = this; Clss; Clss = Clss->Super)
+	{
+		for (UField* Field = Clss->Children; Field; Field = Field->Next)
+		{
+			if (Field->HasTypeFlag(EClassCastFlags::Function) && Field->Name == InName)
+				return static_cast<class UFunction*>(Field);
+		}
+	}
+
+	return nullptr;
+}

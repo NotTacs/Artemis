@@ -4,6 +4,7 @@
 #include "RemoveReference.h"
 #include "UnrealTypeTraits.h"
 #include "AreTypesEqual.h"
+#include "CopyQualifiersAndRefsFromTo.h"
 
 template <typename T> struct TRemovePointer { typedef T Type; };
 template <typename T> struct TRemovePointer<T*> { typedef T Type; };
@@ -71,3 +72,34 @@ FORCEINLINE T ImplicitConv(typename TIdentity<T>::Type Obj)
     return Obj;
 }
 
+/**
+ * Equivalent to std::declval.
+ *
+ * Note that this function is unimplemented, and is only intended to be used in unevaluated contexts, like sizeof and trait expressions.
+ */
+template <typename T>
+T&& DeclVal();
+
+/**
+ * ForwardAsBase will cast a reference to an rvalue reference of a base type.
+ * This allows the perfect forwarding of a reference as a base class.
+ */
+template <
+	typename T,
+	typename Base,
+	decltype(ImplicitConv<const volatile Base*>((typename TRemoveReference<T>::Type*)nullptr))* = nullptr
+>
+FORCEINLINE decltype(auto) ForwardAsBase(typename TRemoveReference<T>::Type& Obj)
+{
+	return (TCopyQualifiersAndRefsFromTo_T<T&&, Base>)Obj;
+}
+
+template <
+	typename T,
+	typename Base,
+	decltype(ImplicitConv<const volatile Base*>((typename TRemoveReference<T>::Type*)nullptr))* = nullptr
+>
+FORCEINLINE decltype(auto) ForwardAsBase(typename TRemoveReference<T>::Type&& Obj)
+{
+	return (TCopyQualifiersAndRefsFromTo_T<T&&, Base>)Obj;
+}

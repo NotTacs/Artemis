@@ -15,6 +15,8 @@
 #include "SDK/CoreUObject_structs.hpp"
 #include "SDK/CoreUObject_classes.hpp"
 #include "../Engine/Source/Runtime/Core/Public/Delegates/Delegate.h"
+#include "../Engine/Source/Runtime/Core/Public/Templates/Tuple.h"
+
 #include "SDK/FortniteConversationRuntime_structs.hpp"
 #include "SDK/GameplayTags_structs.hpp"
 #include "SDK/SlateCore_structs.hpp"

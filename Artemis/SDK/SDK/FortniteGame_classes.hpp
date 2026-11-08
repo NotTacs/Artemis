@@ -834,6 +834,15 @@ public:
 	bool ShouldPlayRandomSectionByName() const;
 
 public:
+	struct FGameplayTag GetAssociatedAbilityTag() const
+	{
+		FGameplayTag* (*GetAssociatedAbilityTagOriginal)(const void*, FGameplayTag*) = decltype(GetAssociatedAbilityTagOriginal)(VTable[0xBB]);
+		FGameplayTag Result;
+		GetAssociatedAbilityTagOriginal(this, &Result);
+		return Result;
+	}
+
+public:
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"FortMontageItemDefinitionBase">();
@@ -2431,7 +2440,8 @@ public:
 	TMulticastInlineDelegate<void()>              OnOutOfBuildingResources;                          // 0x17B8(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, Protected, NativeAccessSpecifierProtected)
 	uint8                                         Pad_17C8[0x40];                                    // 0x17C8(0x0040)(Fixing Size After Last Property [ Dumper-8 ])
 	class AFortQuickBars*                         ClientQuickBars;                                   // 0x1808(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_1810[0x8];                                     // 0x1810(0x0008)(Fixing Size After Last Property [ Dumper-8 ])
+	bool                                          bIsQuickBarInitialized;                            // 0x1810(0x0001)
+	uint8                                         Pad_1811[0x7];                                     // 0x1811(0x0007)(Fixing Size After Last Property [ Dumper-8 ])
 	TArray<struct FRecentlyRemovedQuickbarInfo>   RecentlyRemovedQuickbarInfo;                       // 0x1818(0x0010)(ZeroConstructor, Transient, Protected, NativeAccessSpecifierProtected)
 	uint8                                         Pad_1828[0x50];                                    // 0x1828(0x0050)(Fixing Size After Last Property [ Dumper-8 ])
 	struct FDelayedQuickBarActionContainer        DelayedQuickBarActions;                            // 0x1878(0x0120)(Net, RepNotify, NativeAccessSpecifierPrivate)
@@ -3009,6 +3019,9 @@ public:
 		void (*DoEditBuildingActorAnalyticsInternal)(AFortPlayerController * __this, ABuildingSMActor * EditedBuilding) = decltype(DoEditBuildingActorAnalyticsInternal)(VTable[0x3C7]);
 		DoEditBuildingActorAnalyticsInternal(this, EditedBuilding);
 	}
+
+	bool CanRemoveInventoryItem(FGuid ItemGuid);
+	void OnInventoryItemRemoved(AFortInventory* Inventory, FGuid ItemGuid);
 
 public:
 	static class UClass* StaticClass()
@@ -8781,6 +8794,12 @@ public:
 		bool (*ServerExecuteOriginal)(void*, class UFortItem* Item, class AFortPlayerController* Instigator) = decltype(ServerExecuteOriginal)(VTable[0xA6]);
 		return ServerExecuteOriginal(this, Item, Instigator);
 	}
+
+	bool ShouldPersistInInventoryWhenFinalStackEmpty() const
+	{
+		bool (*ShouldPersistInInventoryWhenFinalStackEmptyOriginal)(const void*) = decltype(ShouldPersistInInventoryWhenFinalStackEmptyOriginal)(VTable[0xB1]);
+		return ShouldPersistInInventoryWhenFinalStackEmptyOriginal(this);
+	}
 public:
 	static class UClass* StaticClass()
 	{
@@ -10280,6 +10299,19 @@ public:
 	bool WeaponDataHasAnyMatchingGameplayTags(const struct FGameplayTagContainer& TagContainer) const;
 	bool WeaponDataHasMatchingGameplayTag(const struct FGameplayTag& TagToCheck) const;
 	bool WeaponDataIsValid() const;
+
+public:
+	static EFortWeaponType FindWeaponTypeForStats(const class UFortItemDefinition* WeaponItemDef)
+	{
+		static EFortWeaponType (*FindWeaponTypeForStatsOriginal)(const UFortItemDefinition*) = decltype(FindWeaponTypeForStatsOriginal)(InSDKUtils::GetImageBase() + 0x1b4d020);
+		return FindWeaponTypeForStatsOriginal(WeaponItemDef);
+	}
+
+	static EFortWeaponType FindWeaponTypeForStats(const struct FGameplayTagContainer& Tags)
+	{
+		static EFortWeaponType (*FindWeaponTypeForStatsOriginal)(const FGameplayTagContainer*) = decltype(FindWeaponTypeForStatsOriginal)(InSDKUtils::GetImageBase() + 0x1b4d08c);
+		return FindWeaponTypeForStatsOriginal(&Tags);
+	}
 
 public:
 	static class UClass* StaticClass()
@@ -16555,23 +16587,34 @@ public:
 class AFortAthenaAIBotController final : public AAIController
 {
 public:
-	uint8                                         Pad_338[0x40];                                     // 0x0338(0x0040)(Fixing Size After Last Property [ Dumper-8 ])
+	void*                                         ICosmeticLoadoutOwner_VTable;                      // 0x0338(0x0008)(Interface vtable)
+	void*                                         IFortAnalyticsControllerInterface_VTable;          // 0x0340(0x0008)(Interface vtable)
+	void*                                         IFortAthenaAIControllerInterface_VTable;           // 0x0348(0x0008)(Interface vtable)
+	void*                                         IFortAthenaMutator_EQSProviderInterface_VTable;    // 0x0350(0x0008)(Interface vtable)
+	void*                                         IFortInventoryOwnerInterface_VTable;               // 0x0358(0x0008)(Interface vtable)
+	void*                                         IFortTeamActorInterface_VTable;                    // 0x0360(0x0008)(Interface vtable)
+	void*                                         IFortVehicleUserInterface_VTable;                  // 0x0368(0x0008)(Interface vtable)
+	void*                                         INavPathObserverInterface_VTable;                  // 0x0370(0x0008)(Interface vtable)
 	class AActor*                                 PreviousVehicle;                                   // 0x0378(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_380[0x10];                                     // 0x0380(0x0010)(Fixing Size After Last Property [ Dumper-8 ])
+	TDelegate<bool(const struct FFortBotTargetInfo&, float, float&)> CustomTargetWeightDelegate;       // 0x0380(0x0010)(Native)
 	TMap<struct FGuid, struct FFortAbilitySetHandle> AppliedInGameModifierAbilitySetHandles;         // 0x0390(0x0050)(Transient, ContainsInstancedReference, Protected, NativeAccessSpecifierProtected)
 	TSet<struct FGuid>                            GadgetTrackedAttributeItemInstanceIds;             // 0x03E0(0x0050)(Transient, Protected, NativeAccessSpecifierProtected)
-	uint8                                         Pad_430[0x50];                                     // 0x0430(0x0050)(Fixing Size After Last Property [ Dumper-8 ])
+	TMap<struct FGuid, TArray<struct FAttributeDelegateData>> GadgetTrackedAttributeItemInstanceIdToAttributeDelegates; // 0x0430(0x0050)(Native)
 	struct FFortBotTargetHandler                  TargetHandler;                                     // 0x0480(0x0028)(Transient, Protected, NativeAccessSpecifierProtected)
-	uint8                                         Pad_4A8[0x1];                                      // 0x04A8(0x0001)(Fixing Size After Last Property [ Dumper-8 ])
-	uint8                                         BitPad_4A9_0 : 1;                                  // 0x04A9(0x0001)(Fixing Bit-Field Size Between Bits [ Dumper-8 ])
+	bool                                          bCalculateLoFOnTarget;                             // 0x04A8(0x0001)(Native)
+	uint8                                         bIsInitialized : 1;                                // 0x04A9(0x0001)(BitIndex: 0x00, Native; set by sub_5CE9D24, read by sub_5CE4044)
 	uint8                                         bIsAnAthenaGameParticipant : 1;                    // 0x04A9(0x0001)(BitIndex: 0x01, PropSize: 0x0001 (Edit, BlueprintVisible, BlueprintReadOnly, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected))
+	uint8                                         bSetInfiniteFuel : 1;                              // 0x04A9(0x0001)(BitIndex: 0x02, Native; DevDump SetHaveInfiniteFuelOnVehicle bit, never touched in 19.10 outside ctor)
+	uint8                                         BitPad_4A9_3 : 1;                                  // 0x04A9(0x0001)(BitIndex: 0x03, Native; declared (ctor clears it) but never read/written in 19.10, no DevDump counterpart)
+	uint8                                         BitPad_4A9_4 : 4;                                  // 0x04A9(0x0001)(Unused bits)
 	EReachLocationValidationMode                  ReachLocationValidationMode;                       // 0x04AA(0x0001)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_4AB[0x5];                                      // 0x04AB(0x0005)(Fixing Size After Last Property [ Dumper-8 ])
+	uint8                                         Pad_4AB[0x5];                                      // 0x04AB(0x0005)(Alignment)
 	class UBehaviorTree*                          BehaviorTree;                                      // 0x04B0(0x0008)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	struct FFortBotInventoryInfo                  SlotItems[0x6];                                    // 0x04B8(0x0018)(Transient, NoDestructor, Protected, NativeAccessSpecifierProtected)
-	uint8                                         Pad_548[0x18];                                     // 0x0548(0x0018)(Fixing Size After Last Property [ Dumper-8 ])
+	TMulticastDelegate<void(class AFortPawn*)>    OnInventoryOwnerPawnChanged;                         // 0x0548(0x0018)(Native)
 	class UFortAthenaAIBotInventoryDigestedSkillSet* CacheInventoryDigestedSkillSet;                 // 0x0560(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_568[0x8];                                      // 0x0568(0x0008)(Fixing Size After Last Property [ Dumper-8 ])
+	float                                         DefaultWeaponSelectionDistance;                    // 0x0568(0x0004)(Native, default 15.0)
+	uint8                                         Pad_56C[0x4];                                      // 0x056C(0x0004)(Alignment)
 	class AFortPlayerPawnAthena*                  PlayerBotPawn;                                     // 0x0570(0x0008)(BlueprintVisible, BlueprintReadOnly, ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class UAthenaAIServicePlayerBots*             CachedAIServicePlayerBots;                         // 0x0578(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class AFortGameModeAthena*                    CachedGameMode;                                    // 0x0580(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
@@ -16579,27 +16622,32 @@ public:
 	class UFortAthenaAIRuntimeParameters_Leash*   CachedLeashRuntimeParameters;                      // 0x0590(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class UFortAthenaAIRuntimeParameters_AffiliationBase* CachedAffiliationRuntimeParameters;        // 0x0598(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class UFortAthenaNpcPatrollingComponent*      CachedPatrollingComponent;                         // 0x05A0(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_5A8[0x8];                                      // 0x05A8(0x0008)(Fixing Size After Last Property [ Dumper-8 ])
+	TWeakObjectPtr<class UFortHero>               MyHero;                                            // 0x05A8(0x0008)(Native)
 	TArray<struct FBotDelayedStimulus>            DelayedStimulus;                                   // 0x05B0(0x0010)(ZeroConstructor, Transient, Protected, NativeAccessSpecifierProtected)
-	uint8                                         Pad_5C0[0x18];                                     // 0x05C0(0x0018)(Fixing Size After Last Property [ Dumper-8 ])
+	struct FTimerHandle                           DelayedStimulusUpdateTimerHandle;                  // 0x05C0(0x0008)(Native)
+	struct FTimerHandle                           DelayedUpdateBlackboardTarget;                     // 0x05C8(0x0008)(Native)
+	struct FTimerHandle                           DelayedUpdateBlackboardAlertLevel;                 // 0x05D0(0x0008)(Native)
 	TArray<struct FFortBotThreatActorInfo>        ObjectsThreatList;                                 // 0x05D8(0x0010)(ZeroConstructor, Transient, Protected, NativeAccessSpecifierProtected)
 	TArray<struct FFortBotThreatActorInfo>        TrapsThreatList;                                   // 0x05E8(0x0010)(ZeroConstructor, Transient, Protected, NativeAccessSpecifierProtected)
 	EAlertLevel                                   CurrentAlertLevel;                                 // 0x05F8(0x0001)(BlueprintVisible, BlueprintReadOnly, ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_5F9[0x7];                                      // 0x05F9(0x0007)(Fixing Size After Last Property [ Dumper-8 ])
+	uint8                                         Pad_5F9[0x3];                                      // 0x05F9(0x0003)(Alignment)
+	float                                         AlertedEndTime;                                    // 0x05FC(0x0004)(Native)
 	struct FAlertLevelInfo                        DefaultAlertLevelInfo;                             // 0x0600(0x0010)(Transient, Protected, NativeAccessSpecifierProtected)
 	TMulticastInlineDelegate<void(class AFortAthenaAIBotController* BotController, EAlertLevel OldAlertLevel, EAlertLevel NewAlertLevel)> OnAlertLevelChangedEventDelegate; // 0x0610(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, Protected, NativeAccessSpecifierProtected)
 	TMulticastInlineDelegate<void(class AFortAthenaAIBotController* BotController, float StealthMeterTarget, float StealthMeterTargetTime)> OnStealthMeterChangedEventDelegate; // 0x0620(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, Protected, NativeAccessSpecifierProtected)
-	uint8                                         Pad_630[0x8];                                      // 0x0630(0x0008)(Fixing Size After Last Property [ Dumper-8 ])
+	float                                         PreviousStealthMeterSpeed;                         // 0x0630(0x0004)(Native)
+	float                                         PreviousStealthMeterCumulatedValue;                // 0x0634(0x0004)(Native)
 	TMulticastInlineDelegate<void(class AFortAthenaAIBotController* BotController, bool bIsDBNO)> OnAgentDBNOStatusChangedEventDelegate; // 0x0638(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, Protected, NativeAccessSpecifierProtected)
 	TMulticastInlineDelegate<void(class AFortAthenaAIBotController* BotController, class AFortPawn* AgentPawn)> OnAgentDiedEventDelegate; // 0x0648(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, Protected, NativeAccessSpecifierProtected)
 	TMulticastInlineDelegate<void(class AFortAthenaAIBotController* BotController, class AFortPawn* AgentPawn)> OnAgentGameOver; // 0x0658(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, Protected, NativeAccessSpecifierProtected)
-	uint8                                         Pad_668[0x48];                                     // 0x0668(0x0048)(Fixing Size After Last Property [ Dumper-8 ])
+	TMulticastDelegate<void(const TArray<const class UFortItem*>&, const TArray<const class UFortItem*>&, const TArray<const class UFortItem*>&)> InventoryChangedEvents[0x3]; // 0x0668(0x0018)(Native)
 	class AFortInventory*                         Inventory;                                         // 0x06B0(0x0008)(Net, ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	float                                         Skill;                                             // 0x06B8(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	uint8                                         bAllowUnsupportedItemsInDefaultInventory : 1;      // 0x06BC(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (Edit, DisableEditOnInstance, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected))
-	uint8                                         Pad_6BD[0x3];                                      // 0x06BD(0x0003)(Fixing Size After Last Property [ Dumper-8 ])
+	uint8                                         Pad_6BD[0x3];                                      // 0x06BD(0x0003)(Alignment)
 	TArray<TSubclassOf<class UFortAthenaAIBotSkillSet>> BotSkillSetClasses;                          // 0x06C0(0x0010)(Edit, ZeroConstructor, DisableEditOnInstance, Protected, UObjectWrapper, NativeAccessSpecifierProtected)
-	uint8                                         Pad_6D0[0x20];                                     // 0x06D0(0x0020)(Fixing Size After Last Property [ Dumper-8 ])
+	TArray<TSubclassOf<class UFortAthenaAIBotSkillSet>> DefaultOverridedSkillSetClasses;             // 0x06D0(0x0010)(Native)
+	TArray<TSubclassOf<class UFortAthenaAIBotSkillSet>> VehicleSkillSetClasses;                      // 0x06E0(0x0010)(Native)
 	class UFortAthenaAIBotInventoryItems*         StartupInventory;                                  // 0x06F0(0x0008)(Edit, ExportObject, ZeroConstructor, DisableEditOnInstance, InstancedReference, IsPlainOldData, NoDestructor, Protected, PersistentInstance, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	struct FFortAthenaLoadout                     CosmeticLoadoutBC;                                 // 0x06F8(0x0150)(Edit, BlueprintVisible, BlueprintReadOnly, DisableEditOnInstance, Protected, NativeAccessSpecifierProtected)
 	TArray<class UCustomCharacterPart*>           CustomCharacterPartOverridesBC;                    // 0x0848(0x0010)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, DisableEditOnInstance, Protected, NativeAccessSpecifierProtected)
@@ -16615,75 +16663,170 @@ public:
 	class UFortAthenaAIBotPlayStyleDigestedSkillSet* CachePlayStyleSkillSet;                         // 0x0900(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class UFortAthenaAIBotUnstuckDigestedSkillSet* CacheUnstuckSkillSet;                             // 0x0908(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class UFortAthenaAIBotRangeAttackDigestedSkillSet* CacheRangeAttackSkillSet;                     // 0x0910(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_918[0x60];                                     // 0x0918(0x0060)(Fixing Size After Last Property [ Dumper-8 ])
+	bool                                          bIsAggressive;                                     // 0x0918(0x0001)(Native, default true)
+	bool                                          bIsAggressiveOverriden;                            // 0x0919(0x0001)(Native)
+	bool                                          bShouldResetAggressivePlayStyleOnUnaware;          // 0x091A(0x0001)(Native)
+	uint8                                         Pad_91B[0x1];                                      // 0x091B(0x0001)(Alignment)
+	float                                         TimeToKeepTrackOfDamagingActorsForAggressivePlayStyle; // 0x091C(0x0004)(Native)
+	float                                         TimeToIgnoreDamagingActorsWhenBeingControlled;     // 0x0920(0x0004)(Native, default -1.0)
+	bool                                          bCanAlwaysTargetNonDamagingThreat;                 // 0x0924(0x0001)(Native)
+	uint8                                         Pad_925[0x3];                                      // 0x0925(0x0003)(Alignment)
+	TMap<TWeakObjectPtr<class AFortPawn>, float>  TrackedDamagingActorsForAggressivePlayStyle;       // 0x0928(0x0050)(Native)
 	class UFortInteractContextInfo*               InteractContextInfo;                               // 0x0978(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_980[0x38];                                     // 0x0980(0x0038)(Fixing Size After Last Property [ Dumper-8 ])
+	struct FVector                                AimTrackedVelocity;                                // 0x0980(0x000C)(Native)
+	float                                         AimTrackingTimeStamp;                              // 0x098C(0x0004)(Native)
+	float                                         AimAdjustedTrackingOffsetErrorMultiplier;          // 0x0990(0x0004)(Native, default 1.0)
+	float                                         AimTrackingOffsetErrorMultiplier;                  // 0x0994(0x0004)(Native, default 1.0)
+	float                                         AimTrackingHeightOffsetErrorMultiplier;            // 0x0998(0x0004)(Native, default 1.0)
+	float                                         AimTrackingDistanceErrorMultiplier;                // 0x099C(0x0004)(Native)
+	float                                         AimTrackingErrorUpdateTime;                        // 0x09A0(0x0004)(Native)
+	float                                         AdjustedTrackingPredictionError;                   // 0x09A4(0x0004)(Native, default 0.2)
+	float                                         TrackingErrorSignMultiplier;                       // 0x09A8(0x0004)(Native, default 1.0)
+	float                                         RotationInterpolationSpeed;                        // 0x09AC(0x0004)(Native)
+	float                                         ExtraAimTrackingHeightOffsetError;                 // 0x09B0(0x0004)(Native)
+	uint8                                         Pad_9B4[0x4];                                      // 0x09B4(0x0004)(Alignment)
 	class UFortAthenaAIBotAimingDigestedSkillSet* CacheAimingDigestedSkillSet;                       // 0x09B8(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_9C0[0x4];                                      // 0x09C0(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
+	float                                         NextMarkEnemyTime;                                 // 0x09C0(0x0004)(Native)
 	uint8                                         bCanBeDestroyedOnDeath : 1;                        // 0x09C4(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (Edit, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected))
-	uint8                                         Pad_9C5[0x3];                                      // 0x09C5(0x0003)(Fixing Size After Last Property [ Dumper-8 ])
+	uint8                                         bIsInteracting : 1;                                // 0x09C4(0x0001)(BitIndex: 0x01, Native; StartInteraction sub_5CF4560 / StopInteraction sub_5CF4B08)
+	uint8                                         bLargeTrackedVelocityChange : 1;                   // 0x09C4(0x0001)(BitIndex: 0x02, Native; aiming code sub_5CF56E8/sub_5CF8C34, name by DevDump order)
+	uint8                                         bMarkedAlive : 1;                                  // 0x09C4(0x0001)(BitIndex: 0x03, Native, default 1; gates OnAgentDied sub_5CEBAD8, which clears it)
+	uint8                                         bShouldAimAtTargetsFeet : 1;                       // 0x09C4(0x0001)(BitIndex: 0x04, Native; aiming code sub_5CF56E8/sub_5CF8C34, name by DevDump order)
+	uint8                                         bHasInitiallySpawned : 1;                          // 0x09C4(0x0001)(BitIndex: 0x05, Native; set in OnPawnAISpawned sub_5CED164)
+	uint8                                         bCanInvestigateWithMeleeWeapon : 1;                // 0x09C4(0x0001)(BitIndex: 0x06, Native; ctor clears it, name by DevDump order)
+	uint8                                         BitPad_9C4_7 : 1;                                  // 0x09C4(0x0001)(BitIndex: 0x07, no field in 19.10 - ctor preserves it; DevDump bHasClamberAbility)
+	uint8                                         Pad_9C5[0x3];                                      // 0x09C5(0x0003)(Alignment)
 	struct FVector                                LastDeathLocation;                                 // 0x09C8(0x000C)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	struct FRotator                               LastDeathRotation;                                 // 0x09D4(0x000C)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, NativeAccessSpecifierProtected)
 	class UFortWorldItem*                         CachedWorldItem;                                   // 0x09E0(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_9E8[0x8];                                      // 0x09E8(0x0008)(Fixing Size After Last Property [ Dumper-8 ])
+	uint8                                         CacheCurrentWeaponType;                            // 0x09E8(0x0001)(Native: enum)
+	uint8                                         Pad_9E9[0x7];                                      // 0x09E9(0x0007)(Alignment)
 	class AFortWeapon*                            CacheWeaponUsedToCalculateType;                    // 0x09F0(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	bool                                          bCachedIsUsingArcedProjectileWeapon;               // 0x09F8(0x0001)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_9F9[0x3];                                      // 0x09F9(0x0003)(Fixing Size After Last Property [ Dumper-8 ])
+	uint8                                         Pad_9F9[0x3];                                      // 0x09F9(0x0003)(Alignment)
 	float                                         CachedProjectileGravityScale;                      // 0x09FC(0x0004)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class AFortWeapon*                            CachedWeaponUsedToCalculateProjectileData;         // 0x0A00(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class UStatManager*                           StatManager;                                       // 0x0A08(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	TArray<struct FBuildingWeakSpotData>          ActiveWeakSpots;                                   // 0x0A10(0x0010)(ZeroConstructor, Transient, Protected, NativeAccessSpecifierProtected)
-	uint8                                         Pad_A20[0x28];                                     // 0x0A20(0x0028)(Fixing Size After Last Property [ Dumper-8 ])
+	uint32                                        ParametersHash;                                    // 0x0A20(0x0004)(Native)
+	uint8                                         Pad_A24[0x4];                                      // 0x0A24(0x0004)(Alignment)
+	class FString                                 CachedBOTId;                                       // 0x0A28(0x0010)(Native)
+	TSharedPtr<class IAnalyticsProviderET>        AnalyticsProvider;                                   // 0x0A38(0x0010)(Native)
 	TSubclassOf<class AFortPawn>                  CacheBotPawnClass;                                 // 0x0A48(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_A50[0x8];                                      // 0x0A50(0x0008)(Fixing Size After Last Property [ Dumper-8 ])
+	uint8                                         HarvestResult;                                     // 0x0A50(0x0001)(Native: enum)
+	uint8                                         Pad_A51[0x7];                                      // 0x0A51(0x0007)(Alignment)
 	class AActor*                                 CurrentLootActor;                                  // 0x0A58(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class UAthenaMarkerComponent*                 MarkerComponent;                                   // 0x0A60(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class FString                                 BotPlayerName;                                     // 0x0A68(0x0010)(ZeroConstructor, Transient, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class FString                                 BotIDSuffix;                                       // 0x0A78(0x0010)(Edit, ZeroConstructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class FString                                 BotPlayerNameWithSkillRating;                      // 0x0A88(0x0010)(ZeroConstructor, Transient, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_A98[0x10];                                     // 0x0A98(0x0010)(Fixing Size After Last Property [ Dumper-8 ])
+	struct FTimerHandle                           RespawnAfterDeathTimerHandle;                      // 0x0A98(0x0008)(Native)
+	EAutoPossessAI                                DefaultPossessAI;                                    // 0x0AA0(0x0001)(Native)
+	uint8                                         Pad_AA1[0x7];                                      // 0x0AA1(0x0007)(Alignment)
 	class UFortAthenaMutator_SpawningPolicyData*  PolicyDataSpawner;                                 // 0x0AA8(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_AB0[0x88];                                     // 0x0AB0(0x0088)(Fixing Size After Last Property [ Dumper-8 ])
+	struct FBotPerceivedSound                     PerceivedSounds[0x5];                              // 0x0AB0(0x0018)(Native)
+	FDelegateHandle                               OnSafezoneStateChangedDelegateHandle;                // 0x0B28(0x0008)(Native)
+	EAthenaGamePhase                              CurrentGamePhase;                                  // 0x0B30(0x0001)(Native)
+	uint8                                         Pad_B31[0x7];                                      // 0x0B31(0x0007)(Alignment)
 	class UFortControllerComponent_Telemetry*     FortControllerComponent_Telemetry;                 // 0x0B38(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	bool                                          bForceUsingBuildingTool;                           // 0x0B40(0x0001)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	bool                                          bForceHolsterWeapon;                               // 0x0B41(0x0001)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_B42[0x6];                                      // 0x0B42(0x0006)(Fixing Size After Last Property [ Dumper-8 ])
+	uint8                                         Pad_B42[0x6];                                      // 0x0B42(0x0006)(Alignment)
 	class UFortWorldItem*                         PendingEquipWeapon;                                // 0x0B48(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_B50[0x30];                                     // 0x0B50(0x0030)(Fixing Size After Last Property [ Dumper-8 ])
+	struct FTimerHandle                           ReleaseBuildToolTimerHandle;                       // 0x0B50(0x0008)(Native)
+	struct FVector                                LastMoveToLocation;                                // 0x0B58(0x000C)(Native)
+	uint8                                         TeleportReason;                                    // 0x0B64(0x0001)(Native: enum, default 4)
+	bool                                          bRestartAroundPlayer;                              // 0x0B65(0x0001)(Native)
+	uint8                                         Pad_B66[0x2];                                      // 0x0B66(0x0002)(Alignment)
+	struct FTimerHandle                           ThankBusDriverTimerHandle;                         // 0x0B68(0x0008)(Native)
+	struct FTimerHandle                           SpectateOnDeathHandle;                             // 0x0B70(0x0008)(Native)
+	struct FTimerHandle                           SpectateDurationHandle;                            // 0x0B78(0x0008)(Native)
 	class APawn*                                  PlayerToSpectateOnDeath;                           // 0x0B80(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	TMulticastInlineDelegate<void(class AFortAthenaAIBotController* BotController, class AFortPlayerPawnAthena* BotPawn)> OnPlayerPawnAISpawnedDelegate; // 0x0B88(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, Protected, NativeAccessSpecifierProtected)
-	uint8                                         Pad_B98[0xC0];                                     // 0x0B98(0x00C0)(Fixing Size After Last Property [ Dumper-8 ])
+	TMulticastDelegate<void(const class AActor*, const struct FVector&)> OnSetEnemyMarkerDelegate;     // 0x0B98(0x0018)(Native)
+	TMulticastDelegate<void(class AFortPlayerPawnAthena*, EMovementMode, EMovementMode)> OnPawnMovementModeChanged; // 0x0BB0(0x0018)(Native)
+	TMulticastDelegate<void(class AFortPlayerPawnAthena*, struct FVector, bool, bool)> OnCharacterLaunched; // 0x0BC8(0x0018)(Native)
+	TMulticastDelegate<void(class AFortPlayerPawnAthena*, const struct FGameplayTag&)> OnCharacterKnockbacked; // 0x0BE0(0x0018)(Native)
+	TMulticastDelegate<void(const struct FAbilityEndedData&)> OnEmoteFinishedDelegate;                 // 0x0BF8(0x0018)(Native)
+	TMulticastDelegate<void(class AFortAthenaAIBotController*, const TArray<class AFortPickup*>&)> OnDropLootOnDeathDelegate; // 0x0C10(0x0018)(Native)
+	TMulticastDelegate<void(EObstacleType, const struct FFortBotTargetInfo&)> OnCurrentObstacleTargetInfoChangedDelegate; // 0x0C28(0x0018)(Native)
+	TMulticastDelegate<void(TSharedPtr<struct FNavigationPath>, struct FAIRequestID, class AFortAthenaAIBotController&)> OnPathMergedDelegate; // 0x0C40(0x0018)(Native)
 	class UAISenseConfig_Sight*                   AISenseConfig_SightOverride;                       // 0x0C58(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_C60[0x10];                                     // 0x0C60(0x0010)(Fixing Size After Last Property [ Dumper-8 ])
+	TArray<struct FFortAISightClamp>              SightClamps;                                         // 0x0C60(0x0010)(Native)
 	class AActor*                                 BotOwner;                                          // 0x0C70(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	int32                                         BotControllerUID;                                  // 0x0C78(0x0004)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_C7C[0x4];                                      // 0x0C7C(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
+	bool                                          bIgnoreInventoryRestrictions;                      // 0x0C7C(0x0001)(Native; full-byte bool, read by WouldItemFitInBotInventory sub_5CF90C8)
+	uint8                                         Pad_C7D[0x3];                                      // 0x0C7D(0x0003)(Alignment)
 	class AFortPlayerPawnAthena*                  ReviveTarget;                                      // 0x0C80(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_C88[0x90];                                     // 0x0C88(0x0090)(Fixing Size After Last Property [ Dumper-8 ])
+	struct FConstructionBuildingInfo              ConstructionBuildingInfo[0x6];                     // 0x0C88(0x0018)(Native)
 	class UFortAthenaAIBotCustomizationData*      BotData;                                           // 0x0D18(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	struct FDebugMinimapData                      DebugMinimapData;                                  // 0x0D20(0x0190)(Transient, Protected, NativeAccessSpecifierProtected)
 	class AFortPlayerPawnAthena*                  RevivePlayerPawnToken;                             // 0x0EB0(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_EB8[0x18];                                     // 0x0EB8(0x0018)(Fixing Size After Last Property [ Dumper-8 ])
+	TArray<struct FFortGameplayAbilityQueryObserverData> ObservedAbilityQueries;                       // 0x0EB8(0x0010)(Native)
+	struct FTimerHandle                           UpdateLeashActorToFollowLocationTimerHandle;       // 0x0EC8(0x0008)(Native)
 	class AActor*                                 LeashActorToFollow;                                // 0x0ED0(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	struct FVector                                LeashActorToFollowLocalOffset;                     // 0x0ED8(0x000C)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_EE4[0x4];                                      // 0x0EE4(0x0004)(Fixing Size After Last Property [ Dumper-8 ])
+	uint8                                         Pad_EE4[0x4];                                      // 0x0EE4(0x0004)(Alignment)
 	class AFortAthenaAILeashVolume*               LeashVolume;                                       // 0x0EE8(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class UFortGameStateComponent_AffiliationManager* CachedAffiliationManager;                      // 0x0EF0(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class UFortActorComponent_Affiliation*        CachedAffiliationComponent;                        // 0x0EF8(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	bool                                          bIsAffectedByMutatorHealthAndShieldModifiers;      // 0x0F00(0x0001)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_F01[0x7];                                      // 0x0F01(0x0007)(Fixing Size After Last Property [ Dumper-8 ])
+	uint8                                         Pad_F01[0x3];                                      // 0x0F01(0x0003)(Alignment)
+	float                                         PawnCullDistanceSquaredAfterPlayerAggroMode;       // 0x0F04(0x0004)(Native, default -1.0)
 	bool                                          bHasChangedPawnCullDistanceToAggroMode;            // 0x0F08(0x0001)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_F09[0x7];                                      // 0x0F09(0x0007)(Fixing Size After Last Property [ Dumper-8 ])
+	uint8                                         Pad_F09[0x7];                                      // 0x0F09(0x0007)(Alignment)
 	class UFortAthenaAIRuntimeParameters_AIBotRespawn* RespawnRuntimeParameters;                     // 0x0F10(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class ABuildingWall*                          CurrentBlockingDoor;                               // 0x0F18(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_F20[0x10];                                     // 0x0F20(0x0010)(Fixing Size After Last Property [ Dumper-8 ])
+	float                                         BlockedByDoorTime;                                 // 0x0F20(0x0004)(Native)
+	uint8                                         Pad_F24[0x4];                                      // 0x0F24(0x0004)(Alignment)
+	struct FTimerHandle                           KnockbackTimerHandle;                              // 0x0F28(0x0008)(Native)
 	class APawn*                                  FinisherPawn;                                      // 0x0F30(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_F38[0x4C];                                     // 0x0F38(0x004C)(Fixing Size After Last Property [ Dumper-8 ])
+	float                                         TransitionToDefensiveBehaviorAllowedTimestamp;     // 0x0F38(0x0004)(Native, default -1.0)
+	uint8                                         Pad_F3C[0x4];                                      // 0x0F3C(0x0004)(Alignment)
+	struct FTimerHandle                           NoWeaponCheckTimerHandle;                          // 0x0F40(0x0008)(Native; 3 handles here, names inferred - GiveMaterialsCheckTimerHandle not in 19.10)
+	struct FTimerHandle                           TurnHostileOnBlockTimerHandle;                     // 0x0F48(0x0008)(Native)
+	struct FTimerHandle                           ResetTurnHostileOnBlockTimerHandle;                // 0x0F50(0x0008)(Native)
+	TWeakObjectPtr<class AFortPawn>               TargetedByControllerPawn;                          // 0x0F58(0x0008)(Native)
+	TWeakObjectPtr<class AFortPawn>               ControllerPawn;                                    // 0x0F60(0x0008)(Native)
+	TWeakObjectPtr<class AFortPawn>               TargetedControlledPawn;                            // 0x0F68(0x0008)(Native)
+	TWeakObjectPtr<class AFortPawn>               ControlledPawn;                                    // 0x0F70(0x0008)(Native)
+	TTuple<TWeakObjectPtr<class AFortPawn>, float> PreviouslyControlledPawn;                          // 0x0F78(0x000C)(Native: Key = pawn, Value = time)
 	EFortPawnStasisMode                           PreviousStasisMode;                                // 0x0F84(0x0001)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	bool                                          bPostponeGiveWeaponCheat;                          // 0x0F85(0x0001)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_F86[0x12];                                     // 0x0F86(0x0012)(Fixing Size After Last Property [ Dumper-8 ])
+	uint8                                         Pad_F86[0x2];                                      // 0x0F86(0x0002)(Alignment)
+	struct FGameplayAbilitySpecHandle             EmoteAbilityHandle;                                // 0x0F88(0x0004)(Native, default -1)
+	uint8                                         Pad_F8C[0x4];                                      // 0x0F8C(0x0004)(Alignment)
+	FDelegateHandle                               EmoteFinishedDelegateHandle;                         // 0x0F90(0x0008)(Native)
 	class UBehaviorTree*                          BTAssetToRunOnPawnAISpawned;                       // 0x0F98(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_FA0[0x20];                                     // 0x0FA0(0x0020)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	uint8                                         AlertLevelKey;                                     // 0x0FA0(0x0001)(Native)
+	uint8                                         TargetActorKey;                                    // 0x0FA1(0x0001)(Native)
+	uint8                                         HasLoSOnThreatKey;                                 // 0x0FA2(0x0001)(Native)
+	uint8                                         LastKnownPositionKey;                              // 0x0FA3(0x0001)(Native)
+	uint8                                         AggressivenessKey;                                 // 0x0FA4(0x0001)(Native)
+	uint8                                         DBNOKey;                                           // 0x0FA5(0x0001)(Native)
+	uint8                                         GamePhaseStepKey;                                  // 0x0FA6(0x0001)(Native)
+	uint8                                         GamePhaseKey;                                      // 0x0FA7(0x0001)(Native)
+	uint8                                         SafezonePhaseKey;                                  // 0x0FA8(0x0001)(Native)
+	uint8                                         SafezoneStateKey;                                  // 0x0FA9(0x0001)(Native)
+	uint8                                         IsInBusKey;                                        // 0x0FAA(0x0001)(Native)
+	uint8                                         HasEverJumpedFromBusKey;                           // 0x0FAB(0x0001)(Native)
+	uint8                                         HasEverJumpedFromBusAndLandedKey;                  // 0x0FAC(0x0001)(Native)
+	uint8                                         JumpExecutionStatusKey;                            // 0x0FAD(0x0001)(Native)
+	uint8                                         DodgeExecutionStatusKey;                           // 0x0FAE(0x0001)(Native)
+	uint8                                         LastBlockingActorKey;                              // 0x0FAF(0x0001)(Native)
+	uint8                                         LastBlockingActorLocationKey;                      // 0x0FB0(0x0001)(Native)
+	uint8                                         FocusActorKey;                                     // 0x0FB1(0x0001)(Native)
+	uint8                                         FocalPointKey;                                     // 0x0FB2(0x0001)(Native)
+	uint8                                         WeaponKey;                                         // 0x0FB3(0x0001)(Native)
+	uint8                                         LastKillPositionKey;                               // 0x0FB4(0x0001)(Native)
+	uint8                                         LastKillTimeKey;                                   // 0x0FB5(0x0001)(Native)
+	uint8                                         LastKillVictimWasABot;                             // 0x0FB6(0x0001)(Native)
+	uint8                                         ClosestDetectedTrapPathKey;                        // 0x0FB7(0x0001)(Native)
+	uint8                                         IsMovementBlocked;                                 // 0x0FB8(0x0001)(Native)
+	uint8                                         DangerZoneDetectedExecutionStatusKey;              // 0x0FB9(0x0001)(Native)
+	uint8                                         VehicleActorKey;                                   // 0x0FBA(0x0001)(Native)
+	uint8                                         IsDrivingVehicleKey;                               // 0x0FBB(0x0001)(Native)
+	uint8                                         Pad_FBC[0x4];                                      // 0x0FBC(0x0004)(Fixing Struct Size After Last Property)
 
 public:
 	void BlueprintOnBehaviorTreeStarted();
@@ -16742,6 +16885,34 @@ public:
 	{
 		static void (*EnterAircraftOriginal)(void*, void*) = decltype(EnterAircraftOriginal)(InSDKUtils::GetImageBase() + 0x5ce165c);
 		EnterAircraftOriginal(this, Aircraft);
+	}
+
+	class UFortWorldItem* GetBestWeapon(bool bIgnoreThrowables, bool bSwapInsteadOfReload) const
+	{
+		static UFortWorldItem* (*GetBestWeaponOriginal)(const AFortAthenaAIBotController*, bool, bool) = decltype(GetBestWeaponOriginal)(InSDKUtils::GetImageBase() + 0x5ce39a8);
+		return GetBestWeaponOriginal(this, bIgnoreThrowables, bSwapInsteadOfReload);
+	}
+
+	class UFortWorldItem* GetBestWeaponForTargetInfo(const struct FFortBotTargetInfo* TargetInfo, bool bIgnoreThrowables, bool bSwapInsteadOfReload) const
+	{
+		FFortBotTargetHandler& Handler = const_cast<FFortBotTargetHandler&>(TargetHandler);
+
+		int32 TargetIndex = -1;
+		if (TargetInfo)
+		{
+			const ptrdiff_t Offset = TargetInfo - Handler.Targets.GetDataPtr();
+			if (Offset >= 0 && Offset < Handler.Targets.Num())
+				TargetIndex = static_cast<int32>(Offset);
+		}
+
+		if (TargetIndex == Handler.CurrentTargetIdx)
+			return GetBestWeapon(bIgnoreThrowables, bSwapInsteadOfReload);
+
+		const int32 SavedTargetIdx = Handler.CurrentTargetIdx;
+		Handler.CurrentTargetIdx = TargetIndex;
+		UFortWorldItem* BestWeapon = GetBestWeapon(bIgnoreThrowables, bSwapInsteadOfReload);
+		Handler.CurrentTargetIdx = SavedTargetIdx;
+		return BestWeapon;
 	}
 public:
 	static class UClass* StaticClass()
@@ -51871,6 +52042,8 @@ public:
 class ICosmeticLoadoutOwner final
 {
 public:
+	void** VTable;
+public:
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"CosmeticLoadoutOwner">();
@@ -51887,6 +52060,30 @@ public:
 	const class UObject* AsUObject() const
 	{
 		return reinterpret_cast<const UObject*>(this);
+	}
+
+	UObject* _getUObject() const
+	{
+		UObject* (*_getUObjectInternal)(const void*) = decltype(_getUObjectInternal)(VTable[1]);
+		return _getUObjectInternal(this);
+	}
+
+	bool IsCosmeticLoadoutInitialized() const
+	{
+		bool (*IsCosmeticLoadoutInitializedInternal)(const void*) = decltype(IsCosmeticLoadoutInitializedInternal)(VTable[2]);
+		return IsCosmeticLoadoutInitializedInternal(this);
+	}
+
+	const struct FFortAthenaLoadout* GetCosmeticLoadout() const
+	{
+		const FFortAthenaLoadout* (*GetCosmeticLoadoutInternal)(const void*) = decltype(GetCosmeticLoadoutInternal)(VTable[3]);
+		return GetCosmeticLoadoutInternal(this);
+	}
+
+	void SetCosmeticLoadout(const struct FFortAthenaLoadout& NewLoadout)
+	{
+		void (*SetCosmeticLoadoutInternal)(void*, const FFortAthenaLoadout*) = decltype(SetCosmeticLoadoutInternal)(VTable[4]);
+		SetCosmeticLoadoutInternal(this, &NewLoadout);
 	}
 };
 
@@ -54734,6 +54931,8 @@ public:
 	int32 GetFuelChargeValue() const;
 	void GetOwnedGameplayTags(struct FGameplayTagContainer* TagContainer) const;
 	bool SeenInFrontend() const;
+
+	void RemoveFromInventory();
 
 public:
 	static class UClass* StaticClass()
@@ -61795,7 +61994,22 @@ public:
 	TArray<class UStat*>                          Stats;                                             // 0x0028(0x0010)(ZeroConstructor, NativeAccessSpecifierPublic)
 	class FString                                 StatPrefix;                                        // 0x0038(0x0010)(ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class AController*                            Controller;                                        // 0x0048(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_50[0x50];                                      // 0x0050(0x0050)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	TMap<class FName, class UStat*>               StatLookup;                                        // 0x0050(0x0050)(Native)
+
+public:
+	void InitializeManager(class AController* InController)
+	{
+		void (*InitializeManagerInternal)(UBaseStatManager*, AController*) = decltype(InitializeManagerInternal)(VTable[0x55]);
+		InitializeManagerInternal(this, InController);
+	}
+
+	bool ModifyStat(class FName StatName, int32 Amount, EStatMod ModType);
+	class UStat* AddOrGetStat(class FName StatName, EStatRecordingPeriod HighestPeriodToTrack);
+	class UStat* MakeStat(class FName StatName, EStatRecordingPeriod HighestPeriodToTrack);
+	class UStat* GetStatByName(class FName StatName) const;
+	int32 GetStatValue(const class UStat* Stat, EStatRecordingPeriod Period) const;
+	int32 GetStatValueByName(class FName StatName, EStatRecordingPeriod Period) const;
+	void ClearPeriod(EStatRecordingPeriod Period);
 
 public:
 	static class UClass* StaticClass()
@@ -63147,6 +63361,12 @@ public:
 	TArray<class UFortWorldItem*>                 CachedWallTraps;                                   // 0x0460(0x0010)(ZeroConstructor, Transient, Protected, NativeAccessSpecifierProtected)
 	TArray<class UFortWorldItem*>                 CachedCeilingTraps;                                // 0x0470(0x0010)(ZeroConstructor, Transient, Protected, NativeAccessSpecifierProtected)
 	uint8                                         Pad_480[0x58];                                     // 0x0480(0x0058)(Fixing Struct Size After Last Property [ Dumper-8 ])
+
+public:
+	bool Find(const class UFortItem* Item, EFortQuickBars* OutQuickBar, int32* OutSlot) const;
+	EFortQuickBars ItemIsOnQuickBar(const class UFortItem* Item) const;
+	EFortQuickBars ItemIsOnQuickBar(struct FGuid ItemGuid) const;
+	bool CanRemoveItem(const class UFortItem* Item) const;
 
 public:
 	static class UClass* StaticClass()
@@ -86825,6 +87045,28 @@ public:
 class IFortInventoryInterface final
 {
 public:
+	void** VTable;
+
+public:
+	int32 GetInventoryCapacity() const
+	{
+		int32 (*GetInventoryCapacityInternal)(const void*) = decltype(GetInventoryCapacityInternal)(VTable[0x5]);
+		return GetInventoryCapacityInternal(this);
+	}
+
+	int32 GetInventoryUsed() const
+	{
+		int32 (*GetInventoryUsedInternal)(const void*) = decltype(GetInventoryUsedInternal)(VTable[0x6]);
+		return GetInventoryUsedInternal(this);
+	}
+
+	int32 GetInventoryOverflow() const
+	{
+		int32 (*GetInventoryOverflowInternal)(const void*) = decltype(GetInventoryOverflowInternal)(VTable[0x7]);
+		return GetInventoryOverflowInternal(this);
+	}
+
+public:
 	static class UClass* StaticClass()
 	{
 		return StaticClassImpl<"FortInventoryInterface">();
@@ -87016,6 +87258,12 @@ public:
 		return _getUObjectInternal(this);
 	}
 
+	void InitializeInventory(const TArray<struct FItemAndCount>& ItemList)
+	{
+		void (*InitializeInventoryInternal)(void*, const TArray<FItemAndCount>*) = decltype(InitializeInventoryInternal)(VTable[4]);
+		InitializeInventoryInternal(this, &ItemList);
+	}
+
 	class AFortInventory* GetWorldInventory()
 	{
 		AFortInventory* (*_GetWorldInventory)(void*) = decltype(_GetWorldInventory)(VTable[0xB]);
@@ -87026,6 +87274,30 @@ public:
 	{
 		UFortItem* (*FindExistingItemForDefinitionInternal)(void*, const FItemVariantHandle*, bool) = decltype(FindExistingItemForDefinitionInternal)(VTable[0x2C]);
 		return FindExistingItemForDefinitionInternal(this, &ItemVariantHandle, bInStorageVault);
+	}
+
+	const class UFortItem* GetInventoryItemWithGuid(struct FGuid ItemGuid) const
+	{
+		const UFortItem* (*GetInventoryItemWithGuidInternal)(const void*, FGuid*) = decltype(GetInventoryItemWithGuidInternal)(VTable[0x2E]);
+		return GetInventoryItemWithGuidInternal(this, &ItemGuid);
+	}
+
+	int32 CountInventoryOverflowFromAddingItem(const struct FFortItemEntry& ItemDescription, bool bIsClassItem, bool bFromPickup) const
+	{
+		int32 (*CountInventoryOverflowFromAddingItemInternal)(const void*, const FFortItemEntry*, bool, bool) = decltype(CountInventoryOverflowFromAddingItemInternal)(VTable[0x30]);
+		return CountInventoryOverflowFromAddingItemInternal(this, &ItemDescription, bIsClassItem, bFromPickup);
+	}
+
+	bool IsItemDescriptionAllowedInOverflow(const struct FFortItemEntry& ItemDescription, bool bIsClassItem, bool bFromPickup) const
+	{
+		bool (*IsItemDescriptionAllowedInOverflowInternal)(const void*, const FFortItemEntry*, bool, bool) = decltype(IsItemDescriptionAllowedInOverflowInternal)(VTable[0x31]);
+		return IsItemDescriptionAllowedInOverflowInternal(this, &ItemDescription, bIsClassItem, bFromPickup);
+	}
+
+	void GetCosmeticLoadout(struct FFortAthenaLoadout& OutLoadout) const
+	{
+		void (*GetCosmeticLoadoutInternal)(const void*, FFortAthenaLoadout*) = decltype(GetCosmeticLoadoutInternal)(VTable[0x22]);
+		GetCosmeticLoadoutInternal(this, &OutLoadout);
 	}
 };
 
@@ -89958,7 +90230,57 @@ public:
 	uint8                                         Pad_458[0x18];                                     // 0x0458(0x0018)(Fixing Struct Size After Last Property [ Dumper-8 ])
 
 public:
+	static inline TArray<TTuple<const class UFortWorldItem*, int32>>& AddingItemPlan = *reinterpret_cast<TArray<TTuple<const class UFortWorldItem*, int32>>*>(InSDKUtils::GetImageBase() + 0xB528258);
+
+public:
 	void HandleInventoryLocalUpdate();
+
+public:
+	int32 GetOverflowFromAddingItem(const struct FFortItemEntry& ItemDescription) const
+	{
+		static int32 (*GetOverflowFromAddingItemOriginal)(const AFortInventory*, const FFortItemEntry*) = decltype(GetOverflowFromAddingItemOriginal)(InSDKUtils::GetImageBase() + 0x64ce274);
+		return GetOverflowFromAddingItemOriginal(this, &ItemDescription);
+	}
+
+	static int32 GetOverflowFromAddingItem(const struct FFortItemEntry& ItemDescription, const class IFortInventoryOwnerInterface* Owner, EFortInventoryType InventoryType, int32 PaddingStacks)
+	{
+		static int32 (*GetOverflowFromAddingItemOriginal)(const FFortItemEntry*, const IFortInventoryOwnerInterface*, int32, int32) = decltype(GetOverflowFromAddingItemOriginal)(InSDKUtils::GetImageBase() + 0x64ce2cc);
+		return GetOverflowFromAddingItemOriginal(&ItemDescription, Owner, static_cast<int32>(InventoryType), PaddingStacks);
+	}
+
+	static int32 GetOverflowFromAddingItemInExistingStack(const struct FFortItemEntry& ItemDescription, const class IFortInventoryOwnerInterface* Owner, EFortInventoryType InventoryType)
+	{
+		static int32 (*GetOverflowFromAddingItemInExistingStackOriginal)(const FFortItemEntry*, const IFortInventoryOwnerInterface*, int32) = decltype(GetOverflowFromAddingItemInExistingStackOriginal)(InSDKUtils::GetImageBase() + 0x64ce4ac);
+		return GetOverflowFromAddingItemInExistingStackOriginal(&ItemDescription, Owner, static_cast<int32>(InventoryType));
+	}
+
+	static int32 GetOverflowFromAddingItemInNewStack(const struct FFortItemEntry& ItemDescription, const class IFortInventoryOwnerInterface* Owner, EFortInventoryType InventoryType, int32 PaddingStacks)
+	{
+		static int32 (*GetOverflowFromAddingItemInNewStackOriginal)(const FFortItemEntry*, const IFortInventoryOwnerInterface*, int32, int32) = decltype(GetOverflowFromAddingItemInNewStackOriginal)(InSDKUtils::GetImageBase() + 0x64ce770);
+		return GetOverflowFromAddingItemInNewStackOriginal(&ItemDescription, Owner, static_cast<int32>(InventoryType), PaddingStacks);
+	}
+
+	void SetItemRequiresUpdate(struct FFortItemEntry* ItemEntry)
+	{
+		static void (*SetItemRequiresUpdateOriginal)(AFortInventory*, FFortItemEntry*) = decltype(SetItemRequiresUpdateOriginal)(InSDKUtils::GetImageBase() + 0x64d5fb8);
+		SetItemRequiresUpdateOriginal(this, ItemEntry);
+	}
+
+	void SetRequiresUpdate()
+	{
+		static void (*SetRequiresUpdateOriginal)(AFortInventory*) = decltype(SetRequiresUpdateOriginal)(InSDKUtils::GetImageBase() + 0x64d604c);
+		SetRequiresUpdateOriginal(this);
+	}
+
+	class FFortItemEntry* GetReplicatedItemEntry(struct FGuid ItemGuid);
+	class UFortWorldItem* GetItem(struct FGuid itemGuid);
+
+	void OnRemoveItemStack(UFortWorldItem* ItemStackToRemove, const FGuid& ItemGuid);
+
+	static int32 GetInventoryCapacity(const class IFortInventoryOwnerInterface* Owner, EFortInventoryType InventoryType);
+	static int32 GetInventoryUsed(const class IFortInventoryOwnerInterface* Owner, EFortInventoryType InventoryType);
+	int32 GetInventoryCapacity() const;
+	int32 GetInventoryUsed() const;
 
 public:
 	static class UClass* StaticClass()
@@ -100307,6 +100629,10 @@ public:
 	TArray<struct FEmoteActivationTrigger>        EmoteActivationTriggers;                           // 0x08C8(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
 
 public:
+	static UGameDataCosmetics* Get()
+	{
+		return UFortAssetManager::Get()->GameDataCosmetics;
+	}
 	void CreateBannerAssets();
 
 public:
@@ -113917,7 +114243,11 @@ public:
 	EStatRecordingPeriod                          HighestPeriodToTrack;                              // 0x0030(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_31[0x3];                                       // 0x0031(0x0003)(Fixing Size After Last Property [ Dumper-8 ])
 	int32                                         AbsoluteMaxValue;                                  // 0x0034(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_38[0x28];                                      // 0x0038(0x0028)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	TMulticastDelegate<void(class AController*, class FName, int32, EStatMod)> OnStatModifiedDelegate; // 0x0038(0x0018)(Native)
+	TArray<double>                                StatDataByPeriod;                                  // 0x0050(0x0010)(Native)
+
+public:
+	void ModifyStat(double Amount, EStatMod ModType);
 
 public:
 	static class UClass* StaticClass()

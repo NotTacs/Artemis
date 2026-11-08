@@ -24,6 +24,8 @@
 #include "FortniteGame\Source\FortniteGame\Public\Athena\ControllerComponents\FortControllerComponent_MapDiscoverability.h"
 #include "FortniteGame\Source\FortniteGame\Public\Athena\FortGameStateAthena.h"
 #include "FortniteGame\Source\FortniteGame\Public\Player\FortPlayerController.h"
+#include "FortniteGame\Source\FortniteGame\Public\Items\FortInventoryOwnerInterface.h"
+#include "FortniteGame\Source\FortniteGame\Public\FortKismetLibrary.h"
 
 void FModuleManager::LoadAllModules()
 {
@@ -54,5 +56,7 @@ void FModuleManager::LoadAllModules()
 	FortControllerComponent_MapDiscoverability::LoadModule();
 	FortGameStateAthena::LoadModule();
 	FortPlayerController::LoadModule();
+	FortInventoryOwnerInterface::LoadModule();
+	FortKismetLibrary::LoadModule();
 	UE_LOG(LogModuleManager, Verbose, TEXT("All modules loaded"));
 }

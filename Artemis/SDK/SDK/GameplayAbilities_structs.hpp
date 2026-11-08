@@ -1137,7 +1137,12 @@ public:
 	TArray<class UGameplayAbility*>               NonReplicatedInstances;                            // 0x0070(0x0010)(ZeroConstructor, RepSkip, NativeAccessSpecifierPublic)
 	TArray<class UGameplayAbility*>               ReplicatedInstances;                               // 0x0080(0x0010)(ZeroConstructor, NativeAccessSpecifierPublic)
 	struct FActiveGameplayEffectHandle            GameplayEffectHandle;                              // 0x0090(0x0008)(RepSkip, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_98[0x50];                                      // 0x0098(0x0050)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	TMap<struct FGameplayTag, float>              SetByCallerTagMagnitudes;                          // 0x0098(0x0050)(Native)
+
+public:
+	FGameplayAbilitySpec() = default;
+	FGameplayAbilitySpec(class UGameplayAbility* InAbility, int32 InLevel = 1, int32 InInputID = -1, class UObject* InSourceObject = nullptr);
+	FGameplayAbilitySpec(TSubclassOf<class UGameplayAbility> InAbilityClass, int32 InLevel = 1, int32 InInputID = -1, class UObject* InSourceObject = nullptr);
 };
 
 // ScriptStruct GameplayAbilities.GameplayAbilitySpecContainer

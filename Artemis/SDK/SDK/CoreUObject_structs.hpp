@@ -716,6 +716,23 @@ public:
 	{
 		return ((this->A ^ Y.A) | (this->B ^ Y.B) | (this->C ^ Y.C) | (this->D ^ Y.D)) != 0;
 	}
+	static FGuid NewGuid()
+	{
+		static FGuid* (*NewGuidOriginal)(FGuid*) = decltype(NewGuidOriginal)(InSDKUtils::GetImageBase() + 0xd17c28);
+		FGuid Result;
+		NewGuidOriginal(&Result);
+		return Result;
+	}
+
+	bool IsValid() const
+	{
+		return ((A | B | C | D) != 0);
+	}
+
+	void Invalidate()
+	{
+		A = B = C = D = 0;
+	}
 };
 
 inline uint32 GetTypeHash(const FGuid& Guid)

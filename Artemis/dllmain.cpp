@@ -20,6 +20,7 @@
 #include "FortniteGame\Source\FortniteGame\Public\Player\FortPlayerController.h"
 #include "FortniteGame\Source\FortniteGame\Public\Items\FortInventoryOwnerInterface.h"
 #include "FortniteGame\Source\FortniteGame\Public\FortKismetLibrary.h"
+#include "FortniteGame\Source\FortniteGame\Public\Pawns\FortPawn.h"
 
 DWORD WINAPI Main(LPVOID lpThread)
 {
@@ -52,9 +53,9 @@ DWORD WINAPI Main(LPVOID lpThread)
     FortPlayerController::LoadModule();
     FortInventoryOwnerInterface::LoadModule();
     FortKismetLibrary::LoadModule();
+    FortPawn::LoadModule();
     UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"log LogFortQuest VeryVerbose | log LogFort VeryVerbose", nullptr);
     UKismetSystemLibrary::ExecuteConsoleCommand(UWorld::GetWorld(), L"log LogFortUIDirector", nullptr);
-    /* THIS IS SKUNKY WE NEED TO DO PROPER */
     UWorld::GetWorld()->OwningGameInstance->LocalPlayers[0]->PlayerController->SwitchLevel(L"Artemis_Terrain");
     UWorld::GetWorld()->OwningGameInstance->LocalPlayers.Remove(0);
     return 0;

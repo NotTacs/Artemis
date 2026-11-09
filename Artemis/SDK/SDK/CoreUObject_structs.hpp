@@ -751,12 +751,65 @@ public:
 	struct FGuid                                  Artifact;                                          // 0x0028(0x0010)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
 
+namespace ETimespan
+{
+	constexpr int64 TicksPerDay = 864000000000;
+	constexpr int64 TicksPerHour = 36000000000;
+	constexpr int64 TicksPerMinute = 600000000;
+	constexpr int64 TicksPerSecond = 10000000;
+	constexpr int64 TicksPerMillisecond = 10000;
+	constexpr int64 TicksPerMicrosecond = 10;
+}
+
+struct FTimespan;
+
 // ScriptStruct CoreUObject.DateTime
 // 0x0008 (0x0008 - 0x0000)
 struct alignas(0x08) FDateTime final
 {
 public:
-	uint8                                         Pad_0[0x8];                                        // 0x0000(0x0008)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	int64                                         Ticks;                                             // 0x0000(0x0008)
+
+public:
+	FDateTime() = default;
+	explicit constexpr FDateTime(int64 InTicks) : Ticks(InTicks) {}
+	FDateTime(int32 Year, int32 Month, int32 Day, int32 Hour = 0, int32 Minute = 0, int32 Second = 0, int32 Millisecond = 0);
+
+	static constexpr FDateTime MinValue() { return FDateTime(0); }
+	static constexpr FDateTime MaxValue() { return FDateTime(3652059 * ETimespan::TicksPerDay - 1); }
+	static FDateTime Now();
+	static FDateTime UtcNow();
+	static FDateTime FromUnixTimestamp(int64 UnixTime);
+	static bool IsLeapYear(int32 Year);
+	static int32 DaysInMonth(int32 Year, int32 Month);
+	static int32 DaysInYear(int32 Year);
+
+	constexpr int64 GetTicks() const { return Ticks; }
+	FDateTime GetDate() const { return FDateTime(Ticks - (Ticks % ETimespan::TicksPerDay)); }
+	void GetDate(int32& OutYear, int32& OutMonth, int32& OutDay) const;
+	int32 GetYear() const;
+	int32 GetMonth() const;
+	int32 GetDay() const;
+	int32 GetDayOfYear() const;
+	int32 GetHour() const { return int32((Ticks / ETimespan::TicksPerHour) % 24); }
+	int32 GetMinute() const { return int32((Ticks / ETimespan::TicksPerMinute) % 60); }
+	int32 GetSecond() const { return int32((Ticks / ETimespan::TicksPerSecond) % 60); }
+	int32 GetMillisecond() const { return int32((Ticks / ETimespan::TicksPerMillisecond) % 1000); }
+	FTimespan GetTimeOfDay() const;
+	int64 ToUnixTimestamp() const;
+
+	FDateTime operator+(const FTimespan& Other) const;
+	FDateTime& operator+=(const FTimespan& Other);
+	FDateTime operator-(const FTimespan& Other) const;
+	FDateTime& operator-=(const FTimespan& Other);
+	FTimespan operator-(const FDateTime& Other) const;
+
+	constexpr bool operator==(const FDateTime& Other) const { return Ticks == Other.Ticks; }
+	constexpr bool operator!=(const FDateTime& Other) const { return Ticks != Other.Ticks; }
+	constexpr bool operator<(const FDateTime& Other) const { return Ticks < Other.Ticks; }
+	constexpr bool operator<=(const FDateTime& Other) const { return Ticks <= Other.Ticks; }
+	constexpr bool operator>(const FDateTime& Other) const { return Ticks > Other.Ticks; }
+	constexpr bool operator>=(const FDateTime& Other) const { return Ticks >= Other.Ticks; }
 };
 
 // ScriptStruct CoreUObject.AutomationExecutionEntry
@@ -1690,7 +1743,46 @@ public:
 struct alignas(0x08) FTimespan final
 {
 public:
-	uint8                                         Pad_0[0x8];                                        // 0x0000(0x0008)(Fixing Struct Size After Last Property [ Dumper-8 ])
+	int64                                         Ticks;                                             // 0x0000(0x0008)
+
+public:
+	FTimespan() = default;
+	explicit constexpr FTimespan(int64 InTicks) : Ticks(InTicks) {}
+	constexpr FTimespan(int32 Hours, int32 Minutes, int32 Seconds)
+		: Ticks(Hours * ETimespan::TicksPerHour + Minutes * ETimespan::TicksPerMinute + Seconds * ETimespan::TicksPerSecond) {}
+	constexpr FTimespan(int32 Days, int32 Hours, int32 Minutes, int32 Seconds)
+		: Ticks(Days * ETimespan::TicksPerDay + Hours * ETimespan::TicksPerHour + Minutes * ETimespan::TicksPerMinute + Seconds * ETimespan::TicksPerSecond) {}
+
+	static constexpr FTimespan Zero() { return FTimespan(0); }
+	static FTimespan FromDays(double Days) { return FTimespan(int64(Days * ETimespan::TicksPerDay)); }
+	static FTimespan FromHours(double Hours) { return FTimespan(int64(Hours * ETimespan::TicksPerHour)); }
+	static FTimespan FromMinutes(double Minutes) { return FTimespan(int64(Minutes * ETimespan::TicksPerMinute)); }
+	static FTimespan FromSeconds(double Seconds) { return FTimespan(int64(Seconds * ETimespan::TicksPerSecond)); }
+	static FTimespan FromMilliseconds(double Milliseconds) { return FTimespan(int64(Milliseconds * ETimespan::TicksPerMillisecond)); }
+
+	constexpr int64 GetTicks() const { return Ticks; }
+	constexpr int32 GetDays() const { return int32(Ticks / ETimespan::TicksPerDay); }
+	constexpr int32 GetHours() const { return int32((Ticks / ETimespan::TicksPerHour) % 24); }
+	constexpr int32 GetMinutes() const { return int32((Ticks / ETimespan::TicksPerMinute) % 60); }
+	constexpr int32 GetSeconds() const { return int32((Ticks / ETimespan::TicksPerSecond) % 60); }
+	constexpr double GetTotalDays() const { return double(Ticks) / ETimespan::TicksPerDay; }
+	constexpr double GetTotalHours() const { return double(Ticks) / ETimespan::TicksPerHour; }
+	constexpr double GetTotalMinutes() const { return double(Ticks) / ETimespan::TicksPerMinute; }
+	constexpr double GetTotalSeconds() const { return double(Ticks) / ETimespan::TicksPerSecond; }
+	constexpr double GetTotalMilliseconds() const { return double(Ticks) / ETimespan::TicksPerMillisecond; }
+
+	constexpr FTimespan operator+(const FTimespan& Other) const { return FTimespan(Ticks + Other.Ticks); }
+	constexpr FTimespan operator-(const FTimespan& Other) const { return FTimespan(Ticks - Other.Ticks); }
+	constexpr FTimespan operator-() const { return FTimespan(-Ticks); }
+	FTimespan& operator+=(const FTimespan& Other) { Ticks += Other.Ticks; return *this; }
+	FTimespan& operator-=(const FTimespan& Other) { Ticks -= Other.Ticks; return *this; }
+
+	constexpr bool operator==(const FTimespan& Other) const { return Ticks == Other.Ticks; }
+	constexpr bool operator!=(const FTimespan& Other) const { return Ticks != Other.Ticks; }
+	constexpr bool operator<(const FTimespan& Other) const { return Ticks < Other.Ticks; }
+	constexpr bool operator<=(const FTimespan& Other) const { return Ticks <= Other.Ticks; }
+	constexpr bool operator>(const FTimespan& Other) const { return Ticks > Other.Ticks; }
+	constexpr bool operator>=(const FTimespan& Other) const { return Ticks >= Other.Ticks; }
 };
 
 // ScriptStruct CoreUObject.Transform

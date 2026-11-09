@@ -379,6 +379,14 @@ void FortPlayerController::ServerPlayEmoteItem_Implementation(AFortPlayerControl
 		return;
 	}
 
+	const UAthenaDanceItemDefinition* MovingDanceDefinition = Cast<UAthenaDanceItemDefinition>(EmoteAsset);
+	const bool bMovingEmote = MovingDanceDefinition && MovingDanceDefinition->bMovingEmote;
+	__this->MyFortPawn->bMovingEmote = bMovingEmote;
+	__this->MyFortPawn->bMovingEmoteForwardOnly = bMovingEmote && MovingDanceDefinition->bMoveForwardOnly;
+	__this->MyFortPawn->bMovingEmoteFollowingOnly = bMovingEmote && MovingDanceDefinition->bMoveFollowingOnly;
+	__this->MyFortPawn->bMovingEmoteSkipLandingFX = bMovingEmote && MovingDanceDefinition->bMovingEmoteSkipLandingFX;
+	__this->MyFortPawn->EmoteWalkSpeed = bMovingEmote ? MovingDanceDefinition->WalkForwardSpeed : 0.0f;
+
 	FGameplayAbilitySpec Spec(EmoteAbilityClass->GetDefaultObject<UFortGameplayAbility>(), 1, INDEX_NONE, const_cast<UFortMontageItemDefinitionBase*>(EmoteAsset));
 	AbilitySystemComponent->GiveAbilityAndActivateOnce(Spec);
 }

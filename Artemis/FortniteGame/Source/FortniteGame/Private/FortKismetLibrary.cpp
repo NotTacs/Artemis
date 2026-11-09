@@ -121,7 +121,41 @@ DEFINE_FUNCTION(FortKismetLibrary::execGiveItemToInventoryOwner)
 	P_NATIVE_END;
 }
 
+bool FortKismetLibrary::PickLootDropsInternal(UObject* WorldContextObject, TArray<FFortItemEntry>& OutLootToDrop, FName TierGroupName, int32 WorldLevel, const TMap<FName, float>* NamedWeightsMap, int32 ForcedLootTier)
+{
+	return false;
+}
+
+DEFINE_FUNCTION(FortKismetLibrary::execPickLootDropsWithNamedWeights)
+{
+	P_GET_OBJECT(UObject, WorldContextObject);
+	P_GET_ARRAY_REF(TArray<FFortItemEntry>, OutLootToDrop);
+	P_GET_PROPERTY(FNameProperty, TierGroupName);
+	P_GET_PROPERTY(FIntProperty, WorldLevel);
+	P_GET_TMAP_REF(FName, float, NamedWeightsMap);
+	P_GET_PROPERTY(FIntProperty, ForcedLootTier);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	*(bool*)RESULT_PARAM = PickLootDropsInternal(WorldContextObject, *OutLootToDrop, TierGroupName, WorldLevel, &NamedWeightsMap, ForcedLootTier);
+	P_NATIVE_END;
+}
+
+DEFINE_FUNCTION(FortKismetLibrary::execPickLootDrops)
+{
+	P_GET_OBJECT(UObject, WorldContextObject);
+	P_GET_ARRAY_REF(TArray<FFortItemEntry>, OutLootToDrop);
+	P_GET_PROPERTY(FNameProperty, TierGroupName);
+	P_GET_PROPERTY(FIntProperty, WorldLevel);
+	P_GET_PROPERTY(FIntProperty, ForcedLootTier);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	*(bool*)RESULT_PARAM = PickLootDropsInternal(WorldContextObject, *OutLootToDrop, TierGroupName, WorldLevel, nullptr, ForcedLootTier);
+	P_NATIVE_END;
+}
+
 void FortKismetLibrary::LoadModule()
 {
 	FMemoryLibrary::ExecHook(UFortKismetLibrary::StaticClass()->FindFunctionByName(FName(L"GiveItemToInventoryOwner", EFindName::FNAME_Add)), execGiveItemToInventoryOwner);
+	FMemoryLibrary::ExecHook(UFortKismetLibrary::StaticClass()->FindFunctionByName(FName(L"PickLootDrops", EFindName::FNAME_Add)), execPickLootDrops);
+	FMemoryLibrary::ExecHook(UFortKismetLibrary::StaticClass()->FindFunctionByName(FName(L"PickLootDropsWithNamedWeights", EFindName::FNAME_Add)), execPickLootDropsWithNamedWeights);
 }

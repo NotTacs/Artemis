@@ -10974,6 +10974,8 @@ public:
 	void SetInteractionInteractComponent(class UPrimitiveComponent* PrimitiveComponent);
 	void SetOverlapComponent(class UCapsuleComponent* InOverlapComponent);
 	void StartedPlotLoadForUser(const struct FAsyncTaskResult& Result);
+
+	void SetOwningPlayer(const struct FUniqueNetIdRepl& InOwningPlayer);
 	void TeleportPlayer(class AFortPlayerPawn* PlayerPawn, const struct FRotator& TeleportRotation);
 	void TeleportPlayerForPlotLoadComplete(class AFortPlayerPawn* PlayerPawn);
 	void TeleportPlayerToLinkedVolume(class AFortPlayerPawn* PlayerPawn, bool bUseSpawnTags);
@@ -14766,6 +14768,26 @@ public:
 	void SetSearchLootTierGroup(class FName InSearchLootTierGroup, bool bReRollForLootExistence);
 	void StartAudiovisualIndicator(class UAudioComponent* ForComponent, EFortSoundIndicatorTypes Type, float Interval);
 	void StopAudiovisualIndicator();
+
+	void HideContainer()
+	{
+		void (*HideContainerOriginal)(void*) = decltype(HideContainerOriginal)(VTable[0x1F8]);
+		HideContainerOriginal(this);
+	}
+
+	void SetContainerSearched(class AFortPawn* Searcher)
+	{
+		void (*SetContainerSearchedOriginal)(void*, class AFortPawn*) = decltype(SetContainerSearchedOriginal)(VTable[0x1F9]);
+		SetContainerSearchedOriginal(this, Searcher);
+	}
+
+	void SetReplicatedLootTier(int32 Tier)
+	{
+		if (ReplicatedLootTier != Tier)
+		{
+			ReplicatedLootTier = Tier;
+		}
+	}
 
 public:
 	static class UClass* StaticClass()
@@ -30053,6 +30075,12 @@ public:
 	bool HasStartedPlaying() const;
 	bool IsMeshNetPlayer() const;
 	bool IsSimulatingDamage() const;
+
+	void ApplyCustomizationToCharacter(class AController* Controller, class AFortPlayerPawn* FortPlayerPawn)
+	{
+		static void (*ApplyCustomizationToCharacterInternal)(void*, AController * Controller, AFortPlayerPawn * FortPlayerPawn) = decltype(ApplyCustomizationToCharacterInternal)(InSDKUtils::GetImageBase() + 0x67b7b6c);
+		return ApplyCustomizationToCharacterInternal(this, Controller, FortPlayerPawn);
+	}
 
 public:
 	static class UClass* StaticClass()
@@ -54076,6 +54104,14 @@ public:
 		return ScoreBuildingConstructionInternal(this, ConstructingController, ConstructedBuilding);
 	}
 
+	class FName RedirectLootTierGroup(class FName InLootTierGroup)
+	{
+		FName* (*RedirectLootTierGroupOriginal)(void*, FName*, FName) = decltype(RedirectLootTierGroupOriginal)(VTable[0x185]);
+		FName Result;
+		RedirectLootTierGroupOriginal(this, &Result, InLootTierGroup);
+		return Result;
+	}
+
 public:
 	static class UClass* StaticClass()
 	{
@@ -70163,6 +70199,9 @@ public:
 	static void GetCreativePortalManager(const class UObject* WorldContextObject, class AFortCreativePortalManager** OutCreativePortalManager, ECreativePortalManagerValidityResult* OutIsValid);
 
 	void ReleasePortal(class AFortAthenaCreativePortal* PortalToRelease);
+
+	static AFortCreativePortalManager* Get(const UObject* WorldContextObject);
+	class AFortAthenaCreativePortal* GetAvailablePortal(const class AFortPlayerControllerAthena* PlayerController);
 
 public:
 	static class UClass* StaticClass()
@@ -86522,7 +86561,9 @@ public:
 class UFortLevelSaveComponent final : public ULevelSaveComponent
 {
 public:
-	uint8                                         Pad_148[0xC8];                                     // 0x0148(0x00C8)(Fixing Size After Last Property [ Dumper-8 ])
+	uint8                                         Pad_148[0x8];                                      // 0x0148(0x0008)(Fixing Size After Last Property [ Dumper-8 ])
+	TMulticastDelegate<void(const struct FAsyncTaskResult&)> OnStartPlotLoadForUser;                 // 0x0150(0x0018)(Native)
+	uint8                                         Pad_168[0xA8];                                     // 0x0168(0x00A8)(Fixing Size After Last Property [ Dumper-8 ])
 	TMulticastInlineDelegate<void(bool SaveActive)> OnClientSaveStateChanged;                        // 0x0210(0x0010)(ZeroConstructor, Transient, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
 	TMulticastInlineDelegate<void(EBackupSaveState SaveState)> OnClientBackupSaveStateChanged;       // 0x0220(0x0010)(ZeroConstructor, Transient, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
 	TMulticastInlineDelegate<void(EBackupSaveState SaveState)> OnClientBackupRestoreStateChanged;    // 0x0230(0x0010)(ZeroConstructor, Transient, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
@@ -111615,6 +111656,10 @@ public:
 
 public:
 	void OnRep_InitialGlobalWind();
+
+	static AFortWorldManager* Get(UWorld* InWorld);
+	static AFortWorldManager* GetCurrent(const UObject* WorldContextObject);
+	void RegisterActorState(class ABuildingActor* Actor, EFortBuildingPersistentState PersistentState, bool bSaveFullData);
 
 public:
 	static class UClass* StaticClass()

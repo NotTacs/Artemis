@@ -218,3 +218,168 @@ class UFunction* UClass::FindFunctionByName(struct FName InName)
 
 	return nullptr;
 }
+
+
+namespace
+{
+	constexpr int32 DaysToMonth[] = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
+}
+
+FDateTime::FDateTime(int32 Year, int32 Month, int32 Day, int32 Hour, int32 Minute, int32 Second, int32 Millisecond)
+{
+	int64 TotalDays = 0;
+
+	if (Month > 2 && IsLeapYear(Year))
+	{
+		++TotalDays;
+	}
+
+	--Year;
+	--Month;
+
+	TotalDays += Year * 365;
+	TotalDays += Year / 4;
+	TotalDays -= Year / 100;
+	TotalDays += Year / 400;
+	TotalDays += DaysToMonth[Month];
+	TotalDays += Day - 1;
+
+	Ticks = TotalDays * ETimespan::TicksPerDay
+		+ Hour * ETimespan::TicksPerHour
+		+ Minute * ETimespan::TicksPerMinute
+		+ Second * ETimespan::TicksPerSecond
+		+ Millisecond * ETimespan::TicksPerMillisecond;
+}
+
+FDateTime FDateTime::Now()
+{
+	SYSTEMTIME Time;
+	GetLocalTime(&Time);
+	return FDateTime(Time.wYear, Time.wMonth, Time.wDay, Time.wHour, Time.wMinute, Time.wSecond, Time.wMilliseconds);
+}
+
+FDateTime FDateTime::UtcNow()
+{
+	SYSTEMTIME Time;
+	GetSystemTime(&Time);
+	return FDateTime(Time.wYear, Time.wMonth, Time.wDay, Time.wHour, Time.wMinute, Time.wSecond, Time.wMilliseconds);
+}
+
+FDateTime FDateTime::FromUnixTimestamp(int64 UnixTime)
+{
+	return FDateTime(1970, 1, 1) + FTimespan(UnixTime * ETimespan::TicksPerSecond);
+}
+
+bool FDateTime::IsLeapYear(int32 Year)
+{
+	if ((Year % 4) == 0)
+	{
+		return ((Year % 100) != 0) || ((Year % 400) == 0);
+	}
+
+	return false;
+}
+
+int32 FDateTime::DaysInMonth(int32 Year, int32 Month)
+{
+	if (Month == 2 && IsLeapYear(Year))
+	{
+		return 29;
+	}
+
+	return DaysToMonth[Month] - DaysToMonth[Month - 1];
+}
+
+int32 FDateTime::DaysInYear(int32 Year)
+{
+	return IsLeapYear(Year) ? 366 : 365;
+}
+
+void FDateTime::GetDate(int32& OutYear, int32& OutMonth, int32& OutDay) const
+{
+	int64 L = 1721426 + Ticks / ETimespan::TicksPerDay + 68569;
+	const int64 N = 4 * L / 146097;
+	L = L - (146097 * N + 3) / 4;
+	int64 I = 4000 * (L + 1) / 1461001;
+	L = L - 1461 * I / 4 + 31;
+	int64 J = 80 * L / 2447;
+	const int64 K = L - 2447 * J / 80;
+	L = J / 11;
+	J = J + 2 - 12 * L;
+	I = 100 * (N - 49) + I + L;
+
+	OutYear = int32(I);
+	OutMonth = int32(J);
+	OutDay = int32(K);
+}
+
+int32 FDateTime::GetYear() const
+{
+	int32 Year, Month, Day;
+	GetDate(Year, Month, Day);
+	return Year;
+}
+
+int32 FDateTime::GetMonth() const
+{
+	int32 Year, Month, Day;
+	GetDate(Year, Month, Day);
+	return Month;
+}
+
+int32 FDateTime::GetDay() const
+{
+	int32 Year, Month, Day;
+	GetDate(Year, Month, Day);
+	return Day;
+}
+
+int32 FDateTime::GetDayOfYear() const
+{
+	int32 Year, Month, Day;
+	GetDate(Year, Month, Day);
+
+	for (int32 CurrentMonth = 1; CurrentMonth < Month; ++CurrentMonth)
+	{
+		Day += DaysInMonth(Year, CurrentMonth);
+	}
+
+	return Day;
+}
+
+FTimespan FDateTime::GetTimeOfDay() const
+{
+	return FTimespan(Ticks % ETimespan::TicksPerDay);
+}
+
+int64 FDateTime::ToUnixTimestamp() const
+{
+	return (Ticks - FDateTime(1970, 1, 1).Ticks) / ETimespan::TicksPerSecond;
+}
+
+FDateTime FDateTime::operator+(const FTimespan& Other) const
+{
+	return FDateTime(Ticks + Other.Ticks);
+}
+
+FDateTime& FDateTime::operator+=(const FTimespan& Other)
+{
+	Ticks += Other.Ticks;
+	return *this;
+}
+
+FDateTime FDateTime::operator-(const FTimespan& Other) const
+{
+	return FDateTime(Ticks - Other.Ticks);
+}
+
+FDateTime& FDateTime::operator-=(const FTimespan& Other)
+{
+	Ticks -= Other.Ticks;
+	return *this;
+}
+
+FTimespan FDateTime::operator-(const FDateTime& Other) const
+{
+	return FTimespan(Ticks - Other.Ticks);
+}

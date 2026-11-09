@@ -209794,6 +209794,22 @@ void AFortCreativePortalManager::ReleasePortal(class AFortAthenaCreativePortal* 
 	Func->FunctionFlags = Flgs;
 }
 
+AFortCreativePortalManager* AFortCreativePortalManager::Get(const UObject* WorldContextObject)
+{
+	if (!WorldContextObject)
+	{
+		return nullptr;
+	}
+
+	UWorld* World = WorldContextObject->GetWorld();
+	if (!World)
+	{
+		return nullptr;
+	}
+
+	AFortGameStateAthena* GameState = Cast<AFortGameStateAthena>(World->GameState);
+	return GameState ? GameState->CreativePortalManager : nullptr;
+}
 
 // Function FortniteGame.FortCreativeResourceNodeComponent.BP_OnAddedAffectedProp
 // (Event, Protected, BlueprintEvent)
@@ -324057,6 +324073,36 @@ void AFortWorldManager::OnRep_InitialGlobalWind()
 	UObject::ProcessEvent(Func, nullptr);
 
 	Func->FunctionFlags = Flgs;
+}
+
+AFortWorldManager* AFortWorldManager::Get(UWorld* InWorld)
+{
+	AFortGameState* GameState = Cast<AFortGameState>(InWorld->GameState);
+	return GameState ? GameState->WorldManager : nullptr;
+}
+
+AFortAthenaCreativePortal* AFortCreativePortalManager::GetAvailablePortal(const AFortPlayerControllerAthena* PlayerController)
+{
+	static AFortAthenaCreativePortal* (*GetAvailablePortalOriginal)(AFortCreativePortalManager*, const AFortPlayerControllerAthena*) = decltype(GetAvailablePortalOriginal)(InSDKUtils::GetImageBase() + 0x5f6de54);
+	return GetAvailablePortalOriginal(this, PlayerController);
+}
+
+void AFortAthenaCreativePortal::SetOwningPlayer(const FUniqueNetIdRepl& InOwningPlayer)
+{
+	static void (*SetOwningPlayerOriginal)(AFortAthenaCreativePortal*, const FUniqueNetIdRepl*) = decltype(SetOwningPlayerOriginal)(InSDKUtils::GetImageBase() + 0x5f16d70);
+	SetOwningPlayerOriginal(this, &InOwningPlayer);
+}
+
+AFortWorldManager* AFortWorldManager::GetCurrent(const UObject* WorldContextObject)
+{
+	static AFortWorldManager* (*GetCurrentOriginal)(const UObject*) = decltype(GetCurrentOriginal)(InSDKUtils::GetImageBase() + 0x1130df0);
+	return GetCurrentOriginal(WorldContextObject);
+}
+
+void AFortWorldManager::RegisterActorState(ABuildingActor* Actor, EFortBuildingPersistentState PersistentState, bool bSaveFullData)
+{
+	static void (*RegisterActorStateOriginal)(AFortWorldManager*, ABuildingActor*, EFortBuildingPersistentState, bool) = decltype(RegisterActorStateOriginal)(InSDKUtils::GetImageBase() + 0x6486344);
+	RegisterActorStateOriginal(this, Actor, PersistentState, bSaveFullData);
 }
 
 

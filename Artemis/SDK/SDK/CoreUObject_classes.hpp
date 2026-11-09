@@ -74,9 +74,9 @@ public:
 		InSDKUtils::CallGameFunction(InSDKUtils::GetVirtualFunction<void(*)(const UObject*, class UFunction*, void*)>(this, Offsets::ProcessEventIdx), this, Function, Parms);
 	}
 
-	class UWorld* GetWorld()
+	class UWorld* GetWorld() const
 	{
-		UWorld* (*GetWorldInternal)(UObject*) = decltype(GetWorldInternal)(VTable[0x31]);
+		UWorld* (*GetWorldInternal)(const UObject*) = decltype(GetWorldInternal)(VTable[0x31]);
 		return GetWorldInternal(this);
 	}
 

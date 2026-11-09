@@ -41,6 +41,13 @@ void FortGameModeAthena::OnGivenMatchAssignment(AFortGameModeAthena* __this, boo
 
 		__this->WarmupRequiredPlayerCount = 1;
 
+		/*SCUFFED CODE HERE BECAUSE LATE INJECT ON NON SESSIONS*/
+		UFortGameInstance* GameInstance = Cast<UFortGameInstance>(UWorld::GetWorld()->OwningGameInstance);
+		if (GameInstance)
+		{
+			GameInstance->SidecarSys = NewObject<USidecarSys>(GameInstance);
+		}
+
 		UE_LOG(LogArtemis, Log, TEXT("AFortGameModeAthena::OnGivenMatchAssignment Initialied Playlist to %s"), *Playlist->GetName());
 
 		UCurveTable* AthenaGameDataTable = Playlist->GameData.LoadSynchronus();

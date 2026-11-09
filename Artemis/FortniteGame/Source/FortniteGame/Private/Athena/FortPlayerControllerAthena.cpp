@@ -17,8 +17,6 @@ void FortPlayerControllerAthena::ServerAcknowledgePossession_Implementation(AFor
 	UFortGlobals__InitializePlayerGameplayAbilities(Interface);
 
 	/* TODO: ADD GAMESTATE FUNC HERE*/
-
-	UFortKismetLibrary::UpdatePlayerCustomCharacterPartsVisualization(Cast<AFortPlayerStateAthena>(__this->PlayerState));
 }
 
 void FortPlayerControllerAthena::RemoveAllInventoryItems(AFortPlayerControllerAthena* __this)
@@ -57,16 +55,42 @@ void FortPlayerControllerAthena::ServerExecuteInventoryItem_Implementation(AFort
 	}
 }
 
+void FortPlayerControllerAthena::OnPossess(AFortPlayerControllerAthena* __this, AFortPlayerPawnAthena* NewPawn)
+{
+	FortPlayerControllerAthena::Originals::OnPossess(__this, NewPawn);
+	if (__this->GetLocalRole() == ENetRole::ROLE_Authority)
+	{
+		if (AFortPlayerState* FortPlayerState = Cast<AFortPlayerState>(__this->PlayerState))
+		{
+			FortPlayerState->ApplyCustomizationToCharacter(__this, Cast<AFortPlayerPawn>(NewPawn));
+			FortPlayerState->ForceNetUpdate();
+		}
+	}
+}
+
+void FortPlayerControllerAthena::ReservePortal(AFortPlayerControllerAthena* __this)
+{
+
+}
+
+bool FortPlayerControllerAthena::PostLogin(AFortPlayerControllerAthena* __this)
+{
+	FortPlayerControllerAthena::Originals::PostLogin(__this);
+	if (AFortCreativePortalManager::Get(__this))
+	{
+
+	}
+}
+
 void FortPlayerControllerAthena::LoadModule()
 {
 	FMemoryLibrary::VFTHook(AFortPlayerControllerAthena::GetDefaultObj()->VTable, 0x122, ServerAcknowledgePossession_Implementation);
 
-	const bool bPatched = FMemoryLibrary::PatchBytesWithCall(0x5FA4D99,
+	FMemoryLibrary::PatchBytesWithCall(0x5FA4D99,
 		{ 0x48, 0x8B, 0x03, 0x48, 0x8B, 0xCB, 0xFF, 0x90, 0x50, 0x06, 0x00, 0x00 },
 		{ 0x48, 0x8B, 0xCB },
 		RemoveAllInventoryItemsThenReset);
 
-	if (!bPatched)
-		UE_LOG(LogArtemis, Error, TEXT("FortPlayerControllerAthena: failed to patch RemoveAllInventoryItems into StartAircraftPhase"));
 	FMemoryLibrary::VFTHook(AFortPlayerControllerAthena::GetDefaultObj()->VTable, 0x22C, ServerExecuteInventoryItem_Implementation);
+	FMemoryLibrary::DetourHook(0x6003998, OnPossess, Originals::OnPossess);
 }
